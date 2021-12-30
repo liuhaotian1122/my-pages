@@ -2,16 +2,13 @@
 branches: {
   }
 fileChange:
-  /images:
-    newFile: !uuid 'a2c51a5dcf5ec0961988d64cd608d6132405bf99'
-    oldFile: !uuid '3da5cea2958d5cc807040f03abbcc117b1cc94e1'
-  /images/blog:
-    newFile: !uuid '410437352d3d922a51725907432c620466a9f7b6'
-    oldFile: !uuid 'be2b31c96c5846a33940c220214e8df4f04f87b1'
-  /images/blog/.keep:
-    newFile: null
-    oldFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
-gitCommitId: !uuid 'dbd8f6fc4453c94828288084d545d344653a54bd'
+  /assets:
+    newFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+    oldFile: null
+  /assets/.keep:
+    newFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+    oldFile: null
+gitCommitId: !uuid 'f3cb9db7c8dd6471851aa10c1832b583d9e7fb31'
 renames: {
   }
-revisionId: 24
+revisionId: 25
