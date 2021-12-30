@@ -2,10 +2,10 @@
 branches: {
   }
 fileChange:
-  /h5阻止滑动.html:
+  /jingli.html:
     newFile: null
-    oldFile: !uuid 'ed11dd98d85e4103091eaab626fcf0b0628b8e4c'
-gitCommitId: !uuid '57d760023c12ed5a2e2af9073307aeecb8954d33'
+    oldFile: !uuid 'b021d8e282ef14b140b888fd4aa97bdd3d7be9c8'
+gitCommitId: !uuid '5a39ad5d1e009c89e773ac0dd7c135318ddb3bed'
 renames: {
   }
-revisionId: 46
+revisionId: 47
