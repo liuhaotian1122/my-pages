@@ -3,12 +3,69 @@ branches: {
   }
 fileChange:
   /Temp-images:
-    newFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+    newFile: !uuid 'e5ffa0f1ed7addca1957af616c97320153d768f5'
+    oldFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+  /Temp-images/bb1.jpg:
+    newFile: !uuid '986c64ac175503a29bade2285a2a28bbd1574662'
     oldFile: null
-  /Temp-images/.keep:
-    newFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+  /Temp-images/bb2.jpg:
+    newFile: !uuid '1e376f1ec909742986f2529699d10018fe2fe4d6'
     oldFile: null
-gitCommitId: !uuid 'd8efe1b01fcca78876ef92721adf2e663a517de9'
+  /Temp-images/bb3.jpg:
+    newFile: !uuid 'd11b01836ea6af8765370d72b9cfee3787087b99'
+    oldFile: null
+  /Temp-images/bb4.jpg:
+    newFile: !uuid '062aeef48b3b7dece67d91ceee311a738a7655af'
+    oldFile: null
+  /Temp-images/cc.jpg:
+    newFile: !uuid 'e708caafd19cdabad743d17bf75c8d58cbbece10'
+    oldFile: null
+  /Temp-images/cctv.jpg:
+    newFile: !uuid 'ee4dd5a6ae88a6677ce4c6aab756f1c907a24187'
+    oldFile: null
+  /Temp-images/dd.jpg:
+    newFile: !uuid 'b946ee1f01283a2a55032f4cf17098e77adcfe59'
+    oldFile: null
+  /Temp-images/face.jpg:
+    newFile: !uuid '13a4e2d2e3cefdf48d82336eeb2f5bf0422b35d4'
+    oldFile: null
+  /Temp-images/face1.jpg:
+    newFile: !uuid '07d1c098b0fc2281d3b9494ee0fe25e84fa77706'
+    oldFile: null
+  /Temp-images/face2.jpg:
+    newFile: !uuid 'caf6244b6b7c0b807adfb3292c3b4aed028623fb'
+    oldFile: null
+  /Temp-images/face3.jpg:
+    newFile: !uuid '34f6c07f40c69bb18716d8fe39ac84fa02b89b40'
+    oldFile: null
+  /Temp-images/face4.jpg:
+    newFile: !uuid '26184aacf94cbe23698e0a81a78d21e0c33f519a'
+    oldFile: null
+  /Temp-images/face5.jpg:
+    newFile: !uuid 'f2b9ecfa0de79f8e6e25600e9ae3e9f21f4f7b1d'
+    oldFile: null
+  /Temp-images/face6.jpg:
+    newFile: !uuid 'faa56c2d5b401cec7f3e793f2e54b52130bb7efe'
+    oldFile: null
+  /Temp-images/food.gif:
+    newFile: !uuid 'd8a5e00df9c64f91ff62b82c3ac8c562663334b7'
+    oldFile: null
+  /Temp-images/game.jpg:
+    newFile: !uuid 'ca9551e6dbef7efee2986c7cc85548c0dcabb663'
+    oldFile: null
+  /Temp-images/hd01.png:
+    newFile: !uuid '59bc82f278569b3dac27032f7fefdea3146490ab'
+    oldFile: null
+  /Temp-images/jinli.gif:
+    newFile: !uuid '4444f0ba187fc43cf5caa9d9a4567fdc9f73c74b'
+    oldFile: null
+  /Temp-images/s1.png:
+    newFile: !uuid '3128a9c6b41ffec6d74d4f3677533bfeb92505f3'
+    oldFile: null
+  /Temp-images/suosui.gif:
+    newFile: !uuid '5d3fa2f48ede05b69bc2ed334f19413bab128b5d'
+    oldFile: null
+gitCommitId: !uuid '0a57140cf63378c19252932d6efb02fa07da2db5'
 renames: {
   }
-revisionId: 3
+revisionId: 4
