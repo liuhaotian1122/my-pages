@@ -3,18 +3,15 @@ branches: {
   }
 fileChange:
   /images:
-    newFile: !uuid '3da5cea2958d5cc807040f03abbcc117b1cc94e1'
-    oldFile: !uuid 'eac7aa78c90266118b9e6f506dd14a8b7fe1fc63'
+    newFile: !uuid 'a2c51a5dcf5ec0961988d64cd608d6132405bf99'
+    oldFile: !uuid '3da5cea2958d5cc807040f03abbcc117b1cc94e1'
   /images/blog:
-    newFile: !uuid 'be2b31c96c5846a33940c220214e8df4f04f87b1'
-    oldFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
-  /images/blog/10.10.jpg:
-    newFile: !uuid '95212b1eec291968bd56df4ed6e86ad19fa78475'
-    oldFile: null
-  /images/blog/海明威.jpg:
-    newFile: !uuid 'f1df1841a032ab121a49d60cd6141296eee84306'
-    oldFile: null
-gitCommitId: !uuid '96ab5baf49bd66acf051daff861293563ff61c3f'
+    newFile: !uuid '410437352d3d922a51725907432c620466a9f7b6'
+    oldFile: !uuid 'be2b31c96c5846a33940c220214e8df4f04f87b1'
+  /images/blog/.keep:
+    newFile: null
+    oldFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+gitCommitId: !uuid 'dbd8f6fc4453c94828288084d545d344653a54bd'
 renames: {
   }
-revisionId: 23
+revisionId: 24
