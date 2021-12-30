@@ -2,55 +2,13 @@
 branches: {
   }
 fileChange:
-  /boke.html:
-    newFile: !uuid '4b3bcd0c4e0351623ac4912357b0ffb2d1458b3c'
+  /Temp-images:
+    newFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
     oldFile: null
-  /cases.html:
-    newFile: !uuid '1cc8f09e52bddf70d2ca6190b574dec2e19dc156'
+  /Temp-images/.keep:
+    newFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
     oldFile: null
-  /category2.html:
-    newFile: !uuid '3173e96342650dec52448b23771817fae298d56d'
-    oldFile: null
-  /food.html:
-    newFile: !uuid '1f8c04bd3ac603a76a8db43357943a07f834aa7f'
-    oldFile: null
-  /game.html:
-    newFile: !uuid '9852c55f77e870812488b3f8e6efc2c3337e544d'
-    oldFile: null
-  /h5阻止滑动.html:
-    newFile: !uuid 'ed11dd98d85e4103091eaab626fcf0b0628b8e4c'
-    oldFile: null
-  /index.html:
-    newFile: !uuid '7acf1530b6bdd8158c14af71bf441fd1ae4f5dcf'
-    oldFile: null
-  /jingli.html:
-    newFile: !uuid 'b021d8e282ef14b140b888fd4aa97bdd3d7be9c8'
-    oldFile: null
-  /profile.html:
-    newFile: !uuid '54def9f09e6e2b6206c62bc85e430a88066cb503'
-    oldFile: null
-  /ps操作.html:
-    newFile: !uuid '6380b276683d22077960aa7963655ff3411ac675'
-    oldFile: null
-  /suosui.html:
-    newFile: !uuid 'b021d8e282ef14b140b888fd4aa97bdd3d7be9c8'
-    oldFile: null
-  /work.html:
-    newFile: !uuid 'b021d8e282ef14b140b888fd4aa97bdd3d7be9c8'
-    oldFile: null
-  /一些工具.html:
-    newFile: !uuid '3dc114e516882bdf5092c339cd1a766baaa21826'
-    oldFile: null
-  /找到自己的命运.html:
-    newFile: !uuid '759bb0ac6f106bda551f1d20ae7ae0fa95cff1d3'
-    oldFile: null
-  /最近更新.html:
-    newFile: !uuid '3d174a6cb673e7767fde94cec32152dfb08cb033'
-    oldFile: null
-  /真实的高贵.html:
-    newFile: !uuid '1f11814eaf7676f37db5992107cb585b9f1da569'
-    oldFile: null
-gitCommitId: !uuid '5b261e296ee30431ed9156fe753d8baca0f0fd76'
+gitCommitId: !uuid 'd8efe1b01fcca78876ef92721adf2e663a517de9'
 renames: {
   }
-revisionId: 2
+revisionId: 3
