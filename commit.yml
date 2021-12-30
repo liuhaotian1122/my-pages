@@ -2,13 +2,16 @@
 branches: {
   }
 fileChange:
-  /music:
-    newFile: !uuid '2cf07dc61be3f3082a1e2e2d8597423b433ffd14'
-    oldFile: !uuid '93294b21fd75a04913468669226708c6dfb90983'
-  /music/.keep:
-    newFile: null
-    oldFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
-gitCommitId: !uuid '26b5beaeaec286c6141bb0788f0a0d7c08e4a775'
+  /Temp-images:
+    newFile: !uuid '96de4ab1dd46f9269d60170440e35ff2f8bef40c'
+    oldFile: !uuid '4cac2601f03f386e21cdcf2225b5c9f629f7943c'
+  /Temp-images/work.gif:
+    newFile: !uuid '07a8f75199ea5425d9e0766db320897de44e4385'
+    oldFile: null
+  /Temp-images/wuxia.jpg:
+    newFile: !uuid '39da1dfc89186267aa370e87de047a0de00476a9'
+    oldFile: null
+gitCommitId: !uuid 'b757cfe1f5272d255d863e1e119b108a9ed97ecc'
 renames: {
   }
-revisionId: 38
+revisionId: 39
