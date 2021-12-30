@@ -3,39 +3,15 @@ branches: {
   }
 fileChange:
   /assets:
-    newFile: !uuid '3907427bf46b686d131f4dcd5e42e6ca83dce5bb'
-    oldFile: !uuid 'c5cea5a6d968dfd667631a28177678a20748b903'
+    newFile: !uuid '428f37df7f306b4a7bb3cc4ad3aa4a02baadf081'
+    oldFile: !uuid '3907427bf46b686d131f4dcd5e42e6ca83dce5bb'
   /assets/js:
-    newFile: !uuid '32acbfa8d4d3a1389a93be7bb7a93a5efb54b4e8'
-    oldFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
-  /assets/js/amazeui.ie8polyfill.js:
-    newFile: !uuid '5ccd79d9592f87475e5c52ba86174be4992b59d1'
-    oldFile: null
-  /assets/js/amazeui.ie8polyfill.min.js:
-    newFile: !uuid 'ca6e69d7b8bbde07fb838969c2a97115aa1eea91'
-    oldFile: null
-  /assets/js/amazeui.js:
-    newFile: !uuid '1e0ebf42bee5b668e83a261ca810819f7126cd6a'
-    oldFile: null
-  /assets/js/amazeui.min.js:
-    newFile: !uuid 'd5f4a2c8f13f637a2237ccd074b5cc267db6cd43'
-    oldFile: null
-  /assets/js/amazeui.widgets.helper.js:
-    newFile: !uuid '981464ba466757c6af9ecb5b1cbc07dd913857d5'
-    oldFile: null
-  /assets/js/amazeui.widgets.helper.min.js:
-    newFile: !uuid '3ae9bf92ebacc568e0e75a2807e4637e9f1570f3'
-    oldFile: null
-  /assets/js/app.js:
-    newFile: !uuid 'e2ddf4bae909f3cfc2e8dfa4854126a8ce48b1be'
-    oldFile: null
-  /assets/js/handlebars.min.js:
-    newFile: !uuid '4e2aa8fe698c070fa98769a18d28dd9dfd0cfe40'
-    oldFile: null
-  /assets/js/jquery.min.js:
-    newFile: !uuid '06ac2631505fe2b7245b7b7bec2d759b4d51c624'
-    oldFile: null
-gitCommitId: !uuid 'da671c35ff3e830053b883d82fa5f75e658ae43e'
+    newFile: !uuid '0b685c5ad91bcca898fbefeaaa13731d50fc123c'
+    oldFile: !uuid '32acbfa8d4d3a1389a93be7bb7a93a5efb54b4e8'
+  /assets/js/.keep:
+    newFile: null
+    oldFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+gitCommitId: !uuid '03a4ba3921b3a032486f42dc2f420d51ad7db63f'
 renames: {
   }
-revisionId: 31
+revisionId: 32
