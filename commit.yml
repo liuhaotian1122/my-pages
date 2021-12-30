@@ -2,46 +2,10 @@
 branches: {
   }
 fileChange:
-  /boke.html:
-    newFile: !uuid '15d2a9e44903b91e26d44b1e13a59dbd1f38e573'
+  /README.md:
+    newFile: !uuid 'a9b6e677164f7eab1ddaeac5d5fc1c8609d679cc'
     oldFile: null
-  /food.html:
-    newFile: !uuid '357ed40800b5781e30c7ba5c4748c83e63b2eecf'
-    oldFile: null
-  /game.html:
-    newFile: !uuid 'ae3ef01ee42c04c3a9705010b3ea0489ce2bbbe2'
-    oldFile: null
-  /h5阻止滑动.html:
-    newFile: !uuid 'f3f1db04d82790bd025879b8491984ff14cb5027'
-    oldFile: null
-  /index.html:
-    newFile: !uuid '91022d13a15924a2ecc0aa93320592657a619cf3'
-    oldFile: null
-  /jingli.html:
-    newFile: !uuid 'cf957769fbe6fc96871a5a788939cb331aabfd8b'
-    oldFile: null
-  /ps操作.html:
-    newFile: !uuid 'e55812ac0b04f204f959b7618b9eff87e7b9b1cc'
-    oldFile: null
-  /suosui.html:
-    newFile: !uuid '65f1aec8f197f96cc2fd1fa6711329baa4507df6'
-    oldFile: null
-  /work.html:
-    newFile: !uuid 'e8eaf87ff1e3f795e0597e1b7019b87165af9ab3'
-    oldFile: null
-  /一些工具.html:
-    newFile: !uuid '71e5c84315d6362927091ed8a9f91cf5a13264fd'
-    oldFile: null
-  /找到自己的命运.html:
-    newFile: !uuid 'faceea846fc66678aef6c99adc9254bf71603b66'
-    oldFile: null
-  /最近更新.html:
-    newFile: !uuid '0f1d62c0413da17b5e04a852f7a53080eca9d637'
-    oldFile: null
-  /真实的高贵.html:
-    newFile: !uuid '58171616e6356b4f33789bc44a148293fe9ecb38'
-    oldFile: null
-gitCommitId: !uuid '34a91bcd3fdfd7f9eea7d5541cc1b54fb510abbc'
+gitCommitId: !uuid '5d0cda025c0347fed64428d943c3cd98e39f874a'
 renames: {
   }
-revisionId: 59
+revisionId: 60
