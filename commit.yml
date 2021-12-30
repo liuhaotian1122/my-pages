@@ -3,15 +3,15 @@ branches: {
   }
 fileChange:
   /images:
-    newFile: !uuid '4c7db3ec2724591a42eb5a635f6513901622d051'
-    oldFile: !uuid '6ceebe9feab0c26594822f2511ccd26c4c73efb9'
+    newFile: !uuid '12998bafffc7bf5c7acc9326fdc7b023b32a596a'
+    oldFile: !uuid '4c7db3ec2724591a42eb5a635f6513901622d051'
   /images/i:
-    newFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+    newFile: !uuid '360eaffe42cfa9e8464bd7c0bfcebb6db3a90ef9'
+    oldFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+  /images/i/favicon.png:
+    newFile: !uuid 'b60ab7b8f60945c031113b397dec10c84e96bbe2'
     oldFile: null
-  /images/i/.keep:
-    newFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
-    oldFile: null
-gitCommitId: !uuid 'c4028aa9060ba0213c2ef523b04005900381eccf'
+gitCommitId: !uuid '399bd43d36a5ec350218d5def93cbb2c87f8a4b4'
 renames: {
   }
-revisionId: 19
+revisionId: 20
