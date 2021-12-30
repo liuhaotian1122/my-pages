@@ -3,15 +3,15 @@ branches: {
   }
 fileChange:
   /assets:
-    newFile: !uuid 'ce4a7afd3b51b19b324ec7c13bfcb0909fa93e9a'
-    oldFile: !uuid 'a5d73d128b4254bdbfc4d92b8f265c900df26331'
-  /assets/css:
+    newFile: !uuid '584e4a7e1ae06f8049d709c93aa09636e9d4b3fb'
+    oldFile: !uuid 'ce4a7afd3b51b19b324ec7c13bfcb0909fa93e9a'
+  /assets/fonts:
     newFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
     oldFile: null
-  /assets/css/.keep:
+  /assets/fonts/.keep:
     newFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
     oldFile: null
-gitCommitId: !uuid 'b63ae574182f80dee4d0c7331c2f8b46631a8a07'
+gitCommitId: !uuid 'e7495cf68dc83360bce7ac8f47fb49bf128bf7f3'
 renames: {
   }
-revisionId: 27
+revisionId: 28
