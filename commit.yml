@@ -3,36 +3,15 @@ branches: {
   }
 fileChange:
   /Temp-images:
-    newFile: !uuid '796459ad90026952267965837715eba8a9e6dd6e'
-    oldFile: !uuid 'b6a549c09927150f808ac6d9b415a4ad6a2ba0a9'
+    newFile: !uuid '4cac2601f03f386e21cdcf2225b5c9f629f7943c'
+    oldFile: !uuid '796459ad90026952267965837715eba8a9e6dd6e'
   /Temp-images/game:
-    newFile: !uuid '0a4fc6f1768cb6b8433a738701ffd5a37f544301'
-    oldFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
-  /Temp-images/game/dianshi.jpg:
-    newFile: !uuid '3222a4ddc3b508fe008f3cae9f5c8b7105b227e7'
-    oldFile: null
-  /Temp-images/game/dxg.jpg:
-    newFile: !uuid '415d931e4238ceece5c30b29c92d83bb4567ed93'
-    oldFile: null
-  /Temp-images/game/glh.jpg:
-    newFile: !uuid '2221b00b16f70795d738d3a82feed87256639b84'
-    oldFile: null
-  /Temp-images/game/mi.jpg:
-    newFile: !uuid 'bd57dd6b411fdf355c84dd70c9fb4a9586f6b62d'
-    oldFile: null
-  /Temp-images/game/poki.jpg:
-    newFile: !uuid '899741fdfb92a6d5ff4ec936c5a71e8177b6d50b'
-    oldFile: null
-  /Temp-images/game/rs.jpg:
-    newFile: !uuid 'bbd1ea2989e7e0ff6a0532d011d893f7d87a838e'
-    oldFile: null
-  /Temp-images/game/shuzi.jpg:
-    newFile: !uuid '9b6822d890dac936747eb9b9844904b7c3486259'
-    oldFile: null
-  /Temp-images/game/wawa.jpg:
-    newFile: !uuid '54b235ff0cb9392548358da811484fdb5f85ea70'
-    oldFile: null
-gitCommitId: !uuid '817f663a2745e6451876d47524485156fd8ef07c'
+    newFile: !uuid 'dc38b0d8a04f29fa524758fc6c3a7ec9163bc419'
+    oldFile: !uuid '0a4fc6f1768cb6b8433a738701ffd5a37f544301'
+  /Temp-images/game/.keep:
+    newFile: null
+    oldFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+gitCommitId: !uuid '102a4051873117adad765a3dc4bcc2a5bae3a0cb'
 renames: {
   }
-revisionId: 8
+revisionId: 9
