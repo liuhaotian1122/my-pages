@@ -2,40 +2,10 @@
 branches: {
   }
 fileChange:
-  /images:
-    newFile: !uuid '08a1173655efc47fe4c681f9c48a6354c163b05e'
-    oldFile: !uuid 'a2c51a5dcf5ec0961988d64cd608d6132405bf99'
-  /images/jd1.jpg:
-    newFile: !uuid 'ed9e0e08ba169f3cca9c7d405025a37c77e47aa5'
-    oldFile: null
-  /images/jd2.jpg:
-    newFile: !uuid '906670276ab636576b3464207e8e650822a0a235'
-    oldFile: null
-  /images/jd3.jpg:
-    newFile: !uuid '6d9e75fe73be5a3af9e2f0850a400d5436b52c98'
-    oldFile: null
-  /images/sq0.jpg:
-    newFile: !uuid 'c4dc970828c50cc41f0b9aa10e909174b790a911'
-    oldFile: null
-  /images/sq1.jpg:
-    newFile: !uuid '4c5c43aaca2186ade7dbbf13a69832cf67a03161'
-    oldFile: null
-  /images/sq2.jpg:
-    newFile: !uuid '93bf165b590ca2b54de8c4637c100b47e485e722'
-    oldFile: null
-  /images/wyn0.jpg:
-    newFile: !uuid 'a8000ddc54e8b577ff29ec3f9678fad4ab780263'
-    oldFile: null
-  /images/wyn1.jpg:
-    newFile: !uuid 'b9948e086d766776d71c550ef35054d78e9b8a20'
-    oldFile: null
-  /images/wyn2.jpg:
-    newFile: !uuid 'd156d5d7feecbc172898f97e8a5191b02962d5d6'
-    oldFile: null
-  /images/wyn3.jpg:
-    newFile: !uuid '2170a9b8e996543624064636d0a4362fdbf0cd02'
-    oldFile: null
-gitCommitId: !uuid 'a61df02bc737b1843ddcb8d0b210b7069cc0e45d'
+  /真实的高贵.html:
+    newFile: null
+    oldFile: !uuid '1f11814eaf7676f37db5992107cb585b9f1da569'
+gitCommitId: !uuid '1d287aa07376a69c355f942b6db482947f3d6db1'
 renames: {
   }
-revisionId: 40
+revisionId: 41
