@@ -3,15 +3,30 @@ branches: {
   }
 fileChange:
   /assets:
-    newFile: !uuid '584e4a7e1ae06f8049d709c93aa09636e9d4b3fb'
-    oldFile: !uuid 'ce4a7afd3b51b19b324ec7c13bfcb0909fa93e9a'
-  /assets/fonts:
-    newFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+    newFile: !uuid 'ade6ad2ba96c4df95ff5831237f54d3051800fe0'
+    oldFile: !uuid '584e4a7e1ae06f8049d709c93aa09636e9d4b3fb'
+  /assets/css:
+    newFile: !uuid '4feca43170bdc5560c4bea6851fecc92342d40eb'
+    oldFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+  /assets/css/admin.css:
+    newFile: !uuid '16d39033048879c3898600d7cef21e7ff971adeb'
     oldFile: null
-  /assets/fonts/.keep:
-    newFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+  /assets/css/amazeui.css:
+    newFile: !uuid '7516783181cf7452e4ffdcdb570b173f57356d87'
     oldFile: null
-gitCommitId: !uuid 'e7495cf68dc83360bce7ac8f47fb49bf128bf7f3'
+  /assets/css/amazeui.flat.css:
+    newFile: !uuid 'c418693e62273fbfd9784f0702a30df0ca82d47a'
+    oldFile: null
+  /assets/css/amazeui.flat.min.css:
+    newFile: !uuid '52e88faf422bee14c4af5663f69480166fca9a3f'
+    oldFile: null
+  /assets/css/amazeui.min.css:
+    newFile: !uuid 'eb20b116b2f09113cc1d997b6b4b639e9c85f33a'
+    oldFile: null
+  /assets/css/app.css:
+    newFile: !uuid '7ec1e093b334f7f9be3fa6df27fe7722156dc151'
+    oldFile: null
+gitCommitId: !uuid 'f390d04b8f6aff252ec44f508fc4e12205b717a7'
 renames: {
   }
-revisionId: 28
+revisionId: 29
