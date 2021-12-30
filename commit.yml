@@ -3,30 +3,15 @@ branches: {
   }
 fileChange:
   /assets:
-    newFile: !uuid '7ee14107d0116be6ba2f1a2addb86a806f0a64cd'
-    oldFile: !uuid '3b9267bb12bcd201eda9b085c68882aeb788d746'
+    newFile: !uuid 'c411b23f3d235e62903a234ecbc806f6647ae0b7'
+    oldFile: !uuid '7ee14107d0116be6ba2f1a2addb86a806f0a64cd'
   /assets/fonts:
-    newFile: !uuid '4d692c9280f3d055206472f42836260c2e826db1'
-    oldFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
-  /assets/fonts/FontAwesome.otf:
-    newFile: !uuid '3ed7f8b48ad9bfab52eb03822fefcd6b77d2e680'
-    oldFile: null
-  /assets/fonts/fontawesome-webfont.eot:
-    newFile: !uuid '9b6afaedc0fd7aaf927a07f82da9c11022251b8b'
-    oldFile: null
-  /assets/fonts/fontawesome-webfont.svg:
-    newFile: !uuid 'd05688e9e28e1bee95662f3b668f410d37dfa214'
-    oldFile: null
-  /assets/fonts/fontawesome-webfont.ttf:
-    newFile: !uuid '26dea7951a73079223b50653c455c5adf46a4648'
-    oldFile: null
-  /assets/fonts/fontawesome-webfont.woff:
-    newFile: !uuid 'dc35ce3c2cf688c89b0bd0d4a82bc4be82b14c40'
-    oldFile: null
-  /assets/fonts/fontawesome-webfont.woff2:
-    newFile: !uuid '500e5172534171f678e01f7569d66f9257036a09'
-    oldFile: null
-gitCommitId: !uuid 'fc70721c81610b269b59605ec8695bd18a0fab3e'
+    newFile: !uuid '761eec076001722f955199b42455ab251344c502'
+    oldFile: !uuid '4d692c9280f3d055206472f42836260c2e826db1'
+  /assets/fonts/.keep:
+    newFile: null
+    oldFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+gitCommitId: !uuid 'd66419c56da903051482098cce0d37d8b4b01930'
 renames: {
   }
-revisionId: 34
+revisionId: 35
