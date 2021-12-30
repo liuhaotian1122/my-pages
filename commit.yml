@@ -2,16 +2,13 @@
 branches: {
   }
 fileChange:
-  /Temp-images:
-    newFile: !uuid '4cac2601f03f386e21cdcf2225b5c9f629f7943c'
-    oldFile: !uuid '796459ad90026952267965837715eba8a9e6dd6e'
-  /Temp-images/game:
-    newFile: !uuid 'dc38b0d8a04f29fa524758fc6c3a7ec9163bc419'
-    oldFile: !uuid '0a4fc6f1768cb6b8433a738701ffd5a37f544301'
-  /Temp-images/game/.keep:
-    newFile: null
-    oldFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
-gitCommitId: !uuid '102a4051873117adad765a3dc4bcc2a5bae3a0cb'
+  /js:
+    newFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+    oldFile: null
+  /js/.keep:
+    newFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+    oldFile: null
+gitCommitId: !uuid 'ae3f5476e6fbfbe0df67824c472ca64655d34a61'
 renames: {
   }
-revisionId: 9
+revisionId: 10
