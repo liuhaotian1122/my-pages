@@ -3,12 +3,12 @@ branches: {
   }
 fileChange:
   /music:
-    newFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+    newFile: !uuid '93294b21fd75a04913468669226708c6dfb90983'
+    oldFile: !uuid '29a422c19251aeaeb907175e9b3219a9bed6c616'
+  /music/星茶会.mp3:
+    newFile: !uuid 'a35a71ff9f9ce2c4f36b4e038b183022d7f91ead'
     oldFile: null
-  /music/.keep:
-    newFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
-    oldFile: null
-gitCommitId: !uuid '47a2dec5dd69a34d304810ae5dff0344fb946807'
+gitCommitId: !uuid 'e0627d9c9e11387271d04c0f298fcf12afa75950'
 renames: {
   }
-revisionId: 36
+revisionId: 37
