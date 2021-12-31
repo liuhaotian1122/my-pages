@@ -95,7 +95,6 @@ html,body{
 .right-bg .am-list-item-text{
     font-size: 75%;
 }
-
 .right-bg .am-list .am-list-item-desced {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -326,6 +325,9 @@ footer a:hover{
     width:20px;
     position: absolute;
     text-align:center;
+}
+.yanse{
+	color: #007BFF;
 }
 .kz i{
     color: #ffffff;
