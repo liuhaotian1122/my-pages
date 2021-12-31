@@ -3,24 +3,12 @@ branches: {
   }
 fileChange:
   /Temp-images:
-    newFile: !uuid '3e20fda98a9818d0ff2f7262077c68f9e171948a'
-    oldFile: !uuid '96de4ab1dd46f9269d60170440e35ff2f8bef40c'
-  /Temp-images/atm.jpg:
-    newFile: !uuid 'c71567ddfcf26057bec23272b41c7391e8f40dc5'
-    oldFile: null
-  /Temp-images/bb5.jpg:
-    newFile: !uuid '39b9cb76b3b4d016c31b70010203449569483b7f'
-    oldFile: null
-  /Temp-images/bb6.jpg:
-    newFile: !uuid 'c470e0c9463e404279f5c6343cb6963a09846c26'
-    oldFile: null
-  /Temp-images/dzkj.jpg:
-    newFile: !uuid 'aca99adcdd6793de53fda88de94e6877ba56945d'
-    oldFile: null
-  /Temp-images/mkjkx.jpg:
-    newFile: !uuid '625647499db5f8f0c75666d3c2df6bb375f48229'
-    oldFile: null
-gitCommitId: !uuid '18a33d73cc97c088b294692542012f318eef8e2f'
+    newFile: !uuid '710c2dbbb141d4b49eb164c15afeab182635cadf'
+    oldFile: !uuid '3e20fda98a9818d0ff2f7262077c68f9e171948a'
+  /Temp-images/bb2.jpg:
+    newFile: null
+    oldFile: !uuid '1e376f1ec909742986f2529699d10018fe2fe4d6'
+gitCommitId: !uuid '446cad70ae3f4d5432445bf8c5eb45fd2c9a9f63'
 renames: {
   }
-revisionId: 68
+revisionId: 69
