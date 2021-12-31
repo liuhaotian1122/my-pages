@@ -2,10 +2,25 @@
 branches: {
   }
 fileChange:
-  /index.html:
-    newFile: !uuid 'eb387055d37d0bf5d4cfb34a674c15da6ec30270'
-    oldFile: !uuid '91022d13a15924a2ecc0aa93320592657a619cf3'
-gitCommitId: !uuid '99ba52d91cd8c38963511a1e8ba99914457bf3bb'
+  /Temp-images:
+    newFile: !uuid '3e20fda98a9818d0ff2f7262077c68f9e171948a'
+    oldFile: !uuid '96de4ab1dd46f9269d60170440e35ff2f8bef40c'
+  /Temp-images/atm.jpg:
+    newFile: !uuid 'c71567ddfcf26057bec23272b41c7391e8f40dc5'
+    oldFile: null
+  /Temp-images/bb5.jpg:
+    newFile: !uuid '39b9cb76b3b4d016c31b70010203449569483b7f'
+    oldFile: null
+  /Temp-images/bb6.jpg:
+    newFile: !uuid 'c470e0c9463e404279f5c6343cb6963a09846c26'
+    oldFile: null
+  /Temp-images/dzkj.jpg:
+    newFile: !uuid 'aca99adcdd6793de53fda88de94e6877ba56945d'
+    oldFile: null
+  /Temp-images/mkjkx.jpg:
+    newFile: !uuid '625647499db5f8f0c75666d3c2df6bb375f48229'
+    oldFile: null
+gitCommitId: !uuid '18a33d73cc97c088b294692542012f318eef8e2f'
 renames: {
   }
-revisionId: 67
+revisionId: 68
