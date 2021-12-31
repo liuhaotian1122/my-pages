@@ -2,10 +2,10 @@
 branches: {
   }
 fileChange:
-  /game.html:
-    newFile: !uuid '72e99e22c9685dbb1781f099d103fe348a2fc476'
-    oldFile: !uuid 'be58751ee0af8bc8e60b098b75b9e701f57ce6a4'
-gitCommitId: !uuid '9fbd6d92a768abcfc719658dced071bedad0f082'
+  /index.html:
+    newFile: !uuid 'eb387055d37d0bf5d4cfb34a674c15da6ec30270'
+    oldFile: !uuid '91022d13a15924a2ecc0aa93320592657a619cf3'
+gitCommitId: !uuid '99ba52d91cd8c38963511a1e8ba99914457bf3bb'
 renames: {
   }
-revisionId: 66
+revisionId: 67
