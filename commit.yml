@@ -2,13 +2,10 @@
 branches: {
   }
 fileChange:
-  /Temp-images:
-    newFile: !uuid 'd9d34b9878c0c6d08330653e851b05598eff3a0e'
-    oldFile: !uuid '710c2dbbb141d4b49eb164c15afeab182635cadf'
-  /Temp-images/bb2.jpg:
-    newFile: !uuid '3499a51e2dc986672610268a1c9aff978633f00e'
-    oldFile: null
-gitCommitId: !uuid 'f0462c5d07202ceb2704ce1e1f02e205c7b5f5a1'
+  /jingli.html:
+    newFile: !uuid '33a0006832ded539fa9215cd82829153b29c6d4f'
+    oldFile: !uuid 'cf957769fbe6fc96871a5a788939cb331aabfd8b'
+gitCommitId: !uuid 'aae295b736b63ca1a54b1aa5eef1a000bd28838f'
 renames: {
   }
-revisionId: 70
+revisionId: 71
