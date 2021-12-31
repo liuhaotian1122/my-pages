@@ -2,22 +2,13 @@
 branches: {
   }
 fileChange:
-  /images:
-    newFile: !uuid 'c3875bbc8b0dc94828c43de89f16e4db1690656a'
-    oldFile: !uuid '353ba1b4edbc94ede82ced51e0fba8e0aef1e091'
-  /images/w1.jpg:
-    newFile: !uuid 'a0b33e77adb0680dd0649f7bfc5cf5bb54a017b7'
-    oldFile: null
-  /images/w2.jpg:
-    newFile: !uuid 'b8479da123e2dbb13f4cb5e5a0d80a07248f0284'
-    oldFile: null
-  /images/w3.jpg:
-    newFile: !uuid 'a7b5ed8ec511348d18e5c6b819bd0ef199084efc'
-    oldFile: null
-  /images/w4.jpg:
-    newFile: !uuid '7d1ec183752d3b15f798c0dbc418cee9d7bdef3e'
-    oldFile: null
-gitCommitId: !uuid '3d95bf684b0383a82a8d89117bad5e8226f901d3'
+  /css:
+    newFile: !uuid '1e322ab113e4a4bb4688020dd9ab85488da8437d'
+    oldFile: !uuid 'b2d92633f1e57670fd1e7fb5a5f9159b64bbdae3'
+  /css/public.css:
+    newFile: !uuid '03930bb881e3001f4923ee41b2584e6923d7cad5'
+    oldFile: !uuid '3f3fa95cdfd4c5c8bbb7a986b9f582b0ca2d4692'
+gitCommitId: !uuid 'eb35ebeef36e5be360de5357cd78098d9392f79b'
 renames: {
   }
-revisionId: 72
+revisionId: 73
