@@ -3,12 +3,12 @@ branches: {
   }
 fileChange:
   /images:
-    newFile: !uuid '0e5018ec1cf19055a99f0a38c56c540a6a45edfc'
-    oldFile: !uuid '08a1173655efc47fe4c681f9c48a6354c163b05e'
+    newFile: !uuid '353ba1b4edbc94ede82ced51e0fba8e0aef1e091'
+    oldFile: !uuid '0e5018ec1cf19055a99f0a38c56c540a6a45edfc'
   /images/zlbg.png:
-    newFile: null
-    oldFile: !uuid 'cc8b63f8c981ee7dbf7b51eebfffa964831cf536'
-gitCommitId: !uuid '1983cc54c2f3ae26e904ed485a5bb0137dda7190'
+    newFile: !uuid 'f89da9621c8ebc1e7213f8df48eb586ca4974140'
+    oldFile: null
+gitCommitId: !uuid '316c253f24bc302be0f7b1e102b361c6d3d5d4ed'
 renames: {
   }
-revisionId: 63
+revisionId: 64
