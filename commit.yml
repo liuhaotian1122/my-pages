@@ -2,13 +2,10 @@
 branches: {
   }
 fileChange:
-  /css:
-    newFile: !uuid '1e322ab113e4a4bb4688020dd9ab85488da8437d'
-    oldFile: !uuid 'b2d92633f1e57670fd1e7fb5a5f9159b64bbdae3'
-  /css/public.css:
-    newFile: !uuid '03930bb881e3001f4923ee41b2584e6923d7cad5'
-    oldFile: !uuid '3f3fa95cdfd4c5c8bbb7a986b9f582b0ca2d4692'
-gitCommitId: !uuid 'eb35ebeef36e5be360de5357cd78098d9392f79b'
+  /boke.html:
+    newFile: !uuid '41b7dd9934a86bd3c4f68a6a85eee1a9db31b804'
+    oldFile: !uuid '15d2a9e44903b91e26d44b1e13a59dbd1f38e573'
+gitCommitId: !uuid '5d03c7a7aa7afce181bf1caa0d1711db7d4c8d39'
 renames: {
   }
-revisionId: 73
+revisionId: 74
