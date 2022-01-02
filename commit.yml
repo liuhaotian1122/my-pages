@@ -2,10 +2,10 @@
 branches: {
   }
 fileChange:
-  /boke.html:
-    newFile: !uuid '52421f349437594e3789cd2793f108bf3ca6fb0a'
-    oldFile: !uuid '06354a9ec2d61ebc475bbe9ef8fe68194421f2e5'
-gitCommitId: !uuid 'f47655d2a0c2bab4f457ad6969eae5c4d1196ccc'
+  /index.html:
+    newFile: !uuid '7980efb2ab0d755caa644695a39b0f233f30bef5'
+    oldFile: !uuid 'eb387055d37d0bf5d4cfb34a674c15da6ec30270'
+gitCommitId: !uuid 'fdc9e0fed4068f235035b549ad374dfbb69d177c'
 renames: {
   }
-revisionId: 77
+revisionId: 78
