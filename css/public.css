@@ -30,6 +30,11 @@ html,body{
     border-left: 6px solid #ffeb3b;
   }
 
+#live2dcanvas {
+    border: 0 !important;
+}
+
+
 
 .padding-none{
     padding: 0px;
