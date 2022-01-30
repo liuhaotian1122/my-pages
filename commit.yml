@@ -2,22 +2,10 @@
 branches: {
   }
 fileChange:
-  /Temp-images:
-    newFile: !uuid 'c11ab632d2a892883e26e38cbd326709f8e5b30b'
-    oldFile: !uuid 'd29b499a3afcec506018b7609e4d58ebf745c875'
-  /Temp-images/bb1.jpg:
-    newFile: !uuid '9c0a0a857c69262b90573da2ddb162487fd17233'
+  /迈克尔杰克逊.html:
+    newFile: !uuid 'af7a3ddb9973aa42013515e0235a63ad54df01d3'
     oldFile: null
-  /Temp-images/bb2.jpg:
-    newFile: !uuid '3ee8e72ccef354cfb77f1ba687d153a5f057df81'
-    oldFile: null
-  /Temp-images/bb3.jpg:
-    newFile: !uuid '7c8cd3b71de3edadeae09e1766144c54b759de7e'
-    oldFile: null
-  /Temp-images/bb4.jpg:
-    newFile: !uuid '23af32765e719c59d2beee5bd582df36bf6ee322'
-    oldFile: null
-gitCommitId: !uuid 'ca5079b920b30a04108d8dbc14e954e4f323c4ec'
+gitCommitId: !uuid '67120d31bd6f5a4135c623b8c25e33525944e41f'
 renames: {
   }
-revisionId: 87
+revisionId: 88
