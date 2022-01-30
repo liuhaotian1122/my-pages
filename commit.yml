@@ -2,10 +2,28 @@
 branches: {
   }
 fileChange:
-  /迈克尔杰克逊.html:
-    newFile: !uuid 'af7a3ddb9973aa42013515e0235a63ad54df01d3'
+  /images:
+    newFile: !uuid 'bffaa1b03048c46de9caa1f7770bc4e1d9e1617d'
+    oldFile: !uuid 'fb951d71998093e8b3e4977cc3f3851996809cdc'
+  /images/blog:
+    newFile: !uuid '81d9e6afce0b93be0acf939ff0e38ae12fa2eb17'
+    oldFile: !uuid '410437352d3d922a51725907432c620466a9f7b6'
+  /images/blog/mk.jpg:
+    newFile: !uuid 'b1ee21cdbd63f931cbdcdf1e95419116441272fe'
     oldFile: null
-gitCommitId: !uuid '67120d31bd6f5a4135c623b8c25e33525944e41f'
+  /images/blog/mk1.jpg:
+    newFile: !uuid 'b93fbcafba3adb9f4f8a9a1ca9d07071c6c2217e'
+    oldFile: null
+  /images/blog/mk2.jpg:
+    newFile: !uuid '28744a20592b7245ae06e64c9ebaf564649b5d9c'
+    oldFile: null
+  /images/blog/mk3.jpg:
+    newFile: !uuid '296db3dc8c3d9c2191043b10d1fdef9bb089cb92'
+    oldFile: null
+  /images/blog/mk4.jpg:
+    newFile: !uuid 'de8510aefc33bc0aec6eb008b979f178b39e2b8c'
+    oldFile: null
+gitCommitId: !uuid '07135dcefc397e0550744b095d3cd7e214888ab3'
 renames: {
   }
-revisionId: 88
+revisionId: 89
