@@ -3,9 +3,9 @@ branches: {
   }
 fileChange:
   /迈克尔杰克逊.html:
-    newFile: !uuid '1d96b4014753408ea5b559bb5b71a7da0166207b'
-    oldFile: !uuid 'af7a3ddb9973aa42013515e0235a63ad54df01d3'
-gitCommitId: !uuid '286fe108d07a6ae0097b9b06d366fd2efbec54eb'
+    newFile: null
+    oldFile: !uuid '1d96b4014753408ea5b559bb5b71a7da0166207b'
+gitCommitId: !uuid '75efbd82481bdebfa59d7f3be78a7db9c5320059'
 renames: {
   }
-revisionId: 90
+revisionId: 91
