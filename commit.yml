@@ -2,10 +2,16 @@
 branches: {
   }
 fileChange:
-  /game.html:
-    newFile: !uuid 'b83ba9662d8980ecf20105dd12c75a7cd4da959f'
-    oldFile: !uuid '72e99e22c9685dbb1781f099d103fe348a2fc476'
-gitCommitId: !uuid '2a4028af8ed77b54be5be58f6996f81d5bdee57b'
+  /Temp-images:
+    newFile: !uuid 'dd2066ba0fe27f8a8827974d926e9a4930d774e9'
+    oldFile: !uuid 'c11ab632d2a892883e26e38cbd326709f8e5b30b'
+  /Temp-images/game:
+    newFile: !uuid '34b64a19ed60852bc0fc1e4cf10069760459a927'
+    oldFile: !uuid 'dc38b0d8a04f29fa524758fc6c3a7ec9163bc419'
+  /Temp-images/game/poki.jpg:
+    newFile: null
+    oldFile: !uuid '899741fdfb92a6d5ff4ec936c5a71e8177b6d50b'
+gitCommitId: !uuid 'c16335764d304a04a78b69c03f884854930c90af'
 renames: {
   }
-revisionId: 93
+revisionId: 94
