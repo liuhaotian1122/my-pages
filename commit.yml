@@ -2,34 +2,13 @@
 branches: {
   }
 fileChange:
-  /images:
-    newFile: !uuid 'fb951d71998093e8b3e4977cc3f3851996809cdc'
-    oldFile: !uuid 'c3875bbc8b0dc94828c43de89f16e4db1690656a'
-  /images/n1.jpg:
-    newFile: !uuid 'e4450a42952435b283aa921aa892a691e303d9d0'
-    oldFile: null
-  /images/n2.jpg:
-    newFile: !uuid '862239a7759f0c419ca1264d8ff823ae9f3a5d10'
-    oldFile: null
-  /images/n3.jpg:
-    newFile: !uuid 'f5242bfbc7625c29da22704be13dd23698bca538'
-    oldFile: null
-  /images/n4.jpg:
-    newFile: !uuid 'b57c1811d11e20b788bcc9be19b68aa563bf16eb'
-    oldFile: null
-  /images/w10.jpg:
-    newFile: !uuid 'f6b1c043674f73243b1a1c646f75141430586642'
-    oldFile: null
-  /images/w7.jpg:
-    newFile: !uuid '08d2b5d19ec1c5c2ca57472b5876bf35e6b2e535'
-    oldFile: null
-  /images/w8.jpg:
-    newFile: !uuid '3d813400582a96ce0c9d3a35e4adc9e9e1e76ee4'
-    oldFile: null
-  /images/w9.jpg:
-    newFile: !uuid 'f517f36735ef2c59cb8d846cf9705afde7f13f3d'
-    oldFile: null
-gitCommitId: !uuid '00b13358b040417964c751aa830c2483a5b73b01'
+  /Temp-images:
+    newFile: !uuid '1546c3497136078674cfa98d9aeac14cbf2291c7'
+    oldFile: !uuid 'd9d34b9878c0c6d08330653e851b05598eff3a0e'
+  /Temp-images/bb1.jpg:
+    newFile: null
+    oldFile: !uuid '986c64ac175503a29bade2285a2a28bbd1574662'
+gitCommitId: !uuid '7f55906978f41004bfdedea8c9cded86711e8257'
 renames: {
   }
-revisionId: 82
+revisionId: 83
