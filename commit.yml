@@ -2,10 +2,10 @@
 branches: {
   }
 fileChange:
-  /index.html:
-    newFile: !uuid 'b6e639a5d9f83f4f186f8909a22bf412b94713ad'
-    oldFile: !uuid '7980efb2ab0d755caa644695a39b0f233f30bef5'
-gitCommitId: !uuid '2a18ee5fd9060a74ee2d5543d41b52ffa9112a24'
+  /jingli.html:
+    newFile: !uuid '3d1d65b4f74adc0e5ed19456541fb85f095154e4'
+    oldFile: !uuid '33a0006832ded539fa9215cd82829153b29c6d4f'
+gitCommitId: !uuid '0a54972a046e49e9d40889b08dc7284afc651026'
 renames: {
   }
-revisionId: 79
+revisionId: 80
