@@ -3,15 +3,15 @@ branches: {
   }
 fileChange:
   /Temp-images:
-    newFile: !uuid 'dd2066ba0fe27f8a8827974d926e9a4930d774e9'
-    oldFile: !uuid 'c11ab632d2a892883e26e38cbd326709f8e5b30b'
+    newFile: !uuid 'a9d6f278fe0a1b658dcfc38828689837ca4b2073'
+    oldFile: !uuid 'dd2066ba0fe27f8a8827974d926e9a4930d774e9'
   /Temp-images/game:
-    newFile: !uuid '34b64a19ed60852bc0fc1e4cf10069760459a927'
-    oldFile: !uuid 'dc38b0d8a04f29fa524758fc6c3a7ec9163bc419'
-  /Temp-images/game/poki.jpg:
+    newFile: !uuid '124a7729649d208c8e127df579178a18d9d21de8'
+    oldFile: !uuid '34b64a19ed60852bc0fc1e4cf10069760459a927'
+  /Temp-images/game/dianshi.jpg:
     newFile: null
-    oldFile: !uuid '899741fdfb92a6d5ff4ec936c5a71e8177b6d50b'
-gitCommitId: !uuid 'c16335764d304a04a78b69c03f884854930c90af'
+    oldFile: !uuid '3222a4ddc3b508fe008f3cae9f5c8b7105b227e7'
+gitCommitId: !uuid '3b3283541cc4fb4980c94175b5cbe618ec5e9c83'
 renames: {
   }
-revisionId: 94
+revisionId: 95
