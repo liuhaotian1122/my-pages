@@ -2,31 +2,10 @@
 branches: {
   }
 fileChange:
-  /Temp-images:
-    newFile: !uuid '476edb737180989065967e02bf183a7002a8cb81'
-    oldFile: !uuid 'a9d6f278fe0a1b658dcfc38828689837ca4b2073'
-  /Temp-images/game:
-    newFile: !uuid '6502e2b455a0815f12d39d12099fa6446370f207'
-    oldFile: !uuid '124a7729649d208c8e127df579178a18d9d21de8'
-  /Temp-images/game/changp.jpg:
-    newFile: !uuid '55ed671f39a7cabddb25ff655aa53251dabee02a'
-    oldFile: null
-  /Temp-images/game/dianshi.jpg:
-    newFile: !uuid 'cc4e28ba188a13c1e8912f7a0bda512746ecc76a'
-    oldFile: null
-  /Temp-images/game/hdl.jpg:
-    newFile: !uuid 'f4a42912804121768520e4d49ce3af7e722c662e'
-    oldFile: null
-  /Temp-images/game/poki.jpg:
-    newFile: !uuid '50a2e5b6cb9aa2a0ec32b2f88ea320e836041f1c'
-    oldFile: null
-  /Temp-images/game/xwz.jpg:
-    newFile: !uuid 'ee01c30a9d5bcf61a3b0d875d81b1ed3ada18fdc'
-    oldFile: null
-  /Temp-images/game/zhsl.jpg:
-    newFile: !uuid 'b14d5e57692e07389877b406031ce7ef188e4b9e'
-    oldFile: null
-gitCommitId: !uuid '3f10c5d6186c93ca0bf3de3b1d9e3d4dae700b9e'
+  /index.html:
+    newFile: !uuid '8c898cfa2812be1067ee5fe6aef1e7c768a01ad3'
+    oldFile: !uuid 'b6e639a5d9f83f4f186f8909a22bf412b94713ad'
+gitCommitId: !uuid '039c502bef803191bec0d09514d9f383c696adfc'
 renames: {
   }
-revisionId: 96
+revisionId: 97
