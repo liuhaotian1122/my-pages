@@ -24,6 +24,28 @@
     margin:0 auto;
 }
 
+.first{
+	font-size: larger;
+	color: #FF7E00;
+	text-align: center;
+}
+
+.two{
+	font-size: large;
+	color: #B80734;
+	text-align: left;
+}
+
+
+.three{
+	color: #282c35;
+	text-align: right;
+}
+
+
+
+
+
 .heart {
     position:absolute;
     z-index:2;
