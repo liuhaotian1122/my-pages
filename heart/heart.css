@@ -25,19 +25,20 @@
 }
 
 .first{
-	font-size: larger;
-	color: #FF7E00;
+	font-size: 1.875rem;
+	color: #d5093c;
 	text-align: center;
 }
 
 .two{
-	font-size: large;
+	font-size: larger;
 	color: #B80734;
 	text-align: left;
 }
 
 
 .three{
+	font-size: large;
 	color: #282c35;
 	text-align: right;
 }
