@@ -307,6 +307,911 @@
                     </li>
                 </ul>
         </div>
+        <script type="text/javascript">
+            (function () {
+                window.TypechoComment = {
+                    dom : function (id) {
+                        return document.getElementById(id);
+                    },
+
+                    create : function (tag, attr) {
+                        var el = document.createElement(tag);
+
+                        for (var key in attr) {
+                            el.setAttribute(key, attr[key]);
+                        }
+
+                        return el;
+                    },
+
+                    reply : function (cid, coid) {
+                        var comment = this.dom(cid), parent = comment.parentNode,
+                            response = this.dom('respond-page-2051'), input = this.dom('comment-parent'),
+                            form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
+                            textarea = response.getElementsByTagName('textarea')[0];
+
+                        if (null == input) {
+                            input = this.create('input', {
+                                'type' : 'hidden',
+                                'name' : 'parent',
+                                'id'   : 'comment-parent'
+                            });
+
+                            form.appendChild(input);
+                        }
+
+                        input.setAttribute('value', coid);
+
+                        if (null == this.dom('comment-form-place-holder')) {
+                            var holder = this.create('div', {
+                                'id' : 'comment-form-place-holder'
+                            });
+
+                            response.parentNode.insertBefore(holder, response);
+                        }
+
+                        comment.appendChild(response);
+                        this.dom('cancel-comment-reply-link').style.display = '';
+
+                        if (null != textarea && 'text' == textarea.name) {
+                            textarea.focus();
+                        }
+
+                        return false;
+                    },
+
+                    cancelReply : function () {
+                        var response = this.dom('respond-page-2051'),
+                            holder = this.dom('comment-form-place-holder'), input = this.dom('comment-parent');
+
+                        if (null != input) {
+                            input.parentNode.removeChild(input);
+                        }
+
+                        if (null == holder) {
+                            return true;
+                        }
+
+                        this.dom('cancel-comment-reply-link').style.display = 'none';
+                        holder.parentNode.insertBefore(response, holder);
+                        return false;
+                    }
+                };
+            })();
+        </script>
+        <!-- cPlayer Start -->
+        <script>var cPlayers = [];var cPlayerOptions = [];</script>
+        <!-- cPlayer End --><script>
+        function detectIE() {
+            var n = window.navigator.userAgent,
+                e = n.indexOf("MSIE ");
+            if (e > 0) {
+                return parseInt(n.substring(e + 5, n.indexOf(".", e)), 10)
+            }
+            if (n.indexOf("Trident/") > 0) {
+                var r = n.indexOf("rv:");
+                return parseInt(n.substring(r + 3, n.indexOf(".", r)), 10)
+            }
+            var i = n.indexOf("Edge/");
+            return i > 0 && parseInt(n.substring(i + 5, n.indexOf(".", i)), 10)
+        };
+        detectIE() && (alert('当前站点不支持IE浏览器或您开启了兼容模式，请使用其他浏览器访问或关闭兼容模式。'), (location.href = 'https://www.baidu.com'))
+        localStorage.getItem("data-night") && document.querySelector("html").setAttribute("data-night", "night");
+    </script>
+        <style>
+            @font-face {
+                font-family: 'Joe Font';
+                font-weight: 400;
+                font-style: normal;
+                font-display: swap;
+                src: url('https://static.4ce.cn/gh/uxiaohan/GitImgTypecho/usr/uploads/2021/05/www.vvhan.com-HarmonyOS_Sans_SC_Medium.woff2');
+                src: url('https://static.4ce.cn/gh/uxiaohan/GitImgTypecho/usr/uploads/2021/05/www.vvhan.com-HarmonyOS_Sans_SC_Medium.woff2') format('woff2');
+            }
+
+            body {
+                font-family: 'Joe Font';
+            }
+
+            body::before {
+                background: #f5f5f5;
+                background-position: center 0;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+
+            body { --theme: #9999FF; }</style><link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.mode.min.css">
+        <link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.normalize.min.css">
+        <link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.global.min.css?v=1.0.0">
+        <link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.responsive.min.css">
+        <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/qmsg/qmsg.css">
+        <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+        <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css" />
+        <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+        <script src="https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/scroll/joe.scroll.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.0/lazysizes.min.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/sketchpad/joe.sketchpad.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/assets/js/joe.extend.min.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/qmsg/qmsg.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.2.3/plugin/3dtag/3dtag.min.js"></script>
+        <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/smooth/joe.smooth.js" async></script>
+        <script src="https://www.vvhan.com/usr/themes/Joe/assets/js/joe.global.min.js?v=7.2.9"></script>
+        <script src="https://www.vvhan.com/usr/themes/Joe/assets/js/joe.short.min.js?v=7.2.9"></script>
+        <style>
+            iframe {
+                border: rgba(0, 0, 0, 0.3) solid 1px;
+            }
+        </style>
+        <link rel="stylesheet" href="https://cdn.staticfile.org/element-ui/2.15.1/theme-chalk/index.min.css">
+        <script src="https://fastly.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+        <script src="https://cdn.staticfile.org/axios/0.26.1/axios.min.js"></script>
+        <script src="https://cdn.staticfile.org/element-ui/2.15.1/index.min.js"></script>
+        <style>
+            #main a {
+                color: #000;
+                text-decoration: none;
+            }
+
+            #main {
+                background-color: #f9f9f9;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+                "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            }
+
+            body #main {
+                margin: 0 auto 46px;
+                width: 95%;
+                max-width: 1350px;
+            }
+
+            body #main header {
+                z-index: 9;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 36px;
+                height: 56px;
+                width: 95%;
+                max-width: 1350px;
+                position: fixed;
+                top: 0;
+                background-color: #f6f6f6;
+            }
+
+            body #main header .logo {
+                height: 34px;
+            }
+
+            body #main header .logo h1 {
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+            }
+
+            body #main header .logo h1 img {
+                margin-right: 6px;
+                display: block;
+                border-radius: 50%;
+                width: 28px;
+                height: 28px;
+            }
+
+            body #main header .logo h1 a {
+                display: block;
+                line-height: 34px;
+            }
+
+            body #main header .link h2 {
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 34px;
+            }
+
+            body #main .title {
+                box-sizing: border-box;
+                text-align: center;
+                line-height: 72px;
+                margin-top: 58px;
+                transition: 0.5s;
+                user-select: none;
+                background-color: #fff;
+                color: #3b3b3b;
+                border-radius: 10px;
+                box-shadow: 0px 0px 20px -5px rgb(158 158 158 / 20%);
+            }
+
+            body #main .title:hover {
+                color: #fff;
+                background-color: #0d0e53;
+                animation: uk-text-shadow-glitch 0.65s cubic-bezier(1, -1.91, 0, 2.79) 0s infinite normal both running;
+            }
+
+            body #main .contant {
+                margin-top: 36px;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                grid-row-gap: 16px;
+                grid-column-gap: 16px;
+            }
+
+            body #main .contant .ref {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: 16px;
+                overflow: hidden;
+            }
+
+            body #main .contant .ref img {
+                height: 15px;
+                width: 15px;
+                cursor: pointer;
+            }
+
+            body #main .contant .ref img:hover {
+                animation: refImg 2s linear infinite;
+            }
+
+            body #main .contant .box {
+                position: relative;
+                box-sizing: border-box;
+                padding: 12px 20px;
+                border-radius: 6px;
+                background-color: #fff;
+                box-shadow: 0px 0px 20px -5px rgb(158 158 158 / 20%);
+            }
+
+            body #main .contant .box .refd {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(214, 211, 211, 0.5);
+                z-index: 1;
+            }
+
+            body #main .contant .box .refd .refround {
+                margin: auto;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                border: 4px solid #000;
+                border-left-color: transparent;
+                animation: refdroundi 1s linear infinite;
+            }
+
+            body #main .contant .box .div_s {
+                font-size: 16px;
+            }
+
+            body #main .contant .box .div_s .div_s-title {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 12px;
+                color: #282a2d;
+            }
+
+            body #main .contant .box .div_s .div_s-title .l {
+                display: flex;
+                align-items: center;
+            }
+
+            body #main .contant .box .div_s .div_s-title .l img {
+                height: 16px;
+                padding-right: 6px;
+            }
+
+            body #main .contant .box .div_s .div_s-title .l h3 {
+                font-size: 16px;
+            }
+
+            body #main .contant .box .div_s .div_s-title .r {
+                display: flex;
+                align-items: center;
+            }
+
+            body #main .contant .box .div_s .div_s-title .r span {
+                font-size: 13px;
+            }
+
+            body #main .contant .box .div_s .div_s-con::-webkit-scrollbar {
+                width: 5px;
+            }
+
+            body #main .contant .box .div_s .div_s-con::-webkit-scrollbar-thumb {
+                background-color: #c0c0c0;
+                border-radius: 6px;
+            }
+
+            body #main .contant .box .div_s .div_s-con::-webkit-scrollbar-thumb:hover {
+                background-color: red;
+                border-radius: 6px;
+            }
+
+            body #main .contant .box .div_s .div_s-con::-webkit-scrollbar-track {
+                box-shadow: inset 0 0 0 #c0c0c0;
+            }
+
+            body #main .contant .box .div_s .div_s-con {
+                height: 200px;
+                font-size: 14px;
+                font-weight: normal;
+                color: #282a2d;
+                overflow-y: auto;
+            }
+
+            body #main .contant .box .div_s .div_s-con li {
+                display: flex;
+                min-height: 21px;
+                margin-bottom: 10px;
+                word-wrap: break-word;
+                line-height: 1.5;
+            }
+
+            body #main .contant .box .div_s .div_s-con li>span {
+                display: inline-block;
+                margin-right: 10px;
+                width: 18px;
+                height: 18px;
+                border-radius: 3px;
+                background-color: rgb(88, 111, 142);
+                color: #fff;
+                font-size: 12px;
+                line-height: 18px;
+                text-align: center;
+                overflow: hidden;
+            }
+
+            body #main .contant .box .div_s .div_s-con li:nth-of-type(1)>span {
+                background-color: rgb(255, 80, 34);
+            }
+
+            body #main .contant .box .div_s .div_s-con li:nth-of-type(2)>span {
+                background-color: rgb(255, 144, 38);
+            }
+
+            body #main .contant .box .div_s .div_s-con li:nth-of-type(3)>span {
+                background-color: rgb(246, 192, 50);
+            }
+
+            body #main .contant .box .div_s .div_s-con li>a {
+                flex: 1;
+                display: flex;
+                justify-content: space-between;
+                margin-top: -2.5px;
+            }
+
+            body #main .contant .box .div_s .div_s-con li>a>span:nth-of-type(1) {
+                flex: 1;
+                white-space: normal;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                -webkit-line-clamp: 2;
+            }
+
+            body #main .contant .box .div_s .div_s-con li>a>span:nth-of-type(2) {
+                text-align: right;
+                white-space: nowrap;
+                margin-left: 8px;
+                color: #6c757d;
+            }
+
+            body #main footer {
+                margin: 36px auto 0;
+                width: 100%;
+                text-align: center;
+                color: #000;
+                font-size: 14px;
+                line-height: 28px;
+            }
+
+            body #main footer a {
+                color: #409eff;
+            }
+
+            @media screen and (max-width: 990px) {
+                body #main .contant {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+
+            @media screen and (max-width: 680px) {
+                body #main .contant {
+                    grid-template-columns: repeat(1, 1fr);
+                }
+            }
+
+            @keyframes uk-text-shadow-glitch {
+                0% {
+                    text-shadow: none;
+                }
+
+                25% {
+                    text-shadow: -2px -2px 0 #ff0048, 2px 2px 0 #3234ff;
+                }
+
+                50% {
+                    text-shadow: 2px -2px 0 #ff0048, -2px 2px 0 #3234ff;
+                }
+
+                75% {
+                    text-shadow: -2px 2px 0 #ff0048, 2px -2px 0 #3234ff;
+                }
+
+                100% {
+                    text-shadow: 2px 2px 0 #ff0048, -2px -2px 0 #3234ff;
+                }
+            }
+
+            @keyframes refImg {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                25% {
+                    transform: rotate(90deg);
+                }
+
+                50% {
+                    transform: rotate(180deg);
+                }
+
+                75% {
+                    transform: rotate(270deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @keyframes refdroundi {
+                0% {
+                    transform: translateY(calc(144px - 50%)) rotate(0deg);
+                }
+
+                25% {
+                    transform: translateY(calc(144px - 50%)) rotate(90deg);
+                }
+
+                50% {
+                    transform: translateY(calc(144px - 50%)) rotate(180deg);
+                }
+
+                75% {
+                    transform: translateY(calc(144px - 50%)) rotate(270deg);
+                }
+
+                100% {
+                    transform: translateY(calc(144px - 50%)) rotate(360deg);
+                }
+            }
+        </style>
+        </head>
+
+        <body>
+        <section id="main">
+            <div class="title">
+
+                <h2>今日热榜</h2>
+                </div>
+                <div class="contant">
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['baiduRD']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/baidu.png">
+                                    <h3>百度热点</h3>
+                                </div>
+                                <div class="r"><span>指数</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['baiduRD']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('baiduRD')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['huPu']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/hupu.png">
+                                    <h3>虎扑</h3>
+                                </div>
+                                <div class="r">
+                                    <span>步行街热帖</span>
+                                </div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['huPu']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('huPu')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['36Ke']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/36kr.png">
+                                    <h3>36氪</h3>
+                                </div>
+                                <div class="r"><span>24小时热榜</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['36Ke']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('36Ke')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['bili']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/bilibili.png">
+                                    <h3>哔哩哔哩</h3>
+                                </div>
+                                <div class="r"><span>全站日榜</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['bili']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('bili')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['ssPai']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/sspai.png">
+                                    <h3>少数派</h3>
+                                </div>
+                                <div class="r"><span>热门文章</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['ssPai']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('ssPai')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['history']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/lssdjt.png">
+                                    <h3>历史上的今天</h3>
+                                </div>
+                                <div class="r"><span></span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['history']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('history')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['wbHot']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/weibo.png">
+                                    <h3>微博</h3>
+                                </div>
+                                <div class="r"><span>热搜榜</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['wbHot']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('wbHot')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['zhihuHot']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/zhihu.png">
+                                    <h3>知乎热榜</h3>
+                                </div>
+                                <div class="r"><span>热度</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['zhihuHot']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('zhihuHot')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['douyinHot']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/douyin.png">
+                                    <h3>抖音</h3>
+                                </div>
+                                <div class="r"><span>热点榜</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['douyinHot']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('douyinHot')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['itInfo']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/ithome.png">
+                                    <h3>IT资讯热榜</h3>
+                                </div>
+                                <div class="r"><span></span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['itInfo']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('itInfo')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['itNews']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/ithome.png">
+                                    <h3>IT资讯最新</h3>
+                                </div>
+                                <div class="r"><span></span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['itNews']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('itNews')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['baiduRY']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/baidu.png">
+                                    <h3>百度贴吧</h3>
+                                </div>
+                                <div class="r"><span>热议榜</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['baiduRY']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('baiduRY')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['douban']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/douban.png">
+                                    <h3>豆瓣小组</h3>
+                                </div>
+                                <div class="r"><span>讨论精选</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['douban']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+            </section>
+            <script src="https://hot.vvhan.com/static/js/main.js"></script>
+            <aside class="joe_aside">
+                <!--自定义侧边栏模块-->
+                <section class="joe_aside__item"><!--谷歌侧边栏广告开始-->
+                    <section class="joe_aside__item" style="height:209px !important;"><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3037456000720711" crossorigin="anonymous"></script><!-- 博客侧边栏横向广告 --><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-3037456000720711" data-ad-slot="1672856933" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></section>
+                    <!--谷歌侧边栏广告结束--></section>
+            </aside>    </div>
+            <footer class="joe_footer"><script>
+                var _hmt = _hmt || [];
+                (function() {
+                    var hm = document.createElement("script");
+                    hm.src = "https://hm.baidu.com/hm.js?c4070f42e02db36fca392285638872da";
+                    var s = document.getElementsByTagName("script")[0];
+                    s.parentNode.insertBefore(hm, s);
+                })();
+            </script>
+                <script data-ad-client="ca-pub-3037456000720711" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>        </div>
+    </div>
+    </footer>
+
+    <div class="joe_action">
+        <div class="joe_action_item scroll">
+            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="25" height="25">
+                <path d="M725.902 498.916c18.205-251.45-93.298-410.738-205.369-475.592l-6.257-3.982-6.258 3.414c-111.502 64.853-224.711 224.142-204.8 475.59-55.751 53.476-80.214 116.623-80.214 204.8v15.36l179.2-35.27c11.378 40.39 58.596 69.973 113.21 69.973 54.613 0 101.262-29.582 112.64-68.836l180.337 36.41v-15.36c-.569-89.885-25.031-153.6-82.489-206.507zM571.733 392.533c-33.564 31.29-87.04 28.445-118.329-5.12s-28.444-87.04 5.12-117.76c33.565-31.289 87.04-28.444 118.33 5.12s28.444 86.471-5.12 117.76zm-56.32 368.64c-35.84 0-64.284 29.014-64.284 64.285 0 35.84 54.044 182.613 64.284 182.613s64.285-146.773 64.285-182.613c0-35.271-29.014-64.285-64.285-64.285z" />
+            </svg>
+        </div>
+        <div class="joe_action_item mode">
+            <svg class="icon-1" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="25" height="25">
+                <path d="M587.264 104.96c33.28 57.856 52.224 124.928 52.224 196.608 0 218.112-176.128 394.752-393.728 394.752-29.696 0-58.368-3.584-86.528-9.728C223.744 832.512 369.152 934.4 538.624 934.4c229.376 0 414.72-186.368 414.72-416.256 1.024-212.992-159.744-389.12-366.08-413.184z" />
+                <path d="M340.48 567.808l-23.552-70.144-70.144-23.552 70.144-23.552 23.552-70.144 23.552 70.144 70.144 23.552-70.144 23.552-23.552 70.144zM168.96 361.472l-30.208-91.136-91.648-30.208 91.136-30.208 30.72-91.648 30.208 91.136 91.136 30.208-91.136 30.208-30.208 91.648z" />
+            </svg>
+            <svg class="icon-2" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="25" height="25">
+                <path d="M234.24 512a277.76 277.76 0 1 0 555.52 0 277.76 277.76 0 1 0-555.52 0zM512 187.733a42.667 42.667 0 0 1-42.667-42.666v-102.4a42.667 42.667 0 0 1 85.334 0v102.826A42.667 42.667 0 0 1 512 187.733zm-258.987 107.52a42.667 42.667 0 0 1-29.866-12.373l-72.96-73.387a42.667 42.667 0 0 1 59.306-59.306l73.387 72.96a42.667 42.667 0 0 1 0 59.733 42.667 42.667 0 0 1-29.867 12.373zm-107.52 259.414H42.667a42.667 42.667 0 0 1 0-85.334h102.826a42.667 42.667 0 0 1 0 85.334zm34.134 331.946a42.667 42.667 0 0 1-29.44-72.106l72.96-73.387a42.667 42.667 0 0 1 59.733 59.733l-73.387 73.387a42.667 42.667 0 0 1-29.866 12.373zM512 1024a42.667 42.667 0 0 1-42.667-42.667V878.507a42.667 42.667 0 0 1 85.334 0v102.826A42.667 42.667 0 0 1 512 1024zm332.373-137.387a42.667 42.667 0 0 1-29.866-12.373l-73.387-73.387a42.667 42.667 0 0 1 0-59.733 42.667 42.667 0 0 1 59.733 0l72.96 73.387a42.667 42.667 0 0 1-29.44 72.106zm136.96-331.946H878.507a42.667 42.667 0 1 1 0-85.334h102.826a42.667 42.667 0 0 1 0 85.334zM770.987 295.253a42.667 42.667 0 0 1-29.867-12.373 42.667 42.667 0 0 1 0-59.733l73.387-72.96a42.667 42.667 0 1 1 59.306 59.306l-72.96 73.387a42.667 42.667 0 0 1-29.866 12.373z" />
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        console.log("%c页面加载耗时：31ms | Theme By Joe", "color:#fff; background: linear-gradient(270deg, #986fee, #8695e6, #68b7dd, #18d7d3); padding: 8px 15px; border-radius: 0 15px 0 15px");
+    </script>
+
+
+    <!-- cPlayer Start -->
+    <script async>
+        "use strict";
+        (function(){
+            var cp = function(){
+                var len = cPlayerOptions.length;
+                for(var i=0;i<len;i++){
+                    var element = document.getElementById('player' + cPlayerOptions[i]['id'])
+                    while (element.hasChildNodes()) {
+                        element.removeChild(element.firstChild);
+                    };
+                    cPlayers[i] = new cPlayer({
+                        element: element,
+                        list: cPlayerOptions[i]['list'],
+                    });
+                    if(cPlayerOptions[i]['autoplay'] === 'true') cPlayers[i].music.autoplay = true;
+                };
+                cPlayers = [];cPlayerOptions = [];
+            };
+            var script = document.createElement('script');
+            script.type = "text/javascript";
+            script.src = "https://www.vvhan.com/usr/plugins/cPlayer/assets/dist/cplayer.js?v=1.2.13";
+            script.async = true;
+            script.crossOrigin = "anonymous";
+            script.integrity = "sha256-DfhgVlsA1ZGGnu67H8m4gS6sKim08dZwCO51NqiW54Q=";
+            if(script.readyState){  //IE
+                script.onreadystatechange = function(){
+                    if (script.readyState == "loaded" ||
+                        script.readyState == "complete"){
+                        script.onreadystatechange = null;
+                        cp();
+                    }
+                };
+            }else{  //Others
+                script.onload = function(){
+                    cp();
+                };
+            }
+            document.head.appendChild(script);
+        })();
+    </script>
+    <!-- cPlayer End -->  </div>
+</body>
         <ul class="am-gallery am-avg-sm-1
   am-avg-md-1 am-avg-lg-1 am-gallery-default" data-am-gallery="{ pureview: true }" >
             <li>
@@ -315,7 +1220,7 @@
 						
 						<h2>&nbsp;&nbsp;&nbsp;<script type="text/javascript" src="https://api.vvhan.com/api/ian?type=js"></script><script>vhan()</script>
                         </h2>
-						
+
 						</h3>
                         <div class="am-gallery-desc">
                             <div class="am-fr">宁夏银川</div>
