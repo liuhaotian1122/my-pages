@@ -2,13 +2,10 @@
 branches: {
   }
 fileChange:
-  /css:
-    newFile: !uuid 'e04c9f723a335f09b54ea6a4b2340737261a27ea'
-    oldFile: !uuid 'faf1d2fb389437b4fdac296d6b2d31bd88dc1fbc'
-  /css/public.css:
-    newFile: !uuid '0df3496d476dd50fbda09b2a0b394ebbebaa04d5'
-    oldFile: !uuid '7f189c2876ded3e3d48f07f8118e8661ae413269'
-gitCommitId: !uuid 'f3ac4fec32726afd4861ccf06e2d1dae5917815c'
+  /index.html:
+    newFile: !uuid 'ab43b973e113f85b74459fb2b895f6db0cd6c12d'
+    oldFile: !uuid '44b3315370330e2c417e367051671f51f9ddac1e'
+gitCommitId: !uuid '1aee54fe1f4de4e4a96d7fb67640c63f8a581a93'
 renames: {
   }
-revisionId: 132
+revisionId: 133
