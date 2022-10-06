@@ -2,10 +2,10 @@
 branches: {
   }
 fileChange:
-  /index.html:
-    newFile: !uuid 'ab43b973e113f85b74459fb2b895f6db0cd6c12d'
-    oldFile: !uuid '44b3315370330e2c417e367051671f51f9ddac1e'
-gitCommitId: !uuid '1aee54fe1f4de4e4a96d7fb67640c63f8a581a93'
+  /hotnews.html:
+    newFile: !uuid 'f7ef0484376f9b56bd81d60249356ef830b18079'
+    oldFile: null
+gitCommitId: !uuid 'a60f835b3654f04b218fde7c05f627c65d5ad375'
 renames: {
   }
-revisionId: 133
+revisionId: 134
