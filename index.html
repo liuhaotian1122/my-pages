@@ -306,9 +306,549 @@
                         </div>
                     </li>
                 </ul>
-
         </div>
+        <div class="hotnews">
+            <style>
 
+                body { --theme: #9999FF; }</style><link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.mode.min.css">
+            <link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.normalize.min.css">
+            <link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.global.min.css?v=1.0.0">
+            <link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.responsive.min.css">
+            <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/qmsg/qmsg.css">
+            <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+            <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css" />
+            <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+            <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+            <script src="https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+            <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/scroll/joe.scroll.js"></script>
+            <script src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.0/lazysizes.min.js"></script>
+            <script src="https://fastly.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+            <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/sketchpad/joe.sketchpad.js"></script>
+            <script src="https://fastly.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+            <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/assets/js/joe.extend.min.js"></script>
+            <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/qmsg/qmsg.js"></script>
+            <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.2.3/plugin/3dtag/3dtag.min.js"></script>
+            <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/smooth/joe.smooth.js" async></script>
+            <script src="https://www.vvhan.com/usr/themes/Joe/assets/js/joe.global.min.js?v=7.2.9"></script>
+            <script src="https://www.vvhan.com/usr/themes/Joe/assets/js/joe.short.min.js?v=7.2.9"></script>
+
+            <link rel="stylesheet" href="https://cdn.staticfile.org/element-ui/2.15.1/theme-chalk/index.min.css">
+            <script src="https://fastly.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
+            <script src="https://cdn.staticfile.org/axios/0.26.1/axios.min.js"></script>
+            <script src="https://cdn.staticfile.org/element-ui/2.15.1/index.min.js"></script>
+            <style>
+                #main a {
+                    color: #000;
+                    text-decoration: none;
+                }
+
+                #main {
+                    background-color: #f9f9f9;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+                    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+                }
+
+
+
+                body #main header .link h2 {
+                    font-size: 14px;
+                    font-weight: 400;
+                    line-height: 34px;
+                }
+
+                body #main .title {
+                    box-sizing: border-box;
+                    text-align: center;
+                    line-height: 72px;
+                    margin-top: 5px;
+                    transition: 0.5s;
+                    user-select: none;
+                    background-color: #fff;
+                    color: #3b3b3b;
+                    border-radius: 10px;
+                    box-shadow: 0px 0px 20px -5px rgb(158 158 158 / 20%);
+                }
+
+                body #main .title:hover {
+                    color: #fff;
+                    background-color: #0d0e53;
+                    animation: uk-text-shadow-glitch 0.65s cubic-bezier(1, -1.91, 0, 2.79) 0s infinite normal both running;
+                }
+
+                body #main .contant {
+                    margin-top: 36px;
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    grid-row-gap: 16px;
+                    grid-column-gap: 16px;
+                }
+
+                body #main .contant .ref {
+                    display: flex;
+                    justify-content: flex-end;
+                    margin-top: 16px;
+                    overflow: hidden;
+                }
+
+                body #main .contant .ref img {
+                    height: 15px;
+                    width: 15px;
+                    cursor: pointer;
+                }
+
+                body #main .contant .ref img:hover {
+                    animation: refImg 2s linear infinite;
+                }
+
+                body #main .contant .box {
+                    position: relative;
+                    box-sizing: border-box;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    background-color: #fff;
+                    box-shadow: 0px 0px 20px -5px rgb(158 158 158 / 20%);
+                }
+
+                body #main .contant .box .refd {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(214, 211, 211, 0.5);
+                    z-index: 1;
+                }
+
+                body #main .contant .box .refd .refround {
+                    margin: auto;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    border: 4px solid #000;
+                    border-left-color: transparent;
+                    animation: refdroundi 1s linear infinite;
+                }
+
+                body #main .contant .box .div_s {
+                    font-size: 16px;
+                }
+
+                body #main .contant .box .div_s .div_s-title {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 12px;
+                    color: #282a2d;
+                }
+
+                body #main .contant .box .div_s .div_s-title .l {
+                    display: flex;
+                    align-items: center;
+                }
+
+                body #main .contant .box .div_s .div_s-title .l img {
+                    height: 16px;
+                    padding-right: 6px;
+                }
+
+                body #main .contant .box .div_s .div_s-title .l h3 {
+                    font-size: 16px;
+                }
+
+                body #main .contant .box .div_s .div_s-title .r {
+                    display: flex;
+                    align-items: center;
+                }
+
+                body #main .contant .box .div_s .div_s-title .r span {
+                    font-size: 13px;
+                }
+
+                body #main .contant .box .div_s .div_s-con::-webkit-scrollbar {
+                    width: 5px;
+                }
+
+                body #main .contant .box .div_s .div_s-con::-webkit-scrollbar-thumb {
+                    background-color: #c0c0c0;
+                    border-radius: 6px;
+                }
+
+                body #main .contant .box .div_s .div_s-con::-webkit-scrollbar-thumb:hover {
+                    background-color: red;
+                    border-radius: 6px;
+                }
+
+                body #main .contant .box .div_s .div_s-con::-webkit-scrollbar-track {
+                    box-shadow: inset 0 0 0 #c0c0c0;
+                }
+
+                body #main .contant .box .div_s .div_s-con {
+                    height: 200px;
+                    font-size: 14px;
+                    font-weight: normal;
+                    color: #282a2d;
+                    overflow-y: auto;
+                }
+
+                body #main .contant .box .div_s .div_s-con li {
+                    display: flex;
+                    min-height: 21px;
+                    margin-bottom: 10px;
+                    word-wrap: break-word;
+                    line-height: 1.5;
+                }
+
+                body #main .contant .box .div_s .div_s-con li>span {
+                    display: inline-block;
+                    margin-right: 10px;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 3px;
+                    background-color: rgb(88, 111, 142);
+                    color: #fff;
+                    font-size: 12px;
+                    line-height: 18px;
+                    text-align: center;
+                    overflow: hidden;
+                }
+
+                body #main .contant .box .div_s .div_s-con li:nth-of-type(1)>span {
+                    background-color: rgb(255, 80, 34);
+                }
+
+                body #main .contant .box .div_s .div_s-con li:nth-of-type(2)>span {
+                    background-color: rgb(255, 144, 38);
+                }
+
+                body #main .contant .box .div_s .div_s-con li:nth-of-type(3)>span {
+                    background-color: rgb(246, 192, 50);
+                }
+
+                body #main .contant .box .div_s .div_s-con li>a {
+                    flex: 1;
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: -2.5px;
+                }
+
+
+                @media screen and (max-width: 990px) {
+                    body #main .contant {
+                        grid-template-columns: repeat(2, 1fr);
+                    }
+                }
+
+                @media screen and (max-width: 680px) {
+                    body #main .contant {
+                        grid-template-columns: repeat(1, 1fr);
+                    }
+                }
+
+                @keyframes uk-text-shadow-glitch {
+                    0% {
+                        text-shadow: none;
+                    }
+
+                    25% {
+                        text-shadow: -2px -2px 0 #ff0048, 2px 2px 0 #3234ff;
+                    }
+
+                    50% {
+                        text-shadow: 2px -2px 0 #ff0048, -2px 2px 0 #3234ff;
+                    }
+
+                    75% {
+                        text-shadow: -2px 2px 0 #ff0048, 2px -2px 0 #3234ff;
+                    }
+
+                    100% {
+                        text-shadow: 2px 2px 0 #ff0048, -2px -2px 0 #3234ff;
+                    }
+                }
+
+                @keyframes refImg {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+
+                    25% {
+                        transform: rotate(90deg);
+                    }
+
+                    50% {
+                        transform: rotate(180deg);
+                    }
+
+                    75% {
+                        transform: rotate(270deg);
+                    }
+
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+
+                @keyframes refdroundi {
+                    0% {
+                        transform: translateY(calc(144px - 50%)) rotate(0deg);
+                    }
+
+                    25% {
+                        transform: translateY(calc(144px - 50%)) rotate(90deg);
+                    }
+
+                    50% {
+                        transform: translateY(calc(144px - 50%)) rotate(180deg);
+                    }
+
+                    75% {
+                        transform: translateY(calc(144px - 50%)) rotate(270deg);
+                    }
+
+                    100% {
+                        transform: translateY(calc(144px - 50%)) rotate(360deg);
+                    }
+                }
+            </style>
+            </head>
+
+            <body>
+            <section id="main">
+                <div class="title">
+
+                    <h2>今日热榜</h2>
+                </div>
+                <div class="contant">
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['baiduRD']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/baidu.png">
+                                    <h3>百度热点</h3>
+                                </div>
+                                <div class="r"><span>指数</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['baiduRD']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('baiduRD')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['huPu']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/bilibili.png">
+                                    <h3>哔哩哔哩</h3>
+                                </div>
+                                <div class="r"><span>全站日榜</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['bili']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('bili')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['ssPai']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/lssdjt.png">
+                                    <h3>历史上的今天</h3>
+                                </div>
+                                <div class="r"><span></span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['history']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('history')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['wbHot']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/weibo.png">
+                                    <h3>微博</h3>
+                                </div>
+                                <div class="r"><span>热搜榜</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['wbHot']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('wbHot')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['zhihuHot']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/zhihu.png">
+                                    <h3>知乎热榜</h3>
+                                </div>
+                                <div class="r"><span>热度</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['zhihuHot']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('zhihuHot')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['douyinHot']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/douyin.png">
+                                    <h3>抖音</h3>
+                                </div>
+                                <div class="r"><span>热点榜</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['douyinHot']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('douyinHot')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['itInfo']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/ithome.png">
+                                    <h3>IT资讯最新</h3>
+                                </div>
+                                <div class="r"><span></span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['itNews']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('itNews')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['baiduRY']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/baidu.png">
+                                    <h3>百度贴吧</h3>
+                                </div>
+                                <div class="r"><span>热议榜</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['baiduRY']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('baiduRY')"></div>
+                    </div>
+                    <div class="box">
+                        <transition name="el-fade-in-linear">
+                            <div class="refd" v-show="JSONDATAS['douban']['ref']">
+                                <div class="refround"></div>
+                            </div>
+                        </transition>
+                        <div class="div_s">
+                            <div class="div_s-title">
+                                <div class="l"><img src="https://hot.vvhan.com/static/images/douban.png">
+                                    <h3>豆瓣小组</h3>
+                                </div>
+                                <div class="r"><span>讨论精选</span></div>
+                            </div>
+                            <ul class="div_s-con">
+                                <li v-for="itm in JSONDATAS['douban']['data']" :key="itm.index">
+                                    <span>{{itm.index}}</span>
+                                    <a :href="itm[clientKey]" target="_blank">
+                                        <span>{{itm.title}}</span>
+                                        <span>{{itm.hot}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+            </section>
+            <script src="https://hot.vvhan.com/static/js/main.js"></script>
+            <aside class="joe_aside">
+                <script data-ad-client="ca-pub-3037456000720711" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>        </div>
+    </div>
+    </footer>
+    </div>
         <ul class="am-gallery am-avg-sm-1
   am-avg-md-1 am-avg-lg-1 am-gallery-default" data-am-gallery="{ pureview: true }" >
             <li>
@@ -329,788 +869,7 @@
 
     </div>
 </div>
-<div class="hotnews">
-    <script type="text/javascript">
-        (function () {
-            window.TypechoComment = {
-                dom : function (id) {
-                    return document.getElementById(id);
-                },
 
-                create : function (tag, attr) {
-                    var el = document.createElement(tag);
-
-                    for (var key in attr) {
-                        el.setAttribute(key, attr[key]);
-                    }
-
-                    return el;
-                },
-
-                reply : function (cid, coid) {
-                    var comment = this.dom(cid), parent = comment.parentNode,
-                        response = this.dom('respond-page-2051'), input = this.dom('comment-parent'),
-                        form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
-                        textarea = response.getElementsByTagName('textarea')[0];
-
-                    if (null == input) {
-                        input = this.create('input', {
-                            'type' : 'hidden',
-                            'name' : 'parent',
-                            'id'   : 'comment-parent'
-                        });
-
-                        form.appendChild(input);
-                    }
-
-                    input.setAttribute('value', coid);
-
-                    if (null == this.dom('comment-form-place-holder')) {
-                        var holder = this.create('div', {
-                            'id' : 'comment-form-place-holder'
-                        });
-
-                        response.parentNode.insertBefore(holder, response);
-                    }
-
-                    comment.appendChild(response);
-                    this.dom('cancel-comment-reply-link').style.display = '';
-
-                    if (null != textarea && 'text' == textarea.name) {
-                        textarea.focus();
-                    }
-
-                    return false;
-                },
-
-                cancelReply : function () {
-                    var response = this.dom('respond-page-2051'),
-                        holder = this.dom('comment-form-place-holder'), input = this.dom('comment-parent');
-
-                    if (null != input) {
-                        input.parentNode.removeChild(input);
-                    }
-
-                    if (null == holder) {
-                        return true;
-                    }
-
-                    this.dom('cancel-comment-reply-link').style.display = 'none';
-                    holder.parentNode.insertBefore(response, holder);
-                    return false;
-                }
-            };
-        })();
-    </script>
-    <!-- cPlayer Start -->
-    <script>var cPlayers = [];var cPlayerOptions = [];</script>
-    <!-- cPlayer End --><script>
-    function detectIE() {
-        var n = window.navigator.userAgent,
-            e = n.indexOf("MSIE ");
-        if (e > 0) {
-            return parseInt(n.substring(e + 5, n.indexOf(".", e)), 10)
-        }
-        if (n.indexOf("Trident/") > 0) {
-            var r = n.indexOf("rv:");
-            return parseInt(n.substring(r + 3, n.indexOf(".", r)), 10)
-        }
-        var i = n.indexOf("Edge/");
-        return i > 0 && parseInt(n.substring(i + 5, n.indexOf(".", i)), 10)
-    };
-    detectIE() && (alert('当前站点不支持IE浏览器或您开启了兼容模式，请使用其他浏览器访问或关闭兼容模式。'), (location.href = 'https://www.baidu.com'))
-    localStorage.getItem("data-night") && document.querySelector("html").setAttribute("data-night", "night");
-</script>
-    <style>
-
-
-        body { --theme: #9999FF; }</style><link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.mode.min.css">
-    <link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.normalize.min.css">
-    <link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.global.min.css?v=1.0.0">
-    <link rel="stylesheet" href="https://www.vvhan.com/usr/themes/Joe/assets/css/joe.responsive.min.css">
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/qmsg/qmsg.css">
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css" />
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
-    <script src="https://fastly.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/scroll/joe.scroll.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/lazysizes@5.3.0/lazysizes.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/sketchpad/joe.sketchpad.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/assets/js/joe.extend.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/qmsg/qmsg.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.2.3/plugin/3dtag/3dtag.min.js"></script>
-    <script src="https://fastly.jsdelivr.net/npm/typecho-joe-next@6.0.0/plugin/smooth/joe.smooth.js" async></script>
-    <script src="https://www.vvhan.com/usr/themes/Joe/assets/js/joe.global.min.js?v=7.2.9"></script>
-    <script src="https://www.vvhan.com/usr/themes/Joe/assets/js/joe.short.min.js?v=7.2.9"></script>
-    <style>
-        iframe {
-            border: rgba(0, 0, 0, 0.3) solid 1px;
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/element-ui/2.15.1/theme-chalk/index.min.css">
-    <script src="https://fastly.jsdelivr.net/npm/vue@2/dist/vue.min.js"></script>
-    <script src="https://cdn.staticfile.org/axios/0.26.1/axios.min.js"></script>
-    <script src="https://cdn.staticfile.org/element-ui/2.15.1/index.min.js"></script>
-    <style>
-        #main a {
-            color: #000;
-            text-decoration: none;
-        }
-
-        #main {
-            background-color: #f9f9f9;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-            "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
-            "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-        }
-
-        body #main {
-            margin: 0 auto 46px;
-            width: 95%;
-            max-width: 1350px;
-        }
-
-        body #main header {
-            z-index: 9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 36px;
-            height: 56px;
-            width: 95%;
-            max-width: 1350px;
-            position: fixed;
-            top: 0;
-        }
-
-        body #main header .link h2 {
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 34px;
-        }
-
-        body #main .title {
-            box-sizing: border-box;
-            text-align: center;
-            line-height: 72px;
-            margin-top: 5px;
-            transition: 0.5s;
-            user-select: none;
-            background-color: #fff;
-            color: #3b3b3b;
-            border-radius: 10px;
-            box-shadow: 0px 0px 20px -5px rgb(158 158 158 / 20%);
-        }
-
-        body #main .title:hover {
-            color: #fff;
-            background-color: #0d0e53;
-            animation: uk-text-shadow-glitch 0.65s cubic-bezier(1, -1.91, 0, 2.79) 0s infinite normal both running;
-        }
-
-        body #main .contant {
-            margin-top: 36px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-row-gap: 16px;
-            grid-column-gap: 16px;
-        }
-
-        body #main .contant .ref {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 16px;
-            overflow: hidden;
-        }
-
-        body #main .contant .ref img {
-            height: 15px;
-            width: 15px;
-            cursor: pointer;
-        }
-
-        body #main .contant .ref img:hover {
-            animation: refImg 2s linear infinite;
-        }
-
-        body #main .contant .box {
-            position: relative;
-            box-sizing: border-box;
-            padding: 12px 20px;
-            border-radius: 6px;
-            background-color: #fff;
-            box-shadow: 0px 0px 20px -5px rgb(158 158 158 / 20%);
-        }
-
-        body #main .contant .box .refd {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(214, 211, 211, 0.5);
-            z-index: 1;
-        }
-
-        body #main .contant .box .refd .refround {
-            margin: auto;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 4px solid #000;
-            border-left-color: transparent;
-            animation: refdroundi 1s linear infinite;
-        }
-
-        body #main .contant .box .div_s {
-            font-size: 16px;
-        }
-
-        body #main .contant .box .div_s .div_s-title {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            color: #282a2d;
-        }
-
-        body #main .contant .box .div_s .div_s-title .l {
-            display: flex;
-            align-items: center;
-        }
-
-        body #main .contant .box .div_s .div_s-title .l img {
-            height: 16px;
-            padding-right: 6px;
-        }
-
-        body #main .contant .box .div_s .div_s-title .l h3 {
-            font-size: 16px;
-        }
-
-        body #main .contant .box .div_s .div_s-title .r {
-            display: flex;
-            align-items: center;
-        }
-
-        body #main .contant .box .div_s .div_s-title .r span {
-            font-size: 13px;
-        }
-
-        body #main .contant .box .div_s .div_s-con::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        body #main .contant .box .div_s .div_s-con::-webkit-scrollbar-thumb {
-            background-color: #c0c0c0;
-            border-radius: 6px;
-        }
-
-        body #main .contant .box .div_s .div_s-con::-webkit-scrollbar-thumb:hover {
-            background-color: red;
-            border-radius: 6px;
-        }
-
-        body #main .contant .box .div_s .div_s-con::-webkit-scrollbar-track {
-            box-shadow: inset 0 0 0 #c0c0c0;
-        }
-
-        body #main .contant .box .div_s .div_s-con {
-            height: 200px;
-            font-size: 14px;
-            font-weight: normal;
-            color: #282a2d;
-            overflow-y: auto;
-        }
-
-        body #main .contant .box .div_s .div_s-con li {
-            display: flex;
-            min-height: 21px;
-            margin-bottom: 10px;
-            word-wrap: break-word;
-            line-height: 1.5;
-        }
-
-        body #main .contant .box .div_s .div_s-con li>span {
-            display: inline-block;
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
-            border-radius: 3px;
-            background-color: rgb(88, 111, 142);
-            color: #fff;
-            font-size: 12px;
-            line-height: 18px;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        body #main .contant .box .div_s .div_s-con li:nth-of-type(1)>span {
-            background-color: rgb(255, 80, 34);
-        }
-
-        body #main .contant .box .div_s .div_s-con li:nth-of-type(2)>span {
-            background-color: rgb(255, 144, 38);
-        }
-
-        body #main .contant .box .div_s .div_s-con li:nth-of-type(3)>span {
-            background-color: rgb(246, 192, 50);
-        }
-
-        body #main .contant .box .div_s .div_s-con li>a {
-            flex: 1;
-            display: flex;
-            justify-content: space-between;
-            margin-top: -2.5px;
-        }
-
-        body #main .contant .box .div_s .div_s-con li>a>span:nth-of-type(1) {
-            flex: 1;
-            white-space: normal;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            -webkit-line-clamp: 2;
-        }
-
-        body #main .contant .box .div_s .div_s-con li>a>span:nth-of-type(2) {
-            text-align: right;
-            white-space: nowrap;
-            margin-left: 8px;
-            color: #6c757d;
-        }
-
-        body #main footer {
-            margin: 36px auto 0;
-            width: 100%;
-            text-align: center;
-            color: #000;
-            font-size: 14px;
-            line-height: 28px;
-        }
-
-
-        @media screen and (max-width: 990px) {
-            body #main .contant {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media screen and (max-width: 680px) {
-            body #main .contant {
-                grid-template-columns: repeat(1, 1fr);
-            }
-        }
-
-        @keyframes uk-text-shadow-glitch {
-            0% {
-                text-shadow: none;
-            }
-
-            25% {
-                text-shadow: -2px -2px 0 #ff0048, 2px 2px 0 #3234ff;
-            }
-
-            50% {
-                text-shadow: 2px -2px 0 #ff0048, -2px 2px 0 #3234ff;
-            }
-
-            75% {
-                text-shadow: -2px 2px 0 #ff0048, 2px -2px 0 #3234ff;
-            }
-
-            100% {
-                text-shadow: 2px 2px 0 #ff0048, -2px -2px 0 #3234ff;
-            }
-        }
-
-        @keyframes refImg {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            25% {
-                transform: rotate(90deg);
-            }
-
-            50% {
-                transform: rotate(180deg);
-            }
-
-            75% {
-                transform: rotate(270deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes refdroundi {
-            0% {
-                transform: translateY(calc(144px - 50%)) rotate(0deg);
-            }
-
-            25% {
-                transform: translateY(calc(144px - 50%)) rotate(90deg);
-            }
-
-            50% {
-                transform: translateY(calc(144px - 50%)) rotate(180deg);
-            }
-
-            75% {
-                transform: translateY(calc(144px - 50%)) rotate(270deg);
-            }
-
-            100% {
-                transform: translateY(calc(144px - 50%)) rotate(360deg);
-            }
-        }
-    </style>
-    </head>
-
-    <body>
-    <section id="main">
-        <div class="title">
-
-            <h2>今日热榜</h2>
-        </div>
-        <div class="contant">
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['baiduRD']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/baidu.png">
-                            <h3>百度热点</h3>
-                        </div>
-                        <div class="r"><span>指数</span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['baiduRD']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('baiduRD')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['huPu']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/hupu.png">
-                            <h3>虎扑</h3>
-                        </div>
-                        <div class="r">
-                            <span>步行街热帖</span>
-                        </div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['huPu']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('huPu')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['36Ke']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/36kr.png">
-                            <h3>36氪</h3>
-                        </div>
-                        <div class="r"><span>24小时热榜</span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['36Ke']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('36Ke')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['bili']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/bilibili.png">
-                            <h3>哔哩哔哩</h3>
-                        </div>
-                        <div class="r"><span>全站日榜</span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['bili']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('bili')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['ssPai']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/sspai.png">
-                            <h3>少数派</h3>
-                        </div>
-                        <div class="r"><span>热门文章</span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['ssPai']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('ssPai')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['history']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/lssdjt.png">
-                            <h3>历史上的今天</h3>
-                        </div>
-                        <div class="r"><span></span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['history']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('history')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['wbHot']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/weibo.png">
-                            <h3>微博</h3>
-                        </div>
-                        <div class="r"><span>热搜榜</span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['wbHot']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('wbHot')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['zhihuHot']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/zhihu.png">
-                            <h3>知乎热榜</h3>
-                        </div>
-                        <div class="r"><span>热度</span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['zhihuHot']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('zhihuHot')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['douyinHot']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/douyin.png">
-                            <h3>抖音</h3>
-                        </div>
-                        <div class="r"><span>热点榜</span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['douyinHot']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('douyinHot')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['itInfo']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/ithome.png">
-                            <h3>IT资讯热榜</h3>
-                        </div>
-                        <div class="r"><span></span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['itInfo']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('itInfo')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['itNews']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/ithome.png">
-                            <h3>IT资讯最新</h3>
-                        </div>
-                        <div class="r"><span></span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['itNews']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('itNews')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['baiduRY']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/baidu.png">
-                            <h3>百度贴吧</h3>
-                        </div>
-                        <div class="r"><span>热议榜</span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['baiduRY']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ref"><img src="https://hot.vvhan.com/static/images/ref.jpg" @click="getDatas('baiduRY')"></div>
-            </div>
-            <div class="box">
-                <transition name="el-fade-in-linear">
-                    <div class="refd" v-show="JSONDATAS['douban']['ref']">
-                        <div class="refround"></div>
-                    </div>
-                </transition>
-                <div class="div_s">
-                    <div class="div_s-title">
-                        <div class="l"><img src="https://hot.vvhan.com/static/images/douban.png">
-                            <h3>豆瓣小组</h3>
-                        </div>
-                        <div class="r"><span>讨论精选</span></div>
-                    </div>
-                    <ul class="div_s-con">
-                        <li v-for="itm in JSONDATAS['douban']['data']" :key="itm.index">
-                            <span>{{itm.index}}</span>
-                            <a :href="itm[clientKey]" target="_blank">
-                                <span>{{itm.title}}</span>
-                                <span>{{itm.hot}}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-    </section>
-    <script src="https://hot.vvhan.com/static/js/main.js"></script>
-    <aside class="joe_aside">
-        <script data-ad-client="ca-pub-3037456000720711" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>        </div>
-</div>
-</footer>
-</div>
 <div data-am-widget="gotop" class="am-gotop am-gotop-fixed" >
     <a href="#top" title="回到顶部">
         <span class="am-gotop-title">回到顶部</span>
