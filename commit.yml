@@ -2,13 +2,10 @@
 branches: {
   }
 fileChange:
-  /Temp-images:
-    newFile: !uuid 'b9e2d764a2fc8aaa10fd61faf85a00a2c87c96e6'
-    oldFile: !uuid 'b28cb8b909d8787ec1426b337088a91b03f14447'
-  /Temp-images/hotnews.jpg:
-    newFile: !uuid '37582453c68245fa3d7961a13f34fee8d96edb8f'
-    oldFile: null
-gitCommitId: !uuid '910f6422684d5a7e7ef776b144a4a47b37c74a9e'
+  /hotnews.html:
+    newFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
+    oldFile: !uuid 'f7ef0484376f9b56bd81d60249356ef830b18079'
+gitCommitId: !uuid '6aaedc48a1ecca70f962bc13906be2d92aa3c6bc'
 renames: {
   }
-revisionId: 135
+revisionId: 136
