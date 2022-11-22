@@ -2,13 +2,10 @@
 branches: {
   }
 fileChange:
-  /Temp-images:
-    newFile: !uuid 'b0cdbd1a9777e7b2cccd11c026154661c27b8b73'
-    oldFile: !uuid 'e0e6c8dd88397d41ba7a2b77a60f1ee08295d4f9'
-  /Temp-images/cctv.jpg:
-    newFile: !uuid '9aa560a87e11769f999ba9565c7e7b2b30b3431a'
-    oldFile: null
-gitCommitId: !uuid 'ec9028a043ed40436fa25620c0ff01d1958eb5e4'
+  /index.html:
+    newFile: !uuid '79fa31d0114411985650a1c7b321ce43d261b282'
+    oldFile: !uuid 'ab43b973e113f85b74459fb2b895f6db0cd6c12d'
+gitCommitId: !uuid '2b27849c4e53ad5124b1ca38bf53dfeb958cbdff'
 renames: {
   }
-revisionId: 148
+revisionId: 149
