@@ -2,10 +2,16 @@
 branches: {
   }
 fileChange:
-  /真实的高贵.html:
-    newFile: !uuid '679981f62ae774b252a88cf32d95de9f1a85c8e8'
-    oldFile: !uuid '58171616e6356b4f33789bc44a148293fe9ecb38'
-gitCommitId: !uuid '704699247f14725979064829302aa6974ed09ff1'
-renames: {
-  }
-revisionId: 142
+  /music:
+    newFile: !uuid 'eae8a802e994a7fbe20efde898aa6a7a5063b616'
+    oldFile: !uuid '503614fa417191b8e3e3d59ccdc3ae891513f015'
+  /music/星茶会.mp3:
+    newFile: null
+    oldFile: !uuid '5ee56795ff03250fa2210f7af140f00d352f7cac'
+  /music/星茶会.mp32:
+    newFile: !uuid '5ee56795ff03250fa2210f7af140f00d352f7cac'
+    oldFile: null
+gitCommitId: !uuid 'b5784525af1d5c621c7ce784a4df1548472a7c04'
+renames:
+  /music/星茶会.mp32: /music/星茶会.mp3
+revisionId: 143
