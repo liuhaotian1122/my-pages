@@ -2,10 +2,13 @@
 branches: {
   }
 fileChange:
-  /真实的高贵.html:
-    newFile: !uuid '65d5e8b690c6429735c650f796829a723f2bb5c6'
-    oldFile: !uuid '679981f62ae774b252a88cf32d95de9f1a85c8e8'
-gitCommitId: !uuid 'c22b28feeac2d05c5baecac107f722686319da5a'
+  /Temp-images:
+    newFile: !uuid 'e0e6c8dd88397d41ba7a2b77a60f1ee08295d4f9'
+    oldFile: !uuid 'b9e2d764a2fc8aaa10fd61faf85a00a2c87c96e6'
+  /Temp-images/cctv.jpg:
+    newFile: null
+    oldFile: !uuid 'ee4dd5a6ae88a6677ce4c6aab756f1c907a24187'
+gitCommitId: !uuid '0030b81168eb792f0dcebed380201bed9c023bde'
 renames: {
   }
-revisionId: 146
+revisionId: 147
