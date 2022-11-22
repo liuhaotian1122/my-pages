@@ -2,10 +2,13 @@
 branches: {
   }
 fileChange:
-  /hotnews.html:
-    newFile: !uuid 'ceeea46eab2cf635951943f8cda4dbd6c74cab08'
-    oldFile: !uuid 'e69de29bb2d1d6434b8b29ae775ad8c2e48c5391'
-gitCommitId: !uuid 'd5dd35aba64cfedef72eed8d516fdbc3d68a62c0'
+  /music:
+    newFile: null
+    oldFile: !uuid '2cf07dc61be3f3082a1e2e2d8597423b433ffd14'
+  /music/星茶会.mp3:
+    newFile: null
+    oldFile: !uuid 'a35a71ff9f9ce2c4f36b4e038b183022d7f91ead'
+gitCommitId: !uuid 'd3c47cdd7582dee2b834a61b679f586e9f79991b'
 renames: {
   }
-revisionId: 137
+revisionId: 138
