@@ -2,10 +2,10 @@
 branches: {
   }
 fileChange:
-  /game.html:
-    newFile: !uuid '05f8a853f1ea806ad140462064b16f2fd3b3cae6'
-    oldFile: !uuid 'cdda52150f3f4cbb38a9089d1aef5d040d70464d'
-gitCommitId: !uuid 'bc00fd1319ec78f62ac919b32eed0d1f08597f77'
+  /个人站2.0.apk:
+    newFile: !uuid 'c8a27b704f74bfd7c41163b3821d75ce84505f30'
+    oldFile: null
+gitCommitId: !uuid '0e3d15876f588567eccc05ddaf559e6516cdf095'
 renames: {
   }
-revisionId: 150
+revisionId: 151
