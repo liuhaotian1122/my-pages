@@ -2,10 +2,10 @@
 branches: {
   }
 fileChange:
-  /个人站2.0.apk:
-    newFile: null
-    oldFile: !uuid 'c8a27b704f74bfd7c41163b3821d75ce84505f30'
-gitCommitId: !uuid '0038a72f8a64d332da0fc5f671b0b9891234e1f5'
+  /index.html:
+    newFile: !uuid 'eac6b893c7284b7476852d15fa8307f42c5e58f0'
+    oldFile: !uuid '79fa31d0114411985650a1c7b321ce43d261b282'
+gitCommitId: !uuid '1b45a6612191bfc14d5e856fb24f1a36a4132d1c'
 renames: {
   }
-revisionId: 152
+revisionId: 153
