@@ -2,10 +2,22 @@
 branches: {
   }
 fileChange:
-  /jingli.html:
-    newFile: !uuid '39d92dcb3e922efd6df850bfaa148f94da83a33f'
-    oldFile: !uuid 'ddd9f1544628afe29146ad983e7953a49c51a884'
-gitCommitId: !uuid 'a7d6319bc4f0270fb6d254373c76a0b53fc1a7fe'
+  /images:
+    newFile: !uuid '873e108e1238f3de490272d952a2db5793ae9833'
+    oldFile: !uuid 'bffaa1b03048c46de9caa1f7770bc4e1d9e1617d'
+  /images/w11.jpg:
+    newFile: !uuid '4b111cb1baae344be8db75932ea97cce6f630a19'
+    oldFile: null
+  /images/w12.jpg:
+    newFile: !uuid '9cdbe1e00bffc8fb0b1fbec65547e5252e8487f6'
+    oldFile: null
+  /images/w13.jpg:
+    newFile: !uuid '327827740275e15431adc541b3dd1e020d40edd4'
+    oldFile: null
+  /images/w14.jpg:
+    newFile: !uuid '42463903d8318ec3e03f3c6337a0563f8b174a4c'
+    oldFile: null
+gitCommitId: !uuid '78c656770e409790165503a147a2ddb091f7263d'
 renames: {
   }
-revisionId: 170
+revisionId: 171
