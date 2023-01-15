@@ -2,10 +2,10 @@
 branches: {
   }
 fileChange:
-  /food.html:
-    newFile: !uuid 'f718546c74ec4d21a55e15f55fee6265eecc31aa'
-    oldFile: !uuid '192c13b7095e3fa015ccc2c2723423543a238e72'
-gitCommitId: !uuid 'fd45a4879620d27ff3f70f6e7143f48616bf238d'
+  /真实的高贵.html:
+    newFile: !uuid 'fd116c8a2913a36f7fc5ee928ea3407c1f8313f2'
+    oldFile: !uuid '65d5e8b690c6429735c650f796829a723f2bb5c6'
+gitCommitId: !uuid 'e986538183d4d4e2a6f19432f51e5014dc30ec03'
 renames: {
   }
-revisionId: 175
+revisionId: 176
