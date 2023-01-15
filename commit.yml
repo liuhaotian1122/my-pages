@@ -2,10 +2,10 @@
 branches: {
   }
 fileChange:
-  /真实的高贵.html:
-    newFile: !uuid 'fd116c8a2913a36f7fc5ee928ea3407c1f8313f2'
-    oldFile: !uuid '65d5e8b690c6429735c650f796829a723f2bb5c6'
-gitCommitId: !uuid 'e986538183d4d4e2a6f19432f51e5014dc30ec03'
+  /jingli.html:
+    newFile: !uuid '6379c5dc8fe64bdadbdf2c086db17efe3eb9d1f0'
+    oldFile: !uuid 'fc2d3079a2c17ee416d2b31e290afe20956d9697'
+gitCommitId: !uuid '1bed50057ba2f7dd5d859c9bd1b3b8e7e0ce8e34'
 renames: {
   }
-revisionId: 176
+revisionId: 177
