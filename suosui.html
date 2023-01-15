@@ -214,7 +214,10 @@
 </footer>
 </body>
 </html>
-<script src="https://ohan.gitee.io/ohan/HanKu/HanJs/HanImageBox.js"></script>
+<!-- 插件依赖Jquery -->
+<!-- <script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script> -->
+<!-- 如果网站无Jquery，则调用上面一句，有的话可以忽略。 -->
+<script src="https://cloudcache.4ce.cn/uxiaohan/Ku/master/static/ImageBox/HanImageBox.js"></script>
 <script>
 $(function () {$("img[src$=jpg],img[src$=gif],img[src$=png],img[src$=jpeg]").addClass("spotlight").each(function () {this.onclick = function () {return hs.expand(this)}});})
 </script>
