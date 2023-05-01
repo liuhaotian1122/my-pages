@@ -9,15 +9,14 @@
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  博客部署
+2.  不需要额外安装
+3.  可安装独立app进行访问
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxx
+1.  [下载连接，请点击下载体验](http://liuhaotian1122.gitee.io/download/)
+
 
 #### 参与贡献
 
