@@ -15,7 +15,7 @@
 
 ## 使用说明
 
-1.  **[下载连接，请点击下载体验](http://liuhaotian1122.gitee.io/download/)**
+*  **[下载连接，请点击下载体验](http://liuhaotian1122.gitee.io/download/)**
 
 
 ## 参与贡献
