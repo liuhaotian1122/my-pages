@@ -2,10 +2,13 @@
 branches: {
   }
 fileChange:
-  /index.html:
-    newFile: !uuid '7fa81cc2091352ed4b1a7fa0ac93f81c02312759'
-    oldFile: !uuid 'e7a4333409e770b2cef588b9483a19545af9542f'
-gitCommitId: !uuid '5901a04ae8765ba6f1aebeb10aad3c89aab587e4'
+  /Temp-images:
+    newFile: !uuid 'd246db5d8cb2c3e3384565d8f4909e1f87189540'
+    oldFile: !uuid 'b0cdbd1a9777e7b2cccd11c026154661c27b8b73'
+  /Temp-images/55.png:
+    newFile: !uuid '5c8225d8aa32b9331ca6542ca2638fd5237c9b50'
+    oldFile: null
+gitCommitId: !uuid 'c9f67d997a87b64e1cc1f9e66c77bc9421f78c77'
 renames: {
   }
-revisionId: 192
+revisionId: 193
