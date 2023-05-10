@@ -1,14 +1,9 @@
 !revision
 branches: {
   }
-fileChange:
-  /Temp-images:
-    newFile: !uuid 'cee297e3e064dd3ea7b86b76642435bc1a09d466'
-    oldFile: !uuid 'b0cdbd1a9777e7b2cccd11c026154661c27b8b73'
-  /Temp-images/背景.jpg:
-    newFile: !uuid 'b7a6913e6d82ff889d07f230b1006d62ade1a405'
-    oldFile: null
-gitCommitId: !uuid 'c2a34eaecbd1684161836a1b290550ba4d68b810'
+fileChange: {
+  }
+gitCommitId: !uuid '815544ae86f953fe8a2e54b3c758257e972da37d'
 renames: {
   }
-revisionId: 195
+revisionId: 196
