@@ -3,12 +3,12 @@ branches: {
   }
 fileChange:
   /Temp-images:
-    newFile: !uuid 'd246db5d8cb2c3e3384565d8f4909e1f87189540'
-    oldFile: !uuid 'b0cdbd1a9777e7b2cccd11c026154661c27b8b73'
+    newFile: !uuid 'b0cdbd1a9777e7b2cccd11c026154661c27b8b73'
+    oldFile: !uuid 'd246db5d8cb2c3e3384565d8f4909e1f87189540'
   /Temp-images/55.png:
-    newFile: !uuid '5c8225d8aa32b9331ca6542ca2638fd5237c9b50'
-    oldFile: null
-gitCommitId: !uuid 'c9f67d997a87b64e1cc1f9e66c77bc9421f78c77'
+    newFile: null
+    oldFile: !uuid '5c8225d8aa32b9331ca6542ca2638fd5237c9b50'
+gitCommitId: !uuid 'fc3b7693641841f4fd03ee3a00dbcbe1340e55e0'
 renames: {
   }
-revisionId: 193
+revisionId: 194
