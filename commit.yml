@@ -2,13 +2,10 @@
 branches: {
   }
 fileChange:
-  /images:
-    newFile: !uuid '63796938412f76ccfe04a8494b1bb5bae618c522'
-    oldFile: !uuid '6cbe6dd46c69987b68d64a01a31eceb22fd49470'
-  /images/logo.png:
-    newFile: !uuid 'b973e0365b8a9043c81b430a908803a934e98b9f'
-    oldFile: null
-gitCommitId: !uuid 'd67e3b8cba478c1916b822e78bcec96004408c07'
+  /README.md:
+    newFile: !uuid '8b81fdd4b9f2b92c202ff521876232519ab7beb4'
+    oldFile: !uuid '0cbae0fbf15bac8650fb9397835dd04654a62f8f'
+gitCommitId: !uuid 'dc08f94295b68f67ad7cbcaca9cad984ac81fd1d'
 renames: {
   }
-revisionId: 202
+revisionId: 203
