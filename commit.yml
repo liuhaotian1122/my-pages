@@ -3,18 +3,15 @@ branches: {
   }
 fileChange:
   /.idea:
-    newFile: !uuid '8b77e2b91d885769148c640a8378d9c3f3c3507a'
-    oldFile: !uuid '74032032cec475034f17c9c4081d43988a5d80f6'
+    newFile: !uuid '6675d5ac8d1f6f7f99423719f79be2011114e25a'
+    oldFile: !uuid '8b77e2b91d885769148c640a8378d9c3f3c3507a'
   /.idea/workspace.xml:
-    newFile: !uuid '9a21c6fbe039e6f425ba9e262461547092c727a2'
-    oldFile: !uuid '70f0e9c5de78db4dafd23c8147b9ee610d4ebb18'
+    newFile: !uuid '637b1aa3ee87b31d09f56c89464b3be249366fd0'
+    oldFile: !uuid '9a21c6fbe039e6f425ba9e262461547092c727a2'
   /jingli.html:
-    newFile: !uuid '4c2f9830bbb4d47687919268f028c4ef8750e40b'
-    oldFile: !uuid '58f066248a6ff9c0a9acd9d6fcc5da9c8b6cba60'
-  /找到自己的命运.html:
-    newFile: !uuid '698a163e45f78f790e4e7b3a1471975fed0a2e9c'
-    oldFile: !uuid '5773edd5eaa86bcedea034283e0c04deceddfa19'
-gitCommitId: !uuid '0a092aee8f858aa9eba6ea57ffa054d5fb1d47d6'
+    newFile: !uuid '51177874f101a04ed241edb886246e898b459c21'
+    oldFile: !uuid '4c2f9830bbb4d47687919268f028c4ef8750e40b'
+gitCommitId: !uuid '58283e29d341f7df278bf6bd3082be9c245c5594'
 renames: {
   }
-revisionId: 208
+revisionId: 209
