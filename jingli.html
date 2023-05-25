@@ -31,8 +31,8 @@
     <script src="assets/js/jquery.min.js"></script>
     <!--<![endif]-->
     <!--[if lte IE 8 ]>
-    <script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script>
     <script src="assets/js/amazeui.ie8polyfill.min.js"></script>
     <![endif]-->
     <script src="assets/js/amazeui.min.js"></script>
@@ -256,11 +256,10 @@
                 <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a href="https://liuhaotian1122.gitee.io/" target="_blank" title="2022 浩天的个人站">2023 浩天的个人站</a></h6>
 </footer>
 <!-- 插件依赖Jquery -->
- <script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script> 
 <!-- 如果网站无Jquery，则调用上面一句，有的话可以忽略。 -->
 <script src="https://cloudcache.4ce.cn/uxiaohan/Ku/master/static/ImageBox/HanImageBox.js"></script>
 <script>
-$(function () {$("img[src$=jpg],img[src$=gif],img[src$=png],img[src$=jpeg]").addClass("spotlight").each(function () {this.onclick = function () {return hs.expand(this)}});})
+    $(function () {$("img[src$=jpg],img[src$=gif],img[src$=png],img[src$=jpeg]").addClass("spotlight").each(function () {this.onclick = function () {return hs.expand(this)}});})
 </script>
 </body>
 </html>

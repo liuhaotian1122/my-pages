@@ -3,12 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="050189d5-31ee-4df9-a6b6-c69e6eba87e9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/h5阻止滑动.html" beforeDir="false" afterPath="$PROJECT_DIR$/h5阻止滑动.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ps操作.html" beforeDir="false" afterPath="$PROJECT_DIR$/ps操作.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/一些工具.html" beforeDir="false" afterPath="$PROJECT_DIR$/一些工具.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jingli.html" beforeDir="false" afterPath="$PROJECT_DIR$/jingli.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/找到自己的命运.html" beforeDir="false" afterPath="$PROJECT_DIR$/找到自己的命运.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/真实的高贵.html" beforeDir="false" afterPath="$PROJECT_DIR$/真实的高贵.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -72,7 +68,7 @@
       <workItem from="1684307004669" duration="347000" />
       <workItem from="1684920073806" duration="233000" />
       <workItem from="1684920308051" duration="2305000" />
-      <workItem from="1685023689551" duration="580000" />
+      <workItem from="1685023689551" duration="2805000" />
     </task>
     <task id="LOCAL-00001">
       <created>1684920462754</created>
@@ -88,7 +84,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684921570012</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003">
+      <created>1685024282797</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1685024282797</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
