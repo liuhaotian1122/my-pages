@@ -3,24 +3,30 @@ branches: {
   }
 fileChange:
   /.idea:
-    newFile: !uuid '424e994bc5a99ed8ef24ea2e152fa779cdab3a2c'
-    oldFile: null
-  /.idea/misc.xml:
-    newFile: !uuid 'ef004d16cf58eee09fe9b1ad2875fca0f8f72214'
-    oldFile: null
-  /.idea/modules.xml:
-    newFile: !uuid 'c61edd3e465e6746355d01582641644713f771ac'
-    oldFile: null
-  /.idea/vcs.xml:
-    newFile: !uuid '8bdbb5b14fe4ce82143f2780304f53a0d5e208f5'
-    oldFile: null
+    newFile: !uuid '74032032cec475034f17c9c4081d43988a5d80f6'
+    oldFile: !uuid '424e994bc5a99ed8ef24ea2e152fa779cdab3a2c'
   /.idea/workspace.xml:
-    newFile: !uuid '3bb02f1d4e3fe291c562b8df02f7c0502cc4eee1'
-    oldFile: null
-  /.idea/个人站.iml:
-    newFile: !uuid '0b872d82d9c39f70bff219b3b4b60145430f8984'
-    oldFile: null
-gitCommitId: !uuid '138a1c4c0956f73a89ab8bc61688b318376c84aa'
+    newFile: !uuid '70f0e9c5de78db4dafd23c8147b9ee610d4ebb18'
+    oldFile: !uuid '3bb02f1d4e3fe291c562b8df02f7c0502cc4eee1'
+  /h5阻止滑动.html:
+    newFile: !uuid '922062a8798d788b6982e60434c10fefadbd3998'
+    oldFile: !uuid 'f3f1db04d82790bd025879b8491984ff14cb5027'
+  /index.html:
+    newFile: !uuid '1ac89ed51a1b2f5b163d6aa7399183d25ac1a740'
+    oldFile: !uuid '76d9fb466429501e866f6b81d0917328cf93ed29'
+  /ps操作.html:
+    newFile: !uuid 'e55e9518bb742f2f58d42017c0158c40d9b8f50d'
+    oldFile: !uuid 'e55812ac0b04f204f959b7618b9eff87e7b9b1cc'
+  /一些工具.html:
+    newFile: !uuid '42d444d4c0daff0b4d6e9a5b2949c30a00fd6b9e'
+    oldFile: !uuid '71e5c84315d6362927091ed8a9f91cf5a13264fd'
+  /找到自己的命运.html:
+    newFile: !uuid '5773edd5eaa86bcedea034283e0c04deceddfa19'
+    oldFile: !uuid 'faceea846fc66678aef6c99adc9254bf71603b66'
+  /真实的高贵.html:
+    newFile: !uuid 'ca20396c9c5398b4824d9f612935e48292ffc223'
+    oldFile: !uuid 'fd116c8a2913a36f7fc5ee928ea3407c1f8313f2'
+gitCommitId: !uuid '88013e4fc4671b17a10a31b231c943c84dc1c994'
 renames: {
   }
-revisionId: 206
+revisionId: 207
