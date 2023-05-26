@@ -3,15 +3,15 @@ branches: {
   }
 fileChange:
   /.idea:
-    newFile: !uuid '6675d5ac8d1f6f7f99423719f79be2011114e25a'
-    oldFile: !uuid '8b77e2b91d885769148c640a8378d9c3f3c3507a'
+    newFile: !uuid 'e70d2286e03e9a50a068d4420b495bc8728e0bda'
+    oldFile: !uuid '6675d5ac8d1f6f7f99423719f79be2011114e25a'
   /.idea/workspace.xml:
-    newFile: !uuid '637b1aa3ee87b31d09f56c89464b3be249366fd0'
-    oldFile: !uuid '9a21c6fbe039e6f425ba9e262461547092c727a2'
-  /jingli.html:
-    newFile: !uuid '51177874f101a04ed241edb886246e898b459c21'
-    oldFile: !uuid '4c2f9830bbb4d47687919268f028c4ef8750e40b'
-gitCommitId: !uuid '58283e29d341f7df278bf6bd3082be9c245c5594'
+    newFile: !uuid '8c152fbaf85833f9ab04c1c2112d722ebffe87ca'
+    oldFile: !uuid '637b1aa3ee87b31d09f56c89464b3be249366fd0'
+  /index.html:
+    newFile: !uuid '45d59db7c89e0769b195a0d3b9e67825d852c9af'
+    oldFile: !uuid '1ac89ed51a1b2f5b163d6aa7399183d25ac1a740'
+gitCommitId: !uuid '1168704535540881467ef289a433a750989b2b88'
 renames: {
   }
-revisionId: 209
+revisionId: 210
