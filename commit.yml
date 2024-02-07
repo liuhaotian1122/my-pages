@@ -2,16 +2,10 @@
 branches: {
   }
 fileChange:
-  /.idea:
-    newFile: !uuid 'ab4bf6305952016ff41566b95ef09d5a009542d5'
-    oldFile: !uuid 'a109dcdc1ada0dda511ea5649ca9789e928da2f7'
-  /.idea/workspace.xml:
-    newFile: !uuid '13990c30941f0c7d6409cb821c9c1eb1797bff75'
-    oldFile: !uuid 'dd8f96c3c2c7d4e98b13a92e4a8f04b7372c6997'
   /index.html:
-    newFile: !uuid '5e2ed8d120b42a4526535aaf2102e6a695f8ace8'
-    oldFile: !uuid 'be6974db304e9c1abcf233946001a2912d71f207'
-gitCommitId: !uuid 'f578205b5fc5378edcd3759151432999fc57e8b8'
+    newFile: !uuid 'd63f7c83bd19c2463d00cfc6a2b9d37965ea1d05'
+    oldFile: !uuid '5e2ed8d120b42a4526535aaf2102e6a695f8ace8'
+gitCommitId: !uuid 'b19c889a5c9bc3242263ef132255e9cc4ab02e5f'
 renames: {
   }
-revisionId: 212
+revisionId: 213
