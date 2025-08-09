@@ -26,6 +26,17 @@
     <link rel="icon" type="image/png" href="images/i/favicon.png">
     <link rel="stylesheet" href="assets/css/amazeui.min.css">
     <link rel="stylesheet" href="css/public.css">
+    <style>
+        /* 图片悬停效果 */
+        img {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        img:hover {
+            transform: scale(1.05);
+            opacity: 0.8;
+            cursor: pointer;
+        }
+    </style>
 
     <!--[if (gte IE 9)|!(IE)]><!-->
     <script src="assets/js/jquery.min.js"></script>
@@ -144,10 +155,22 @@
 </body>
 </html>
 <!-- 插件依赖Jquery -->
- <script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script> 
+<script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script> 
 <!-- 如果网站无Jquery，则调用上面一句，有的话可以忽略。 -->
 <script src="https://cloudcache.4ce.cn/uxiaohan/Ku/master/static/ImageBox/HanImageBox.js"></script>
 <script>
-$(function () {$("img[src$=jpg],img[src$=gif],img[src$=png],img[src$=jpeg]").addClass("spotlight").each(function () {this.onclick = function () {return hs.expand(this)}});})
-
+$(function () {
+    // 为所有图片添加点击放大功能
+    $("img[src$=jpg], img[src$=gif], img[src$=png], img[src$=jpeg]").each(function() {
+        $(this).css('cursor', 'pointer').click(function() {
+            // 尝试使用HanImageBox插件
+            if (typeof HanImageBox !== 'undefined' && HanImageBox.show) {
+                HanImageBox.show(this.src);
+            } else {
+                // 备用方案：在新窗口中打开图片
+                window.open(this.src, '_blank', 'width=800,height=600,scrollbars=yes,resizable=yes');
+            }
+        });
+    });
+});
 </script>
