@@ -22,29 +22,45 @@
     <meta name="msapplication-TileImage" content="images/i/app.png">
     <meta name="msapplication-TileColor" content="#e1652f">
     <link rel="icon" type="image/png" href="images/i/favicon.png">
-    <link rel="stylesheet" href="assets/css/amazeui.css">
-    <link rel="stylesheet" href="css/public.css">
-    <!--[if (gte IE 9)|!(IE)]><!-->
-    <script src="assets/js/jquery.min.js"></script>
-    <!--<![endif]-->
-    <!--[if lte IE 8 ]>
-    <script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
-    <script src="assets/js/amazeui.ie8polyfill.min.js"></script>
-    <![endif]-->
-    <script src="assets/js/amazeui.min.js"></script>
-    <script src="js/public.js"></script>
-    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
-    </script>
+    
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="assets/css/amazeui.min.css" as="style">
+    <link rel="preload" href="css/public.css" as="style">
+    <link rel="preload" href="assets/js/jquery.min.js" as="script">
+    
+    <!-- 关键CSS内联 -->
+    <style>
+        /* 关键渲染路径CSS */
+        html,body{margin:0 auto;width:100%;overflow-x:hidden;}
+        .banner{margin-top:10px;}
+        .am-topbar{background:#333;}
+        .loading{display:flex;justify-content:center;align-items:center;height:200px;color:#666;}
+    </style>
+    
+    <!-- 非关键CSS异步加载 -->
+    <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="assets/css/amazeui.min.css">
+        <link rel="stylesheet" href="css/public.css">
+    </noscript>
 </head>
 <body>
-<!-- 	<api接口> -->
-<!--        <script src="https://api.vvhan.com/api/script/denglong"></script>-->
-<script src="https://api.vvhan.com/api/script/snow"></script>
+<!-- 雪花效果延迟加载 -->
+<script>
+    // 延迟加载雪花效果
+    setTimeout(() => {
+        const script = document.createElement('script');
+        script.src = 'https://api.vvhan.com/api/script/snow';
+        script.async = true;
+        document.head.appendChild(script);
+    }, 2000);
+</script>
+
 <header class="am-topbar am-topbar-fixed-top wos-header">
     <div class="am-container">
         <h1 class="am-topbar-brand">
-            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt=""></a>
+            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt="" loading="lazy"></a>
         </h1>
 
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
@@ -79,55 +95,47 @@
         </div>
     </div>
 </header>
+
 <!--banner-->
 <div class="banner">
     <div class="am-g am-container">
         <div class="am-u-sm-12 am-u-md-12 am-u-lg-8">
             <div data-am-widget="slider" class="am-slider am-slider-c1" data-am-slider='{"directionNav":false}' >
                 <ul class="am-slides">
-
                     <li>
-                        <a href="boke.html"><img src="https://api.vvhan.com/api/bing"></a>
-                        <div class="am-slider-desc"><span id="jinrishici-sentence">正在加载今日诗词....</span>
-                            <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script></div>
-
-
+                        <a href="boke.html"><img src="https://api.vvhan.com/api/bing" alt="必应每日图片" loading="lazy"></a>
+                        <div class="am-slider-desc"><span id="jinrishici-sentence">正在加载今日诗词....</span></div>
                     </li>
                     <li>
-                        <a href="boke.html"><img src="https://api.vvhan.com/api/wallpaper/acg"></a>
-                        <div class="am-slider-desc"><script type="text/javascript" src="https://api.xygeng.cn/openapi/one/get/">
-                        </script></div>
-
+                        <a href="boke.html"><img src="https://api.vvhan.com/api/wallpaper/acg" alt="ACG壁纸" loading="lazy"></a>
+                        <div class="am-slider-desc" id="one-sentence">正在加载每日一句...</div>
                     </li>
-
                     <li>
-                        <a href="boke.html"><img src="Temp-images/bb3.jpg"></a>
+                        <a href="boke.html"><img src="Temp-images/bb3.jpg" alt="轮播图3" loading="lazy"></a>
                         <div class="am-slider-desc">不要太担心 只因为我相信 终会走过这条遥远的道路</div>
-
                     </li>
                     <li>
-                        <a href="boke.html"><img src="Temp-images/bb4.jpg"></a>
+                        <a href="boke.html"><img src="Temp-images/bb4.jpg" alt="轮播图4" loading="lazy"></a>
                         <div class="am-slider-desc">我要送给你好运 就像买可乐 打开瓶盖写着再来一瓶</div>
-
                     </li>
                     <li>
-                        <a href="boke.html"><img src="Temp-images/bb5.jpg"></a>
+                        <a href="boke.html"><img src="Temp-images/bb5.jpg" alt="轮播图5" loading="lazy"></a>
                         <div class="am-slider-desc">今天阴 那又怎样 我可以做你的小太阳啊</div>
                     </li>
                     <li>
-                        <a href="boke.html"><img src="Temp-images/bb6.jpg"></a>
+                        <a href="boke.html"><img src="Temp-images/bb6.jpg" alt="轮播图6" loading="lazy"></a>
                         <div class="am-slider-desc">十年饮冰 难凉热血</div>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="am-u-sm-0 am-u-md-0 am-u-lg-4 padding-none">
-            <div class="star am-container"><span><img src="images/star.png">记录日常</span></div>
+            <div class="star am-container"><span><img src="images/star.png" loading="lazy">记录日常</span></div>
             <ul class="padding-none am-gallery am-avg-sm-2 am-avg-md-4 am-avg-lg-2 am-gallery-overlay" data-am-gallery="{ pureview: true }" >
                 <li>
                     <div class="am-gallery-item">
                         <a href="work.html">
-                            <img src="Temp-images/work.gif">
+                            <img src="Temp-images/work.gif" loading="lazy" alt="记录工作">
                             <h3 class="am-gallery-title">记录工作</h3>
                             <div class="am-gallery-desc">2375-09-26</div>
                         </a>
@@ -136,7 +144,7 @@
                 <li>
                     <div class="am-gallery-item">
                         <a href="jingli.html">
-                            <img src="Temp-images/jinli.gif"远方 有一个地方 那里种有我们的梦想"/>
+                            <img src="Temp-images/jinli.gif" loading="lazy" alt="记录经历"/>
                             <h3 class="am-gallery-title">记录经历</h3>
                             <div class="am-gallery-desc">2375-09-26</div>
                         </a>
@@ -145,7 +153,7 @@
                 <li>
                     <div class="am-gallery-item">
                         <a href="food.html">
-                            <img src="Temp-images/food.gif"远方 有一个地方 那里种有我们的梦想"/>
+                            <img src="Temp-images/food.gif" loading="lazy" alt="记录美食"/>
                             <h3 class="am-gallery-title">记录美食</h3>
                             <div class="am-gallery-desc">2375-09-26</div>
                         </a>
@@ -154,7 +162,7 @@
                 <li>
                     <div class="am-gallery-item">
                         <a href="suosui.html">
-                            <img src="Temp-images/suosui.gif"远方 有一个地方 那里种有我们的梦想"/>
+                            <img src="Temp-images/suosui.gif" loading="lazy" alt="记录琐碎"/>
                             <h3 class="am-gallery-title">记录琐碎</h3>
                             <div class="am-gallery-desc">2375-09-26</div>
                         </a>
@@ -182,91 +190,58 @@
                 <ul class="am-list">
                     <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-scrollspy="{animation:'fade'}">
                         <h1 style="text-align:center" class="yanse">文雅一下</h1>
-                        <div class="am-slider-desc"><h3 style="color: #2F0000;" align="center">&nbsp;&nbsp;&nbsp;&nbsp;
-
-                            <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script>
-                            <div id="poem_sentence"></div>
-                            <div id="poem_info"></div>
-                            <script type="text/javascript">
-                                jinrishici.load(function(result) {
-                                    var sentence = document.querySelector("#poem_sentence")
-                                    var info = document.querySelector("#poem_info")
-                                    sentence.innerHTML = result.data.content
-                                    info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》'
-                                });
-                            </script>
-
-                        </h3></div>
+                        <div class="am-slider-desc">
+                            <h3 style="color: #2F0000;" align="center">
+                                <div id="poem_sentence">正在加载今日诗词...</div>
+                                <div id="poem_info"></div>
+                            </h3>
+                        </div>
                     </li>
-
 
                     <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-scrollspy="{animation:'fade'}">
                         <div class="am-u-sm-5 am-list-thumb">
                             <a href="https://weibo.com/u/5603126701?is_all=1">
-                                <img src="https://pic.rmb.bdstatic.com/20ad29c2a476c25195fcdd4e583f9b62.gif" alt="科技教徒"/>
+                                <img src="https://pic.rmb.bdstatic.com/20ad29c2a476c25195fcdd4e583f9b62.gif" alt="科技教徒" loading="lazy"/>
                             </a>
                         </div>
 
                         <div class=" am-u-sm-7 am-list-main">
                             <h3 class="am-list-item-hd"><a href="https://weibo.com/u/5603126701?is_all=1">科技及创新爱好者</a></h3>
-
                             <div class="am-list-item-text">科技教徒，热爱电子相关技术及工业设计爱好者。</div>
-
                         </div>
                     </li>
-
 
                     <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-scrollspy="{animation:'fade'}">
                         <div class="am-u-sm-7 am-list-thumb">
                             <a href="https://gitee.com/liuhaotian1122">
-                                <img src="https://pic.rmb.bdstatic.com/bjh/9941c25e7e23c9d07cdb0de927753add2269.gif" alt="迈克杰克逊"/>
+                                <img src="https://pic.rmb.bdstatic.com/bjh/9941c25e7e23c9d07cdb0de927753add2269.gif" alt="迈克杰克逊" loading="lazy"/>
                             </a>
                         </div>
 
                         <div class=" am-u-sm-5 am-list-main">
                             <h3 class="am-list-item-hd"><a href="https://gitee.com/liuhaotian1122">迈克杰克逊粉丝</a></h3>
-
                             <div class="am-list-item-text">如果世界上有神的话，那就是迈克！</div>
-
                         </div>
                     </li>
 
                     <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-scrollspy="{animation:'fade'}">
                         <div class="am-u-sm-5 am-list-thumb">
                             <a href="https://github.com/liuhaotian1122">
-                                <img src="https://pic.rmb.bdstatic.com/bjh/down/0c6680949f2c6983aba9fdff82ef7ec4.gif" alt="我最喜欢的一张画"/>
+                                <img src="https://pic.rmb.bdstatic.com/bjh/down/0c6680949f2c6983aba9fdff82ef7ec4.gif" alt="我最喜欢的一张画" loading="lazy"/>
                             </a>
                         </div>
 
                         <div class=" am-u-sm-7 am-list-main">
                             <h3 class="am-list-item-hd"><a href="https://github.com/liuhaotian1122">奥特曼坚定维护者</a></h3>
-
                             <div class="am-list-item-text">喜欢西瓜与路边摊，对香菜痴迷,相信光，相信奥特曼。</div>
-
                         </div>
                     </li>
                 </ul>
             </div>
-            <a href="#"><img src="Temp-images/ad2.png" class="am-img-responsive" width="100%"/></a>
-
-
-
-            <!--            <div class="am-hide-sm">
-                            <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default">
-                                <h2 class="am-titlebar-title ">
-                                    预留位置
-                                </h2>
-                                <nav class="am-titlebar-nav">
-                                    <a href="#more" onClick="$('.case').hide();$('#youxi').show();">游戏案例</a>
-                                    <a href="#more" onClick="$('.case').hide();$('#yingxiao').show();">营销案例</a>
-                                    <a href="#more" onClick="$('.case').hide();$('#gongju').show();">工具案例</a>
-                                </nav>
-                            </div>
-                        </div> -->
-
-
+            <a href="#"><img src="Temp-images/ad2.png" class="am-img-responsive" width="100%" loading="lazy" alt="广告"/></a>
         </div>
     </div>
+    
     <div class="am-u-sm-12 am-u-md-12 am-u-lg-4">
         <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default">
             <h2 class="am-titlebar-title ">
@@ -281,13 +256,12 @@
                 <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
                     <div class="am-u-sm-4 am-list-thumb">
                         <a href="https://zz123.com/">
-                            <img src="https://img.mp.sohu.com/upload/20170620/68b9e5f55fdd416a9697c7402cb3d436_th.png" class="face"/>
+                            <img src="https://img.mp.sohu.com/upload/20170620/68b9e5f55fdd416a9697c7402cb3d436_th.png" class="face" loading="lazy" alt="听音乐VIP"/>
                         </a>
                     </div>
 
                     <div class=" am-u-sm-8 am-list-main">
                         <h3 class="am-list-item-hd"><a href="https://zz123.com/">听音乐VIP</a></h3>
-
                         <div class="am-list-item-text">各家音乐可以免费听哟</div>
                     </div>
                 </li>
@@ -295,69 +269,58 @@
                 <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
                     <div class="am-u-sm-4 am-list-thumb">
                         <a href="hotnews.html">
-                            <img src="Temp-images/hotnews.jpg" class="face"/>
+                            <img src="Temp-images/hotnews.jpg" class="face" loading="lazy" alt="今日热榜"/>
                         </a>
                     </div>
 
                     <div class=" am-u-sm-8 am-list-main">
                         <h3 class="am-list-item-hd"><a href="hotnews.html">今日热榜</a></h3>
-
                         <div class="am-list-item-text">聚集众多平台热榜热搜</div>
-
                     </div>
                 </li>
                 <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
                 <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
                     <div class="am-u-sm-4 am-list-thumb">
                         <a href="https://liuhaotian1122.github.io/muyu/">
-                            <img src="Temp-images/cctv.jpg" class="face"/>
+                            <img src="Temp-images/cctv.jpg" class="face" loading="lazy" alt="我的木鱼"/>
                         </a>
                     </div>
 
                     <div class=" am-u-sm-8 am-list-main">
                         <h3 class="am-list-item-hd"><a href="https://liuhaotian1122.github.io/muyu/">我的木鱼</a></h3>
-
                         <div class="am-list-item-text">电子木鱼积攒功德必备</div>
-
                     </div>
                 </li>
                 <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
                 <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
                     <div class="am-u-sm-4 am-list-thumb">
                         <a href="game.html">
-                            <img src="Temp-images/game.jpg" class="face"/>
+                            <img src="Temp-images/game.jpg" class="face" loading="lazy" alt="小游戏"/>
                         </a>
                     </div>
 
                     <div class=" am-u-sm-8 am-list-main">
                         <h3 class="am-list-item-hd"><a href="game.html">小游戏</a></h3>
-
                         <div class="am-list-item-text">基于web前端小游戏</div>
-
                     </div>
                 </li>
             </ul>
         </div>
-        <ul class="am-gallery am-avg-sm-1
-  am-avg-md-1 am-avg-lg-1 am-gallery-default" data-am-gallery="{ pureview: true }" >
+        
+        <ul class="am-gallery am-avg-sm-1 am-avg-md-1 am-avg-lg-1 am-gallery-default" data-am-gallery="{ pureview: true }" >
             <li>
                 <div class="am-gallery-item">
                     <h3 class="am-gallery-title">
-
-                        <h2>&nbsp;&nbsp;&nbsp;<script type="text/javascript" src="https://api.vvhan.com/api/ian?type=js"></script><script>vhan()</script>
-                        </h2>
-
+                        <h2 id="current-time">&nbsp;&nbsp;&nbsp;加载中...</h2>
                     </h3>
                     <div class="am-gallery-desc">
-                        <div class="am-fr"><span id="busuanzi_container_site_uv">
-  本站累计访问量：<span id="busuanzi_value_site_uv"></span>
-</span></div>
+                        <div class="am-fr">
+                            <span id="busuanzi_container_site_uv">本站累计访问量：<span id="busuanzi_value_site_uv">统计中...</span></span>
+                        </div>
                     </div>
-                    </a>
                 </div>
             </li>
         </ul>
-
     </div>
 </div>
 
@@ -374,19 +337,82 @@
         document.write(currentYear);
     </script> 浩天的个人站</a></h6>
 </footer>
+
+<!-- 延迟加载JS -->
+<script>
+    // 关键JS立即加载
+    const loadScript = (src, callback) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        if (callback) script.onload = callback;
+        document.head.appendChild(script);
+    };
+    
+    // 立即加载jQuery
+    loadScript('assets/js/jquery.min.js', () => {
+        // jQuery加载完成后加载其他依赖
+        loadScript('assets/js/amazeui.min.js');
+        loadScript('js/public.js');
+    });
+    
+    // 延迟加载非关键功能
+    window.addEventListener('load', () => {
+        // 延迟加载今日诗词
+        setTimeout(() => {
+            loadScript('https://sdk.jinrishici.com/v2/browser/jinrishici.js', () => {
+                if (typeof jinrishici !== 'undefined') {
+                    jinrishici.load(function(result) {
+                        const sentence = document.querySelector("#poem_sentence");
+                        const info = document.querySelector("#poem_info");
+                        if (sentence && info && result && result.data) {
+                            sentence.innerHTML = result.data.content;
+                            info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》';
+                        }
+                    });
+                }
+            });
+        }, 1000);
+        
+        // 延迟加载每日一句API
+        setTimeout(() => {
+            loadScript('https://api.xygeng.cn/openapi/one/get/', () => {
+                // 每日一句API加载完成
+            });
+        }, 1200);
+        
+        // 延迟加载时间API
+        setTimeout(() => {
+            loadScript('https://api.vvhan.com/api/ian?type=js', () => {
+                if (typeof vhan === 'function') {
+                    try {
+                        vhan();
+                    } catch(e) {
+                        document.getElementById('current-time').innerHTML = '&nbsp;&nbsp;&nbsp;' + new Date().toLocaleString();
+                    }
+                } else {
+                    document.getElementById('current-time').innerHTML = '&nbsp;&nbsp;&nbsp;' + new Date().toLocaleString();
+                }
+            });
+        }, 1500);
+        
+        // 延迟加载访问统计
+        setTimeout(() => {
+            loadScript('//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js');
+        }, 2000);
+    });
+    
+    // 轮播图API图片替换为本地图片（避免外部API延迟）
+    document.addEventListener('DOMContentLoaded', () => {
+        // 如果需要动态背景，可以在页面加载完成后再替换
+        setTimeout(() => {
+            const slides = document.querySelectorAll('.am-slides li');
+            if (slides.length > 0) {
+                // 可以在这里添加动态背景替换逻辑
+                // 但为了性能，建议使用本地图片
+            }
+        }, 3000);
+    });
+</script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
