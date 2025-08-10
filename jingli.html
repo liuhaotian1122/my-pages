@@ -235,6 +235,196 @@
             }
         }
 
+        /* 分页样式 */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            gap: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 5px;
+        }
+
+        .pagination li {
+            display: inline-block;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: block;
+            padding: 8px 12px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            color: #333;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .pagination a:hover {
+            background-color: #e1652f;
+            color: white;
+            border-color: #e1652f;
+        }
+
+        .pagination .current {
+            background-color: #e1652f;
+            color: white;
+            border-color: #e1652f;
+        }
+
+        .pagination .disabled {
+            color: #ccc;
+            cursor: not-allowed;
+            background-color: #f5f5f5;
+        }
+
+        .pagination .disabled:hover {
+            background-color: #f5f5f5;
+            color: #ccc;
+            border-color: #ddd;
+        }
+
+        /* 页面信息 */
+        .page-info {
+            color: #666;
+            font-size: 14px;
+            margin: 0 15px;
+        }
+
+        /* 每页显示数量选择器 */
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+
+        .page-size-selector select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+
+        /* 搜索框 */
+        .experience-search {
+            max-width: 400px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .experience-search input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .experience-search input:focus {
+            border-color: #e1652f;
+        }
+
+        .experience-search button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e1652f;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .experience-search button:hover {
+            background: #d55a2a;
+        }
+
+        /* 经历项目动画 */
+        .work-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .work-section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .work-title {
+            color: #333;
+            border-bottom: 2px solid #e1652f;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .work-info {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #e1652f;
+        }
+
+        .work-info h2 {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* 加载动画 */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e1652f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* 无结果提示 */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            display: none;
+        }
+
+        .no-results .icon {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
         /* 响应式设计 */
         @media (max-width: 768px) {
             .nav-btn {
@@ -278,36 +468,26 @@
                 padding: 6px 12px;
                 max-width: 200px;
             }
-        }
 
-        /* 工作记录样式 */
-        .work-section {
-            margin: 20px 0;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+            .pagination-container {
+                flex-direction: column;
+                gap: 15px;
+            }
 
-        .work-title {
-            color: #333;
-            border-bottom: 2px solid #e1652f;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
+            .pagination a,
+            .pagination span {
+                padding: 6px 10px;
+                min-width: 35px;
+                font-size: 14px;
+            }
 
-        .work-info {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid #e1652f;
-        }
+            .page-info {
+                order: -1;
+            }
 
-        .work-info h2 {
-            margin: 5px 0;
-            font-size: 16px;
-            color: #666;
+            .experience-search {
+                margin: 15px;
+            }
         }
 
         footer {
@@ -338,443 +518,645 @@
 </head>
 
 <body>
-<header class="am-topbar am-topbar-fixed-top wos-header">
-    <div class="am-container">
-        <h1 class="am-topbar-brand">
-            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt=""
-                                                                      loading="lazy"></a>
-        </h1>
+    <header class="am-topbar am-topbar-fixed-top wos-header">
+        <div class="am-container">
+            <h1 class="am-topbar-brand">
+                <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt=""
+                        loading="lazy"></a>
+            </h1>
 
-        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
+            <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
                 data-am-collapse="{target: '#collapse-head'}">
-            <span class="am-sr-only">导航切换</span>
-            <span class="am-icon-bars"></span>
-        </button>
+                <span class="am-sr-only">导航切换</span>
+                <span class="am-icon-bars"></span>
+            </button>
 
-        <div class="am-collapse am-topbar-collapse" id="collapse-head">
-            <ul class="am-nav am-nav-pills am-topbar-nav">
-                <li><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
-                <li><a href="boke.html">博客</a></li>
-                <li class="am-dropdown" data-am-dropdown>
-                    <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
-                        小事 <span class="am-icon-caret-down"></span>
-                    </a>
-                    <ul class="am-dropdown-content">
-                        <li class="am-dropdown-header">最近有些忙呀~</li>
-                        <li><a href="https://liuhaotian1122.gitee.io/haotians-personal-station/">返回旧版</a></li>
-                        <li><a href="http://tool.mkblog.cn/relax/" style="color: red;">
-                            <div id="panel">
-                                <?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30"
-                                                                           viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="48" height="48" fill="white" fill-opacity="0.01" />
-                                <path
-                                        d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z"
-                                        fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel" />
-                                <path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333"
-                                      stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel" />
-                                <path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square"
-                                      stroke-linejoin="bevel" />
-                                <path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square"
-                                      stroke-linejoin="bevel" />
-                            </svg>
-                                点击放松一下
-                        </a></li>
-                    </ul>
-                </li>
-                <li><a href="game.html">游戏</a></li>
-                <li><a href="最近更新.html">更新</a></li>
-            </ul>
-            <div class="am-topbar-right">
-                <a href="https://www.lanzouw.com/b02oefvsf"><button
-                        class="am-btn am-btn-danger am-topbar-btn am-btn-sm"><span
-                        class="am-icon-user"></span>下载文件</button></a>
+            <div class="am-collapse am-topbar-collapse" id="collapse-head">
+                <ul class="am-nav am-nav-pills am-topbar-nav">
+                    <li><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
+                    <li><a href="boke.html">博客</a></li>
+                    <li class="am-dropdown" data-am-dropdown>
+                        <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+                            小事 <span class="am-icon-caret-down"></span>
+                        </a>
+                        <ul class="am-dropdown-content">
+                            <li class="am-dropdown-header">最近有些忙呀~</li>
+                            <li><a href="https://liuhaotian1122.gitee.io/haotians-personal-station/">返回旧版</a></li>
+                            <li><a href="http://tool.mkblog.cn/relax/" style="color: red;">
+                                    <div id="panel">
+                                        <?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30"
+                                            viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                                            <path
+                                                d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z"
+                                                fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel" />
+                                            <path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333"
+                                                stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel" />
+                                            <path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square"
+                                                stroke-linejoin="bevel" />
+                                            <path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square"
+                                                stroke-linejoin="bevel" />
+                                        </svg>
+                                        点击放松一下
+                                </a></li>
+                        </ul>
+                    </li>
+                    <li><a href="game.html">游戏</a></li>
+                    <li><a href="最近更新.html">更新</a></li>
+                </ul>
+                <div class="am-topbar-right">
+                    <a href="https://www.lanzouw.com/b02oefvsf"><button
+                            class="am-btn am-btn-danger am-topbar-btn am-btn-sm"><span
+                                class="am-icon-user"></span>下载文件</button></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 搜索框 -->
+    <div class="experience-search">
+        <input type="text" id="searchInput" placeholder="搜索经历标题或内容...">
+        <button type="button" id="searchBtn">🔍</button>
+    </div>
+
+    <!-- 每页显示数量选择器 -->
+    <div class="page-size-selector">
+        <span>每页显示：</span>
+        <select id="pageSizeSelect">
+            <option value="4">4条</option>
+            <option value="5" selected>5条</option>
+            <option value="6">6条</option>
+            <option value="7">7条</option>
+        </select>
+    </div>
+
+    <!-- 加载动画 -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+    </div>
+
+    <!-- 无结果提示 -->
+    <div class="no-results" id="noResults">
+        <div class="icon">🔍</div>
+        <h3>没有找到相关经历</h3>
+        <p>请尝试其他关键词</p>
+    </div>
+
+    <div class="am-g am-container" id="experienceContainer">
+        <!-- 经历记录将通过JavaScript动态生成 -->
+    </div>
+
+    <!-- 分页控件 -->
+    <div class="pagination-container" id="paginationContainer">
+        <ul class="pagination" id="pagination">
+            <!-- 分页按钮将通过JavaScript动态生成 -->
+        </ul>
+        <div class="page-info" id="pageInfo">
+            <!-- 页面信息将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <!-- 图片查看器模态框 -->
+    <div class="image-viewer" id="imageViewer">
+        <div class="loading" id="imageLoading">
+            <div class="spinner"></div>
+            <div>加载中...</div>
+        </div>
+
+        <div class="viewer-container">
+            <img class="viewer-image" id="viewerImage" alt="查看图片">
+
+            <button class="nav-btn prev" id="prevBtn" title="上一张">‹</button>
+            <button class="nav-btn next" id="nextBtn" title="下一张">›</button>
+
+            <button class="close-btn" id="closeBtn" title="关闭">×</button>
+
+            <div class="image-info" id="imageInfo">
+                <span id="imageTitle">图片标题</span>
+                <span id="imageCounter"> (1/1)</span>
+            </div>
+
+            <div class="thumbnail-nav" id="thumbnailNav">
+                <!-- 缩略图将通过JavaScript动态生成 -->
             </div>
         </div>
     </div>
-</header>
 
-<div class="am-g am-container">
-    <!-- 经历记录1 -->
-    <div class="work-section">
-        <div class="work-title">
-            <h2>经历工作-1</h2>
-        </div>
-        <div class="work-info">
-            <h2>时间：2021.10.4</h2>
-            <h2>地点：贺兰偶遇小景点，进去闲游</h2>
-        </div>
-        <div class="image-gallery" data-gallery="work1">
-            <img src="images/jd1.jpg" width="120" height="110" class="gallery-img" alt="照片1" loading="lazy"
-                 data-title="经历 - 照片1" data-date="2021.8.17">
-            <img src="images/jd2.jpg" width="120" height="110" class="gallery-img" alt="照片2" loading="lazy"
-                 data-title="经历 - 照片2" data-date="2021.8.17">
-            <img src="images/jd3.jpg" width="120" height="110" class="gallery-img" alt="照片3" loading="lazy"
-                 data-title="经历 - 照片3" data-date="2021.8.17">
-        </div>
+    <div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
+        <a href="#top" title="回到顶部">
+            <span class="am-gotop-title">回到顶部</span>
+            <i class="am-gotop-icon am-icon-chevron-up"></i>
+        </a>
     </div>
 
+    <footer>
+        <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a
+                href="https://liuhaotian1122.github.io/my-pages/" target="_blank" title="2025 浩天的个人站">
+                <script>
+                    let currentYear = new Date().getFullYear();
+                    document.write(currentYear);
+                </script> 浩天的个人站
+            </a></h6>
+    </footer>
 
+    <script>
+        // 延迟加载JavaScript
+        const loadScript = (src, callback) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            if (callback) script.onload = callback;
+            document.head.appendChild(script);
+        };
 
+        // 立即加载jQuery
+        loadScript('assets/js/jquery.min.js', () => {
+            loadScript('assets/js/amazeui.min.js');
+            loadScript('js/public.js');
+        });
 
-    <!-- 经历记录2 -->
-    <div class="work-section">
-        <div class="work-title">
-            <h2>经历工作-2</h2>
-        </div>
-        <div class="work-info">
-            <h2>时间：2021.10.20</h2>
-            <h2>记录小可爱王怡宁的日常成长.part1</h2>
-        </div>
-        <div class="image-gallery" data-gallery="work1">
-            <img src="images/wyn0.jpg" width="120" height="110" class="gallery-img" alt="照片1" loading="lazy"
-                 data-title="经历 - 照片1" data-date="2021.8.17">
-            <img src="images/wyn1.jpg" width="120" height="110" class="gallery-img" alt="照片2" loading="lazy"
-                 data-title="经历 - 照片2" data-date="2021.8.17">
-            <img src="images/wyn2.jpg" width="120" height="110" class="gallery-img" alt="照片3" loading="lazy"
-                 data-title="经历 - 照片3" data-date="2021.8.17">
-            <img src="images/wyn3.jpg" width="120" height="110" class="gallery-img" alt="照片4" loading="lazy"
-                 data-title="经历 - 照片4" data-date="2021.8.17">
-        </div>
-    </div>
+        // 经历数据
+        const experienceData = [
+            {
+                id: 1,
+                title: "经历工作-1",
+                time: "2021.10.4",
+                location: "贺兰偶遇小景点，进去闲游",
+                images: ["images/jd1.jpg", "images/jd2.jpg", "images/jd3.jpg"],
+                content: "贺兰偶遇小景点，进去闲游"
+            },
+            {
+                id: 2,
+                title: "经历工作-2",
+                time: "2021.10.20",
+                location: "记录小可爱王怡宁的日常成长.part1",
+                images: ["images/wyn0.jpg", "images/wyn1.jpg", "images/wyn2.jpg", "images/wyn3.jpg"],
+                content: "记录小可爱王怡宁的日常成长.part1"
+            },
+            {
+                id: 3,
+                title: "经历工作-3",
+                time: "2021.12.31",
+                location: "记录小可爱王怡宁的日常成长.part2",
+                images: ["images/w4.jpg", "images/w3.jpg", "images/w2.jpg", "images/w1.jpg"],
+                content: "记录小可爱王怡宁的日常成长.part2"
+            },
+            {
+                id: 4,
+                title: "经历工作-4",
+                time: "2022.1.30",
+                location: "记录小可爱王怡宁的日常成长.part3",
+                images: ["images/w7.jpg", "images/w9.jpg", "images/w8.jpg", "images/w10.jpg"],
+                content: "记录小可爱王怡宁的日常成长.part3"
+            },
+            {
+                id: 5,
+                title: "经历工作-5",
+                time: "2023.1.14",
+                location: "记录小可爱王怡宁的日常成长.part4",
+                images: ["images/w11.jpg", "images/w12.jpg", "images/w13.jpg", "images/w14.jpg"],
+                content: "记录小可爱王怡宁的日常成长.part4"
+            }
+        ];
 
+        // 分页管理类
+        class ExperiencePagination {
+            constructor() {
+                this.currentPage = 1;
+                this.pageSize = 3;
+                this.totalItems = 0;
+                this.filteredData = [...experienceData];
+                this.searchTerm = '';
 
+                this.experienceContainer = document.getElementById('experienceContainer');
+                this.pagination = document.getElementById('pagination');
+                this.pageInfo = document.getElementById('pageInfo');
+                this.searchInput = document.getElementById('searchInput');
+                this.searchBtn = document.getElementById('searchBtn');
+                this.pageSizeSelect = document.getElementById('pageSizeSelect');
+                this.loadingSpinner = document.getElementById('loadingSpinner');
+                this.noResults = document.getElementById('noResults');
 
-
-    <!-- 经历记录3 -->
-    <div class="work-section">
-        <div class="work-title">
-            <h2>经历工作-3</h2>
-        </div>
-        <div class="work-info">
-            <h2>时间：2021.12.31</h2>
-            <h2>记录小可爱王怡宁的日常成长.part2</h2>
-        </div>
-        <div class="image-gallery" data-gallery="work1">
-            <img src="images/w4.jpg" width="120" height="110" class="gallery-img" alt="照片4" loading="lazy"
-                 data-title="经历 - 照片4" data-date="2021.8.17">
-            <img src="images/w3.jpg" width="120" height="110" class="gallery-img" alt="照片3" loading="lazy"
-                 data-title="经历 - 照片3" data-date="2021.8.17">
-            <img src="images/w2.jpg" width="120" height="110" class="gallery-img" alt="照片2" loading="lazy"
-                 data-title="经历 - 照片2" data-date="2021.8.17">
-            <img src="images/w1.jpg" width="120" height="110" class="gallery-img" alt="照片1" loading="lazy"
-                 data-title="经历 - 照片1" data-date="2021.8.17">
-        </div>
-    </div>
-
-
-
-    <!-- 经历记录4 -->
-    <div class="work-section">
-        <div class="work-title">
-            <h2>经历工作-4</h2>
-        </div>
-        <div class="work-info">
-            <h2>时间：2022.1.30</h2>
-            <h2>记录小可爱王怡宁的日常成长.part3</h2>
-        </div>
-        <div class="image-gallery" data-gallery="work1">
-            <img src="images/w7.jpg" width="120" height="110" class="gallery-img" alt="照片1" loading="lazy"
-                 data-title="经历 - 照片1" data-date="2021.8.17">
-            <img src="images/w9.jpg" width="120" height="110" class="gallery-img" alt="照片2" loading="lazy"
-                 data-title="经历 - 照片2" data-date="2021.8.17">
-            <img src="images/w8.jpg" width="120" height="110" class="gallery-img" alt="照片3" loading="lazy"
-                 data-title="经历 - 照片3" data-date="2021.8.17">
-            <img src="images/w10.jpg" width="120" height="110" class="gallery-img" alt="照片4" loading="lazy"
-                 data-title="经历 - 照片4" data-date="2021.8.17">
-        </div>
-    </div>
-
-
-    <!-- 经历记录5 -->
-    <div class="work-section">
-        <div class="work-title">
-            <h2>经历工作-5</h2>
-        </div>
-        <div class="work-info">
-            <h2>时间：2023.1.14</h2>
-            <h2>记录小可爱王怡宁的日常成长.part4</h2>
-        </div>
-        <div class="image-gallery" data-gallery="work1">
-            <img src="images/w11.jpg" width="120" height="110" class="gallery-img" alt="照片1" loading="lazy"
-                 data-title="经历 - 照片1" data-date="2021.8.17">
-            <img src="images/w12.jpg" width="120" height="110" class="gallery-img" alt="照片2" loading="lazy"
-                 data-title="经历 - 照片2" data-date="2021.8.17">
-            <img src="images/w13.jpg" width="120" height="110" class="gallery-img" alt="照片3" loading="lazy"
-                 data-title="经历 - 照片3" data-date="2021.8.17">
-            <img src="images/w14.jpg" width="120" height="110" class="gallery-img" alt="照片4" loading="lazy"
-                 data-title="经历 - 照片4" data-date="2021.8.17">
-        </div>
-    </div>
-
-
-
-
-
-
-
-</div>
-
-
-<!-- 图片查看器模态框 -->
-<div class="image-viewer" id="imageViewer">
-    <div class="loading" id="imageLoading">
-        <div class="spinner"></div>
-        <div>加载中...</div>
-    </div>
-
-    <div class="viewer-container">
-        <img class="viewer-image" id="viewerImage" alt="查看图片">
-
-        <button class="nav-btn prev" id="prevBtn" title="上一张">‹</button>
-        <button class="nav-btn next" id="nextBtn" title="下一张">›</button>
-
-        <button class="close-btn" id="closeBtn" title="关闭">×</button>
-
-        <div class="image-info" id="imageInfo">
-            <span id="imageTitle">图片标题</span>
-            <span id="imageCounter"> (1/1)</span>
-        </div>
-
-        <div class="thumbnail-nav" id="thumbnailNav">
-            <!-- 缩略图将通过JavaScript动态生成 -->
-        </div>
-    </div>
-</div>
-
-<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
-    <a href="#top" title="回到顶部">
-        <span class="am-gotop-title">回到顶部</span>
-        <i class="am-gotop-icon am-icon-chevron-up"></i>
-    </a>
-</div>
-
-<footer>
-    <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a
-            href="https://liuhaotian1122.github.io/my-pages/" target="_blank" title="2025 浩天的个人站">
-        <script>
-            let currentYear = new Date().getFullYear();
-            document.write(currentYear);
-        </script> 浩天的个人站
-    </a></h6>
-</footer>
-
-<script>
-    // 延迟加载JavaScript
-    const loadScript = (src, callback) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = true;
-        if (callback) script.onload = callback;
-        document.head.appendChild(script);
-    };
-
-    // 立即加载jQuery
-    loadScript('assets/js/jquery.min.js', () => {
-        loadScript('assets/js/amazeui.min.js');
-        loadScript('js/public.js');
-    });
-
-    // 图片查看器功能
-    class ImageViewer {
-        constructor() {
-            this.currentImages = [];
-            this.currentIndex = 0;
-            this.isOpen = false;
-
-            this.viewer = document.getElementById('imageViewer');
-            this.viewerImage = document.getElementById('viewerImage');
-            this.imageInfo = document.getElementById('imageInfo');
-            this.imageTitle = document.getElementById('imageTitle');
-            this.imageCounter = document.getElementById('imageCounter');
-            this.thumbnailNav = document.getElementById('thumbnailNav');
-            this.loading = document.getElementById('imageLoading');
-
-            this.prevBtn = document.getElementById('prevBtn');
-            this.nextBtn = document.getElementById('nextBtn');
-            this.closeBtn = document.getElementById('closeBtn');
-
-            this.init();
-        }
-
-        init() {
-            // 为所有图片添加点击事件
-            document.querySelectorAll('.gallery-img').forEach((img, index) => {
-                img.addEventListener('click', (e) => {
-                    const gallery = e.target.closest('[data-gallery]');
-                    const galleryImages = gallery.querySelectorAll('.gallery-img');
-                    const imageIndex = Array.from(galleryImages).indexOf(e.target);
-                    this.openViewer(galleryImages, imageIndex);
-                });
-            });
-
-            // 导航按钮事件
-            this.prevBtn.addEventListener('click', () => this.showPrevious());
-            this.nextBtn.addEventListener('click', () => this.showNext());
-            this.closeBtn.addEventListener('click', () => this.closeViewer());
-
-            // 键盘事件
-            document.addEventListener('keydown', (e) => {
-                if (!this.isOpen) return;
-
-                switch (e.key) {
-                    case 'ArrowLeft':
-                        this.showPrevious();
-                        break;
-                    case 'ArrowRight':
-                        this.showNext();
-                        break;
-                    case 'Escape':
-                        this.closeViewer();
-                        break;
-                }
-            });
-
-            // 点击背景关闭
-            this.viewer.addEventListener('click', (e) => {
-                if (e.target === this.viewer) {
-                    this.closeViewer();
-                }
-            });
-
-            // 触摸滑动支持
-            this.addTouchSupport();
-        }
-
-        openViewer(images, startIndex = 0) {
-            this.currentImages = Array.from(images);
-            this.currentIndex = startIndex;
-            this.isOpen = true;
-
-            this.viewer.classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            this.showImage(this.currentIndex);
-            this.createThumbnails();
-        }
-
-        showImage(index) {
-            if (index < 0 || index >= this.currentImages.length) return;
-
-            this.currentIndex = index;
-            const img = this.currentImages[index];
-
-            // 显示加载动画
-            this.loading.style.display = 'block';
-            this.viewerImage.style.display = 'none';
-
-            // 加载图片
-            const newImg = new Image();
-            newImg.onload = () => {
-                this.viewerImage.src = newImg.src;
-                this.viewerImage.alt = img.alt;
-
-                // 更新信息
-                this.imageTitle.textContent = img.dataset.title || img.alt || '图片';
-                this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
-
-                // 隐藏加载动画，显示图片
-                this.loading.style.display = 'none';
-                this.viewerImage.style.display = 'block';
-
-                // 更新缩略图状态
-                this.updateThumbnails();
-            };
-
-            newImg.onerror = () => {
-                this.loading.style.display = 'none';
-                this.imageTitle.textContent = '图片加载失败';
-                this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
-            };
-
-            newImg.src = img.src;
-
-            // 更新导航按钮状态
-            this.prevBtn.style.display = this.currentImages.length > 1 ? 'block' : 'none';
-            this.nextBtn.style.display = this.currentImages.length > 1 ? 'block' : 'none';
-        }
-
-        showPrevious() {
-            const newIndex = this.currentIndex > 0 ? this.currentIndex - 1 : this.currentImages.length - 1;
-            this.showImage(newIndex);
-        }
-
-        showNext() {
-            const newIndex = this.currentIndex < this.currentImages.length - 1 ? this.currentIndex + 1 : 0;
-            this.showImage(newIndex);
-        }
-
-        closeViewer() {
-            this.isOpen = false;
-            this.viewer.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        createThumbnails() {
-            if (this.currentImages.length <= 1) {
-                this.thumbnailNav.style.display = 'none';
-                return;
+                this.init();
             }
 
-            this.thumbnailNav.style.display = 'flex';
-            this.thumbnailNav.innerHTML = '';
+            init() {
+                this.bindEvents();
+                this.updateData();
+                this.render();
+            }
 
-            this.currentImages.forEach((img, index) => {
-                const thumbnail = document.createElement('img');
-                thumbnail.src = img.src;
-                thumbnail.className = 'thumbnail';
-                thumbnail.alt = `缩略图 ${index + 1}`;
-                thumbnail.addEventListener('click', () => this.showImage(index));
-                this.thumbnailNav.appendChild(thumbnail);
-            });
-        }
+            bindEvents() {
+                // 搜索事件
+                this.searchBtn.addEventListener('click', () => this.handleSearch());
+                this.searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.handleSearch();
+                    }
+                });
 
-        updateThumbnails() {
-            const thumbnails = this.thumbnailNav.querySelectorAll('.thumbnail');
-            thumbnails.forEach((thumb, index) => {
-                thumb.classList.toggle('active', index === this.currentIndex);
-            });
-        }
+                // 每页显示数量变化
+                this.pageSizeSelect.addEventListener('change', (e) => {
+                    this.pageSize = parseInt(e.target.value);
+                    this.currentPage = 1;
+                    this.updateData();
+                    this.render();
+                });
 
-        addTouchSupport() {
-            let startX = 0;
-            let startY = 0;
+                // 实时搜索（可选）
+                this.searchInput.addEventListener('input', (e) => {
+                    clearTimeout(this.searchTimeout);
+                    this.searchTimeout = setTimeout(() => {
+                        this.handleSearch();
+                    }, 500);
+                });
+            }
 
-            this.viewerImage.addEventListener('touchstart', (e) => {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-            });
+            handleSearch() {
+                this.searchTerm = this.searchInput.value.trim().toLowerCase();
+                this.currentPage = 1;
+                this.updateData();
+                this.render();
+            }
 
-            this.viewerImage.addEventListener('touchend', (e) => {
-                if (!startX || !startY) return;
+            updateData() {
+                // 过滤数据
+                if (this.searchTerm) {
+                    this.filteredData = experienceData.filter(exp =>
+                        exp.title.toLowerCase().includes(this.searchTerm) ||
+                        exp.location.toLowerCase().includes(this.searchTerm) ||
+                        exp.content.toLowerCase().includes(this.searchTerm) ||
+                        exp.time.includes(this.searchTerm)
+                    );
+                } else {
+                    this.filteredData = [...experienceData];
+                }
 
-                const endX = e.changedTouches[0].clientX;
-                const endY = e.changedTouches[0].clientY;
+                this.totalItems = this.filteredData.length;
+            }
 
-                const diffX = startX - endX;
-                const diffY = startY - endY;
+            render() {
+                this.showLoading();
 
-                // 水平滑动距离大于垂直滑动距离，且滑动距离足够
-                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-                    if (diffX > 0) {
-                        // 向左滑动，显示下一张
-                        this.showNext();
-                    } else {
-                        // 向右滑动，显示上一张
-                        this.showPrevious();
+                // 模拟加载延迟
+                setTimeout(() => {
+                    this.renderExperienceList();
+                    this.renderPagination();
+                    this.renderPageInfo();
+                    this.hideLoading();
+                    this.reinitImageViewer();
+                }, 300);
+            }
+
+            showLoading() {
+                this.loadingSpinner.style.display = 'block';
+                this.experienceContainer.style.opacity = '0.5';
+                this.noResults.style.display = 'none';
+            }
+
+            hideLoading() {
+                this.loadingSpinner.style.display = 'none';
+                this.experienceContainer.style.opacity = '1';
+            }
+
+            renderExperienceList() {
+                const startIndex = (this.currentPage - 1) * this.pageSize;
+                const endIndex = startIndex + this.pageSize;
+                const currentPageData = this.filteredData.slice(startIndex, endIndex);
+
+                if (currentPageData.length === 0) {
+                    this.experienceContainer.innerHTML = '';
+                    this.noResults.style.display = 'block';
+                    return;
+                }
+
+                this.noResults.style.display = 'none';
+
+                const experienceHTML = currentPageData.map(exp => `
+                    <div class="work-section">
+                        <div class="work-title">
+                            <h2>${exp.title}</h2>
+                        </div>
+                        <div class="work-info">
+                            <h2>时间：${exp.time}</h2>
+                            <h2>地点：${exp.location}</h2>
+                        </div>
+                        <div class="image-gallery" data-gallery="work${exp.id}">
+                            ${exp.images.map((img, index) => `
+                                <img src="${img}" width="120" height="110" class="gallery-img" alt="照片${index + 1}" loading="lazy"
+                                     data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}">
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+
+                this.experienceContainer.innerHTML = experienceHTML;
+
+                // 添加动画效果
+                setTimeout(() => {
+                    const workSections = this.experienceContainer.querySelectorAll('.work-section');
+                    workSections.forEach((section, index) => {
+                        setTimeout(() => {
+                            section.classList.add('show');
+                        }, index * 100);
+                    });
+                }, 50);
+            }
+
+            renderPagination() {
+                const totalPages = Math.ceil(this.totalItems / this.pageSize);
+
+                if (totalPages <= 1) {
+                    this.pagination.innerHTML = '';
+                    return;
+                }
+
+                let paginationHTML = '';
+
+                // 上一页按钮
+                if (this.currentPage > 1) {
+                    paginationHTML += `<li><a href="#" data-page="${this.currentPage - 1}">‹ 上一页</a></li>`;
+                } else {
+                    paginationHTML += `<li><span class="disabled">‹ 上一页</span></li>`;
+                }
+
+                // 页码按钮
+                const startPage = Math.max(1, this.currentPage - 2);
+                const endPage = Math.min(totalPages, this.currentPage + 2);
+
+                if (startPage > 1) {
+                    paginationHTML += `<li><a href="#" data-page="1">1</a></li>`;
+                    if (startPage > 2) {
+                        paginationHTML += `<li><span class="disabled">...</span></li>`;
                     }
                 }
 
-                startX = 0;
-                startY = 0;
-            });
-        }
-    }
+                for (let i = startPage; i <= endPage; i++) {
+                    if (i === this.currentPage) {
+                        paginationHTML += `<li><span class="current">${i}</span></li>`;
+                    } else {
+                        paginationHTML += `<li><a href="#" data-page="${i}">${i}</a></li>`;
+                    }
+                }
 
-    // 页面加载完成后初始化图片查看器
-    document.addEventListener('DOMContentLoaded', () => {
-        new ImageViewer();
-    });
-</script>
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        paginationHTML += `<li><span class="disabled">...</span></li>`;
+                    }
+                    paginationHTML += `<li><a href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+                }
+
+                // 下一页按钮
+                if (this.currentPage < totalPages) {
+                    paginationHTML += `<li><a href="#" data-page="${this.currentPage + 1}">下一页 ›</a></li>`;
+                } else {
+                    paginationHTML += `<li><span class="disabled">下一页 ›</span></li>`;
+                }
+
+                this.pagination.innerHTML = paginationHTML;
+
+                // 绑定分页点击事件
+                this.pagination.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (e.target.tagName === 'A' && e.target.dataset.page) {
+                        this.currentPage = parseInt(e.target.dataset.page);
+                        this.render();
+
+                        // 滚动到顶部
+                        document.querySelector('header').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            }
+
+            renderPageInfo() {
+                const startItem = (this.currentPage - 1) * this.pageSize + 1;
+                const endItem = Math.min(this.currentPage * this.pageSize, this.totalItems);
+                const totalPages = Math.ceil(this.totalItems / this.pageSize);
+
+                if (this.totalItems === 0) {
+                    this.pageInfo.textContent = '';
+                    return;
+                }
+
+                this.pageInfo.textContent = `显示 ${startItem}-${endItem} 条，共 ${this.totalItems} 条 (第 ${this.currentPage}/${totalPages} 页)`;
+            }
+
+            reinitImageViewer() {
+                // 重新初始化图片查看器
+                if (window.imageViewer) {
+                    window.imageViewer.init();
+                }
+            }
+        }
+
+        // 图片查看器功能
+        class ImageViewer {
+            constructor() {
+                this.currentImages = [];
+                this.currentIndex = 0;
+                this.isOpen = false;
+
+                this.viewer = document.getElementById('imageViewer');
+                this.viewerImage = document.getElementById('viewerImage');
+                this.imageInfo = document.getElementById('imageInfo');
+                this.imageTitle = document.getElementById('imageTitle');
+                this.imageCounter = document.getElementById('imageCounter');
+                this.thumbnailNav = document.getElementById('thumbnailNav');
+                this.loading = document.getElementById('imageLoading');
+
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.closeBtn = document.getElementById('closeBtn');
+
+                this.init();
+            }
+
+            init() {
+                // 为所有图片添加点击事件
+                document.querySelectorAll('.gallery-img').forEach((img, index) => {
+                    img.addEventListener('click', (e) => {
+                        const gallery = e.target.closest('[data-gallery]');
+                        const galleryImages = gallery.querySelectorAll('.gallery-img');
+                        const imageIndex = Array.from(galleryImages).indexOf(e.target);
+                        this.openViewer(galleryImages, imageIndex);
+                    });
+                });
+
+                // 导航按钮事件
+                this.prevBtn.addEventListener('click', () => this.showPrevious());
+                this.nextBtn.addEventListener('click', () => this.showNext());
+                this.closeBtn.addEventListener('click', () => this.closeViewer());
+
+                // 键盘事件
+                document.addEventListener('keydown', (e) => {
+                    if (!this.isOpen) return;
+
+                    switch (e.key) {
+                        case 'ArrowLeft':
+                            this.showPrevious();
+                            break;
+                        case 'ArrowRight':
+                            this.showNext();
+                            break;
+                        case 'Escape':
+                            this.closeViewer();
+                            break;
+                    }
+                });
+
+                // 点击背景关闭
+                this.viewer.addEventListener('click', (e) => {
+                    if (e.target === this.viewer) {
+                        this.closeViewer();
+                    }
+                });
+
+                // 触摸滑动支持
+                this.addTouchSupport();
+            }
+
+            openViewer(images, startIndex = 0) {
+                this.currentImages = Array.from(images);
+                this.currentIndex = startIndex;
+                this.isOpen = true;
+
+                this.viewer.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                this.showImage(this.currentIndex);
+                this.createThumbnails();
+            }
+
+            showImage(index) {
+                if (index < 0 || index >= this.currentImages.length) return;
+
+                this.currentIndex = index;
+                const img = this.currentImages[index];
+
+                // 显示加载动画
+                this.loading.style.display = 'block';
+                this.viewerImage.style.display = 'none';
+
+                // 加载图片
+                const newImg = new Image();
+                newImg.onload = () => {
+                    this.viewerImage.src = newImg.src;
+                    this.viewerImage.alt = img.alt;
+
+                    // 更新信息
+                    this.imageTitle.textContent = img.dataset.title || img.alt || '图片';
+                    this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
+
+                    // 隐藏加载动画，显示图片
+                    this.loading.style.display = 'none';
+                    this.viewerImage.style.display = 'block';
+
+                    // 更新缩略图状态
+                    this.updateThumbnails();
+                };
+
+                newImg.onerror = () => {
+                    this.loading.style.display = 'none';
+                    this.imageTitle.textContent = '图片加载失败';
+                    this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
+                };
+
+                newImg.src = img.src;
+
+                // 更新导航按钮状态
+                this.prevBtn.style.display = this.currentImages.length > 1 ? 'block' : 'none';
+                this.nextBtn.style.display = this.currentImages.length > 1 ? 'block' : 'none';
+            }
+
+            showPrevious() {
+                const newIndex = this.currentIndex > 0 ? this.currentIndex - 1 : this.currentImages.length - 1;
+                this.showImage(newIndex);
+            }
+
+            showNext() {
+                const newIndex = this.currentIndex < this.currentImages.length - 1 ? this.currentIndex + 1 : 0;
+                this.showImage(newIndex);
+            }
+
+            closeViewer() {
+                this.isOpen = false;
+                this.viewer.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            createThumbnails() {
+                if (this.currentImages.length <= 1) {
+                    this.thumbnailNav.style.display = 'none';
+                    return;
+                }
+
+                this.thumbnailNav.style.display = 'flex';
+                this.thumbnailNav.innerHTML = '';
+
+                this.currentImages.forEach((img, index) => {
+                    const thumbnail = document.createElement('img');
+                    thumbnail.src = img.src;
+                    thumbnail.className = 'thumbnail';
+                    thumbnail.alt = `缩略图 ${index + 1}`;
+                    thumbnail.addEventListener('click', () => this.showImage(index));
+                    this.thumbnailNav.appendChild(thumbnail);
+                });
+            }
+
+            updateThumbnails() {
+                const thumbnails = this.thumbnailNav.querySelectorAll('.thumbnail');
+                thumbnails.forEach((thumb, index) => {
+                    thumb.classList.toggle('active', index === this.currentIndex);
+                });
+            }
+
+            addTouchSupport() {
+                let startX = 0;
+                let startY = 0;
+
+                this.viewerImage.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                });
+
+                this.viewerImage.addEventListener('touchend', (e) => {
+                    if (!startX || !startY) return;
+
+                    const endX = e.changedTouches[0].clientX;
+                    const endY = e.changedTouches[0].clientY;
+
+                    const diffX = startX - endX;
+                    const diffY = startY - endY;
+
+                    // 水平滑动距离大于垂直滑动距离，且滑动距离足够
+                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+                        if (diffX > 0) {
+                            // 向左滑动，显示下一张
+                            this.showNext();
+                        } else {
+                            // 向右滑动，显示上一张
+                            this.showPrevious();
+                        }
+                    }
+
+                    startX = 0;
+                    startY = 0;
+                });
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化分页功能
+            window.experiencePagination = new ExperiencePagination();
+
+            // 初始化图片查看器
+            window.imageViewer = new ImageViewer();
+        });
+    </script>
 </body>
 
 </html>
