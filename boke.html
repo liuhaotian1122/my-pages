@@ -2,7 +2,7 @@
 <html class="no-js">
 <head>
     <meta charset="utf-8">
-	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="keywords" content="" />
     <meta name="description" content="" />
@@ -25,28 +25,232 @@
     <meta name="msapplication-TileColor" content="#e1652f">
 
     <link rel="icon" type="image/png" href="images/i/favicon.png">
-    <link rel="stylesheet" href="assets/css/amazeui.min.css">
-    <link rel="stylesheet" href="css/public.css">
-
-    <!--[if (gte IE 9)|!(IE)]><!-->
-    <script src="assets/js/jquery.min.js"></script>
-    <!--<![endif]-->
-    <!--[if lte IE 8 ]>
-    <script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
-    <script src="assets/js/amazeui.ie8polyfill.min.js"></script>
-    <![endif]-->
-    <script src="assets/js/amazeui.min.js"></script>
-    <script src="js/public.js"></script>
-	<script language="JavaScript" src="js/L2Dwidget.0.min.js"></script>
-	<script language="JavaScript" src="js/L2Dwidget.min.js"></script>
+    
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="assets/css/amazeui.min.css" as="style">
+    <link rel="preload" href="css/public.css" as="style">
+    
+    <!-- 关键CSS内联 -->
+    <style>
+        html,body{margin:0 auto;width:100%;overflow-x:hidden;}
+        .am-topbar{background:#333;}
+        
+        /* 分页样式 */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            gap: 10px;
+        }
+        
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 5px;
+        }
+        
+        .pagination li {
+            display: inline-block;
+        }
+        
+        .pagination a, .pagination span {
+            display: block;
+            padding: 8px 12px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            color: #333;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .pagination a:hover {
+            background-color: #e1652f;
+            color: white;
+            border-color: #e1652f;
+        }
+        
+        .pagination .current {
+            background-color: #e1652f;
+            color: white;
+            border-color: #e1652f;
+        }
+        
+        .pagination .disabled {
+            color: #ccc;
+            cursor: not-allowed;
+            background-color: #f5f5f5;
+        }
+        
+        .pagination .disabled:hover {
+            background-color: #f5f5f5;
+            color: #ccc;
+            border-color: #ddd;
+        }
+        
+        /* 页面信息 */
+        .page-info {
+            color: #666;
+            font-size: 14px;
+            margin: 0 15px;
+        }
+        
+        /* 每页显示数量选择器 */
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .page-size-selector select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        /* 搜索框 */
+        .blog-search {
+            max-width: 400px;
+            margin: 20px auto;
+            position: relative;
+        }
+        
+        .blog-search input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .blog-search input:focus {
+            border-color: #e1652f;
+        }
+        
+        .blog-search button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e1652f;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .blog-search button:hover {
+            background: #d55a2a;
+        }
+        
+        /* 博客项目动画 */
+        .blog-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .blog-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 加载动画 */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e1652f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 无结果提示 */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            display: none;
+        }
+        
+        .no-results i {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .pagination-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .pagination a, .pagination span {
+                padding: 6px 10px;
+                min-width: 35px;
+                font-size: 14px;
+            }
+            
+            .page-info {
+                order: -1;
+            }
+            
+            .blog-search {
+                margin: 15px;
+            }
+        }
+        
+        footer{
+            background-color:#222;
+            color:#fff;
+            padding:15px 0 2px;
+            text-align:center;
+            width:100%;
+            margin-top: 40px;
+        }
+        footer a{color:#ddd;}
+        footer a:hover{color:#fff;}
+    </style>
+    
+    <!-- 非关键CSS异步加载 -->
+    <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="assets/css/amazeui.min.css">
+        <link rel="stylesheet" href="css/public.css">
+    </noscript>
 </head>
-<body>
 
+<body>
 <header class="am-topbar am-topbar-fixed-top wos-header">
     <div class="am-container">
         <h1 class="am-topbar-brand">
-            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt=""></a>
+            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt="" loading="lazy"></a>
         </h1>
 
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
@@ -57,18 +261,18 @@
 
         <div class="am-collapse am-topbar-collapse" id="collapse-head">
             <ul class="am-nav am-nav-pills am-topbar-nav">
-                <li class="am-active"><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
-                <li><a href="boke.html">博客</a></li>
+                <li><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
+                <li class="am-active"><a href="boke.html">博客</a></li>
                 <li class="am-dropdown" data-am-dropdown>
                     <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
                         小事 <span class="am-icon-caret-down"></span>
                     </a>
                     <ul class="am-dropdown-content">
                         <li class="am-dropdown-header">最近有些忙呀~</li>
-						<li><a href="https://liuhaotian1122.gitee.io/haotians-personal-station/">返回旧版</a></li>
+                        <li><a href="https://liuhaotian1122.gitee.io/haotians-personal-station/">返回旧版</a></li>
                         <li><a href="http://tool.mkblog.cn/relax/" style="color: red;">
-						<div id="panel"><?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel"/><path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/></svg>
-						点击放松一下</a></li>
+                            <div id="panel"><?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel"/><path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/></svg>
+                            点击放松一下</a></li>
                     </ul>
                 </li>
                 <li><a href="game.html">游戏</a></li>
@@ -79,118 +283,63 @@
             </div>
         </div>
     </div>
-	<script type="text/javascript">
-	    L2Dwidget.init({"display": {
-	        "superSample": 2,
-	        "width": 160,
-	        "height": 240,
-	             "position": "left",
-	                 "hOffset": 0,
-	        "vOffset": 0
-	          }
-	     });
-	</script>
 </header>
+
 <div class="am-container" style="margin-top: 10px">
-    <img src="Temp-images/tad1.png" class="am-img-responsive" alt=""/>
+    <img src="Temp-images/tad1.png" class="am-img-responsive" alt="" loading="lazy"/>
 </div>
-<div class="star am-container mcenter"><span><img src="images/star.png">阅读博客</span></div>
+
+<div class="star am-container mcenter"><span><img src="images/star.png" loading="lazy">阅读博客</span></div>
+
+<!-- 搜索框 -->
+<div class="blog-search">
+    <input type="text" id="searchInput" placeholder="搜索博客标题或内容...">
+    <button type="button" id="searchBtn"><i class="fa fa-search"></i></button>
+</div>
+
+<!-- 每页显示数量选择器 -->
+<div class="page-size-selector">
+    <span>每页显示：</span>
+    <select id="pageSizeSelect">
+        <option value="4">4篇</option>
+        <option value="6" selected>6篇</option>
+        <option value="8">8篇</option>
+        <option value="12">12篇</option>
+    </select>
+</div>
+
+<!-- 加载动画 -->
+<div class="loading-spinner" id="loadingSpinner">
+    <div class="spinner"></div>
+    <p>加载中...</p>
+</div>
+
+<!-- 无结果提示 -->
+<div class="no-results" id="noResults">
+    <i class="fa fa-search"></i>
+    <h3>没有找到相关博客</h3>
+    <p>请尝试其他关键词</p>
+</div>
+
 <div class="am-container events">
-    <ul data-am-widget="gallery" class="am-gallery am-avg-sm-1 am-avg-md-2 am-avg-lg-2 am-gallery-bordered" data-am-gallery="{  }" >
-        <li>
-            <div class="am-gallery-item">
-				    <a href="http://s.amazeui.org/media/i/demos/bing-2.jpg" class="">
-					<i class="fa fa-heartbeat" style="font-size:20px;color:red" >1</i>
-                    <a href="真实的高贵.html"><div class="efe">真实的高贵</div>
-                    <p>风平浪静的大海，每个人都是领航员。</p></a>
-                    <div class="am-gallery-desc fee">
-                        <div class="am-fl">宁夏</div>
-                        <div class="am-fr">2021-10-11</div>
-                    </div>
-                </a>
-            </div>
-        </li>
-        <li>
-            <div class="am-gallery-item">
-				    <a href="http://s.amazeui.org/media/i/demos/bing-2.jpg" class="">
-					<i class="fa fa-heartbeat" style="font-size:20px;color:red" >2</i>
-                    <a href="ps操作.html"><div class="efe">PS操作快捷键</div>
-                    <p>工具箱移动工具 【V】 矩形、椭圆选框工具</p></a>
-                    <div class="am-gallery-desc fee">
-                        <div class="am-fl">银川</div>
-                        <div class="am-fr">2021-10-21</div>
-                    </div>
-                </a>
-            </div>
-        </li>
-        <li>
-            <div class="am-gallery-item">
-				    <a href="http://s.amazeui.org/media/i/demos/bing-2.jpg" class="">
-					<i class="fa fa-heartbeat" style="font-size:20px;color:red" >3</i>
-                    <a href="找到自己的命运.html"><div class="efe">找到自己的命运，而不是他人的命运</div>
-                    <p>今天我知道，在世上，最让人畏惧的恰恰是通向自己的道路。</p></a>
-                    <div class="am-gallery-desc fee">
-                        <div class="am-fl">宁夏</div>
-                        <div class="am-fr">2021-11-05</div>
-                    </div>
-                </a>
-            </div>
-        </li>
-        <li>
-            <div class="am-gallery-item">
-				    <a href="http://s.amazeui.org/media/i/demos/bing-2.jpg" class="">
-					<i class="fa fa-heartbeat" style="font-size:20px;color:red" >4</i>
-                    <a href="h5阻止滑动.html"><div class="efe">h5阻止左右滑动</div>
-                    <p>阻止移动端H5开发浏览器默认左右滑动行为.</p></a>
-                    <div class="am-gallery-desc fee">
-                        <div class="am-fl">宁夏</div>
-                        <div class="am-fr">2021-11-11</div>
-                    </div>
-                </a>
-            </div>
-        </li>
-		
-		
-		<li>
-		    <div class="am-gallery-item">
-				    <a href="http://s.amazeui.org/media/i/demos/bing-2.jpg" class="">
-					<i class="fa fa-heartbeat" style="font-size:20px;color:red" >5</i>
-		            <a href="一些工具.html"><div class="efe">一些工具</div>
-		            <p>搜集一些好用的工具，帮助你们快速生产。</p></a>
-		            <div class="am-gallery-desc fee">
-		                <div class="am-fl">宁夏</div>
-		                <div class="am-fr">2021-11-21</div>
-		            </div>
-		        </a>
-		    </div>
-		</li>
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+    <ul id="blogList" data-am-widget="gallery" class="am-gallery am-avg-sm-1 am-avg-md-2 am-avg-lg-2 am-gallery-bordered" data-am-gallery="{}">
+        <!-- 博客列表将通过JavaScript动态生成 -->
     </ul>
-    <div class="am-fr"></div>
-    <button type="button" class="am-btn am-btn-default am-btn-block" style="margin: 20px 0">更多博客</button>
+    
+    <!-- 分页控件 -->
+    <div class="pagination-container" id="paginationContainer">
+        <ul class="pagination" id="pagination">
+            <!-- 分页按钮将通过JavaScript动态生成 -->
+        </ul>
+        <div class="page-info" id="pageInfo">
+            <!-- 页面信息将通过JavaScript动态生成 -->
+        </div>
+    </div>
 </div>
-<div class="star am-container mcenter"><span><img src="images/star.png">好文链接</span></div>
+
+<div class="star am-container mcenter"><span><img src="images/star.png" loading="lazy">好文链接</span></div>
 <div class="am-container">
-    <ul data-am-widget="gallery" class="am-gallery am-avg-sm-2 am-avg-md-3 am-avg-lg-3 am-gallery-default" data-am-gallery="{ pureview: true }" >
+    <ul data-am-widget="gallery" class="am-gallery am-avg-sm-2 am-avg-md-3 am-avg-lg-3 am-gallery-default" data-am-gallery="{ pureview: true }">
         <li>
             <div class="am-gallery-item">
                 <a href="http://s.amazeui.org/media/i/demos/bing-1.jpg" class="">
@@ -201,8 +350,7 @@
                 </a>
             </div>
         </li>
-		
-		
+        
         <li>
             <div class="am-gallery-item">
                 <a href="http://s.amazeui.org/media/i/demos/bing-1.jpg" class="">
@@ -213,19 +361,10 @@
                 </a>
             </div>
         </li>
-		
-		
-		
-		
-		
-		
-		
     </ul>
-    <div class="am-fr"></div>
-    <button type="button" class="am-btn am-btn-default am-btn-block" style="margin: 20px 0">更多文章</button>
 </div>
 
-<div data-am-widget="gotop" class="am-gotop am-gotop-fixed" >
+<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
     <a href="#top" title="回到顶部">
         <span class="am-gotop-title">回到顶部</span>
         <i class="am-gotop-icon am-icon-chevron-up"></i>
@@ -233,12 +372,370 @@
 </div>
 
 <footer>
-                <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a href="https://liuhaotian1122.github.io/my-pages/" target="_blank" title="2022 浩天的个人站"><script>
-                    let currentYear = new Date().getFullYear();
-                    document.write(currentYear);
-</script> 浩天的个人站</a></h6>
+    <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a href="https://liuhaotian1122.github.io/my-pages/" target="_blank" title="2025 浩天的个人站"><script>
+        let currentYear = new Date().getFullYear();
+        document.write(currentYear);
+    </script> 浩天的个人站</a></h6>
 </footer>
+
+<script>
+// 延迟加载JavaScript
+const loadScript = (src, callback) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    if (callback) script.onload = callback;
+    document.head.appendChild(script);
+};
+
+// 立即加载jQuery
+loadScript('assets/js/jquery.min.js', () => {
+    loadScript('assets/js/amazeui.min.js');
+    loadScript('js/public.js');
+    
+    // 延迟加载Live2D
+    setTimeout(() => {
+        loadScript('js/L2Dwidget.0.min.js', () => {
+            loadScript('js/L2Dwidget.min.js', () => {
+                if (typeof L2Dwidget !== 'undefined') {
+                    L2Dwidget.init({
+                        "display": {
+                            "superSample": 2,
+                            "width": 160,
+                            "height": 240,
+                            "position": "left",
+                            "hOffset": 0,
+                            "vOffset": 0
+                        }
+                    });
+                }
+            });
+        });
+    }, 2000);
+});
+
+// 博客数据
+const blogData = [
+    {
+        id: 1,
+        title: "真实的高贵",
+        description: "风平浪静的大海，每个人都是领航员。",
+        location: "宁夏",
+        date: "2021-10-11",
+        url: "真实的高贵.html",
+        tags: ["哲学", "人生"]
+    },
+    {
+        id: 2,
+        title: "PS操作快捷键",
+        description: "工具箱移动工具 【V】 矩形、椭圆选框工具",
+        location: "银川",
+        date: "2021-10-21",
+        url: "ps操作.html",
+        tags: ["技术", "设计"]
+    },
+    {
+        id: 3,
+        title: "找到自己的命运，而不是他人的命运",
+        description: "今天我知道，在世上，最让人畏惧的恰恰是通向自己的道路。",
+        location: "宁夏",
+        date: "2021-11-05",
+        url: "找到自己的命运.html",
+        tags: ["哲学", "成长"]
+    },
+    {
+        id: 4,
+        title: "h5阻止左右滑动",
+        description: "阻止移动端H5开发浏览器默认左右滑动行为.",
+        location: "宁夏",
+        date: "2021-11-11",
+        url: "h5阻止滑动.html",
+        tags: ["技术", "前端"]
+    },
+    {
+        id: 5,
+        title: "一些工具",
+        description: "搜集一些好用的工具，帮助你们快速生产。",
+        location: "宁夏",
+        date: "2021-11-21",
+        url: "一些工具.html",
+        tags: ["工具", "效率"]
+    },
+    // 可以继续添加更多博客数据
+    {
+        id: 6,
+        title: "JavaScript进阶技巧",
+        description: "分享一些JavaScript的高级用法和技巧。",
+        location: "银川",
+        date: "2021-12-01",
+        url: "#",
+        tags: ["技术", "JavaScript"]
+    },
+    {
+        id: 7,
+        title: "CSS布局最佳实践",
+        description: "现代CSS布局技术的深入探讨。",
+        location: "宁夏",
+        date: "2021-12-15",
+        url: "#",
+        tags: ["技术", "CSS"]
+    },
+    {
+        id: 8,
+        title: "人生感悟随笔",
+        description: "记录生活中的点点滴滴和思考。",
+        location: "银川",
+        date: "2022-01-10",
+        url: "#",
+        tags: ["生活", "感悟"]
+    },
+    {
+        id: 9,
+        title: "前端性能优化指南",
+        description: "全面的前端性能优化策略和实践。",
+        location: "宁夏",
+        date: "2022-02-20",
+        url: "#",
+        tags: ["技术", "性能"]
+    },
+    {
+        id: 10,
+        title: "设计思维与用户体验",
+        description: "探讨设计思维在产品开发中的应用。",
+        location: "银川",
+        date: "2022-03-15",
+        url: "#",
+        tags: ["设计", "UX"]
+    }
+];
+
+// 分页管理类
+class BlogPagination {
+    constructor() {
+        this.currentPage = 1;
+        this.pageSize = 6;
+        this.totalItems = 0;
+        this.filteredData = [...blogData];
+        this.searchTerm = '';
+        
+        this.blogList = document.getElementById('blogList');
+        this.pagination = document.getElementById('pagination');
+        this.pageInfo = document.getElementById('pageInfo');
+        this.searchInput = document.getElementById('searchInput');
+        this.searchBtn = document.getElementById('searchBtn');
+        this.pageSizeSelect = document.getElementById('pageSizeSelect');
+        this.loadingSpinner = document.getElementById('loadingSpinner');
+        this.noResults = document.getElementById('noResults');
+        
+        this.init();
+    }
+    
+    init() {
+        this.bindEvents();
+        this.updateData();
+        this.render();
+    }
+    
+    bindEvents() {
+        // 搜索事件
+        this.searchBtn.addEventListener('click', () => this.handleSearch());
+        this.searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.handleSearch();
+            }
+        });
+        
+        // 每页显示数量变化
+        this.pageSizeSelect.addEventListener('change', (e) => {
+            this.pageSize = parseInt(e.target.value);
+            this.currentPage = 1;
+            this.updateData();
+            this.render();
+        });
+        
+        // 实时搜索（可选）
+        this.searchInput.addEventListener('input', (e) => {
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                this.handleSearch();
+            }, 500);
+        });
+    }
+    
+    handleSearch() {
+        this.searchTerm = this.searchInput.value.trim().toLowerCase();
+        this.currentPage = 1;
+        this.updateData();
+        this.render();
+    }
+    
+    updateData() {
+        // 过滤数据
+        if (this.searchTerm) {
+            this.filteredData = blogData.filter(blog => 
+                blog.title.toLowerCase().includes(this.searchTerm) ||
+                blog.description.toLowerCase().includes(this.searchTerm) ||
+                blog.tags.some(tag => tag.toLowerCase().includes(this.searchTerm))
+            );
+        } else {
+            this.filteredData = [...blogData];
+        }
+        
+        this.totalItems = this.filteredData.length;
+    }
+    
+    render() {
+        this.showLoading();
+        
+        // 模拟加载延迟
+        setTimeout(() => {
+            this.renderBlogList();
+            this.renderPagination();
+            this.renderPageInfo();
+            this.hideLoading();
+        }, 300);
+    }
+    
+    showLoading() {
+        this.loadingSpinner.style.display = 'block';
+        this.blogList.style.opacity = '0.5';
+        this.noResults.style.display = 'none';
+    }
+    
+    hideLoading() {
+        this.loadingSpinner.style.display = 'none';
+        this.blogList.style.opacity = '1';
+    }
+    
+    renderBlogList() {
+        const startIndex = (this.currentPage - 1) * this.pageSize;
+        const endIndex = startIndex + this.pageSize;
+        const currentPageData = this.filteredData.slice(startIndex, endIndex);
+        
+        if (currentPageData.length === 0) {
+            this.blogList.innerHTML = '';
+            this.noResults.style.display = 'block';
+            return;
+        }
+        
+        this.noResults.style.display = 'none';
+        
+        const blogHTML = currentPageData.map(blog => `
+            <li class="blog-item">
+                <div class="am-gallery-item">
+                    <a href="http://s.amazeui.org/media/i/demos/bing-2.jpg" class="">
+                        <i class="fa fa-heartbeat" style="font-size:20px;color:red">${blog.id}</i>
+                        <a href="${blog.url}">
+                            <div class="efe">${blog.title}</div>
+                            <p>${blog.description}</p>
+                        </a>
+                        <div class="am-gallery-desc fee">
+                            <div class="am-fl">${blog.location}</div>
+                            <div class="am-fr">${blog.date}</div>
+                        </div>
+                    </a>
+                </div>
+            </li>
+        `).join('');
+        
+        this.blogList.innerHTML = blogHTML;
+        
+        // 添加动画效果
+        setTimeout(() => {
+            const blogItems = this.blogList.querySelectorAll('.blog-item');
+            blogItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('show');
+                }, index * 100);
+            });
+        }, 50);
+    }
+    
+    renderPagination() {
+        const totalPages = Math.ceil(this.totalItems / this.pageSize);
+        
+        if (totalPages <= 1) {
+            this.pagination.innerHTML = '';
+            return;
+        }
+        
+        let paginationHTML = '';
+        
+        // 上一页按钮
+        if (this.currentPage > 1) {
+            paginationHTML += `<li><a href="#" data-page="${this.currentPage - 1}">‹ 上一页</a></li>`;
+        } else {
+            paginationHTML += `<li><span class="disabled">‹ 上一页</span></li>`;
+        }
+        
+        // 页码按钮
+        const startPage = Math.max(1, this.currentPage - 2);
+        const endPage = Math.min(totalPages, this.currentPage + 2);
+        
+        if (startPage > 1) {
+            paginationHTML += `<li><a href="#" data-page="1">1</a></li>`;
+            if (startPage > 2) {
+                paginationHTML += `<li><span class="disabled">...</span></li>`;
+            }
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === this.currentPage) {
+                paginationHTML += `<li><span class="current">${i}</span></li>`;
+            } else {
+                paginationHTML += `<li><a href="#" data-page="${i}">${i}</a></li>`;
+            }
+        }
+        
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                paginationHTML += `<li><span class="disabled">...</span></li>`;
+            }
+            paginationHTML += `<li><a href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+        }
+        
+        // 下一页按钮
+        if (this.currentPage < totalPages) {
+            paginationHTML += `<li><a href="#" data-page="${this.currentPage + 1}">下一页 ›</a></li>`;
+        } else {
+            paginationHTML += `<li><span class="disabled">下一页 ›</span></li>`;
+        }
+        
+        this.pagination.innerHTML = paginationHTML;
+        
+        // 绑定分页点击事件
+        this.pagination.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (e.target.tagName === 'A' && e.target.dataset.page) {
+                this.currentPage = parseInt(e.target.dataset.page);
+                this.render();
+                
+                // 滚动到顶部
+                document.querySelector('.star').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            }
+        });
+    }
+    
+    renderPageInfo() {
+        const startItem = (this.currentPage - 1) * this.pageSize + 1;
+        const endItem = Math.min(this.currentPage * this.pageSize, this.totalItems);
+        const totalPages = Math.ceil(this.totalItems / this.pageSize);
+        
+        if (this.totalItems === 0) {
+            this.pageInfo.textContent = '';
+            return;
+        }
+        
+        this.pageInfo.textContent = `显示 ${startItem}-${endItem} 条，共 ${this.totalItems} 条 (第 ${this.currentPage}/${totalPages} 页)`;
+    }
+}
+
+// 页面加载完成后初始化分页
+document.addEventListener('DOMContentLoaded', () => {
+    new BlogPagination();
+});
+</script>
 </body>
-
 </html>
-
