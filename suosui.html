@@ -24,26 +24,279 @@
     <meta name="msapplication-TileColor" content="#e1652f">
 
     <link rel="icon" type="image/png" href="images/i/favicon.png">
-    <link rel="stylesheet" href="assets/css/amazeui.min.css">
-    <link rel="stylesheet" href="css/public.css">
-
-    <!--[if (gte IE 9)|!(IE)]><!-->
-    <script src="assets/js/jquery.min.js"></script>
-    <!--<![endif]-->
-    <!--[if lte IE 8 ]>
-    <script src="http://libs.baidu.com/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
-    <script src="assets/js/amazeui.ie8polyfill.min.js"></script>
-    <![endif]-->
-    <script src="assets/js/amazeui.min.js"></script>
-    <script src="js/public.js"></script>
+    
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="assets/css/amazeui.min.css" as="style">
+    <link rel="preload" href="css/public.css" as="style">
+    
+    <!-- 关键CSS内联 -->
+    <style>
+        html,body{margin:0 auto;width:100%;overflow-x:hidden;}
+        .am-topbar{background:#333;}
+        
+        /* 分页样式 */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+            gap: 10px;
+        }
+        
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 5px;
+        }
+        
+        .pagination li {
+            display: inline-block;
+        }
+        
+        .pagination a, .pagination span {
+            display: block;
+            padding: 8px 12px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            color: #333;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .pagination a:hover {
+            background-color: #e1652f;
+            color: white;
+            border-color: #e1652f;
+        }
+        
+        .pagination .current {
+            background-color: #e1652f;
+            color: white;
+            border-color: #e1652f;
+        }
+        
+        .pagination .disabled {
+            color: #ccc;
+            cursor: not-allowed;
+            background-color: #f5f5f5;
+        }
+        
+        .pagination .disabled:hover {
+            background-color: #f5f5f5;
+            color: #ccc;
+            border-color: #ddd;
+        }
+        
+        /* 页面信息 */
+        .page-info {
+            color: #666;
+            font-size: 14px;
+            margin: 0 15px;
+        }
+        
+        /* 每页显示数量选择器 */
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        .page-size-selector select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        /* 搜索框 */
+        .suosui-search {
+            max-width: 400px;
+            margin: 20px auto;
+            position: relative;
+        }
+        
+        .suosui-search input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .suosui-search input:focus {
+            border-color: #e1652f;
+        }
+        
+        .suosui-search button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e1652f;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .suosui-search button:hover {
+            background: #d55a2a;
+        }
+        
+        /* 琐碎项目动画 */
+        .suosui-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            margin-bottom: 30px;
+        }
+        
+        .suosui-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 加载动画 */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e1652f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 无结果提示 */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            display: none;
+        }
+        
+        .no-results .icon {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+        
+        /* 琐碎内容样式 */
+        .suosui-content {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .suosui-title {
+            color: #333;
+            border-bottom: 2px solid #e1652f;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .suosui-info {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #e1652f;
+        }
+        
+        .suosui-info h2 {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #666;
+        }
+        
+        .suosui-video {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .suosui-video iframe {
+            width: 100%;
+            max-width: 560px;
+            height: 315px;
+            border-radius: 8px;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .pagination-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .pagination a, .pagination span {
+                padding: 6px 10px;
+                min-width: 35px;
+                font-size: 14px;
+            }
+            
+            .page-info {
+                order: -1;
+            }
+            
+            .suosui-search {
+                margin: 15px;
+            }
+            
+            .suosui-video iframe {
+                height: 200px;
+            }
+        }
+        
+        footer{
+            background-color:#222;
+            color:#fff;
+            padding:15px 0 2px;
+            text-align:center;
+            width:100%;
+            margin-top: 40px;
+        }
+        footer a{color:#ddd;}
+        footer a:hover{color:#fff;}
+    </style>
+    
+    <!-- 非关键CSS异步加载 -->
+    <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="assets/css/amazeui.min.css">
+        <link rel="stylesheet" href="css/public.css">
+    </noscript>
 </head>
 <body>
 
 <header class="am-topbar am-topbar-fixed-top wos-header">
     <div class="am-container">
         <h1 class="am-topbar-brand">
-            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt=""></a>
+            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt="" loading="lazy"></a>
         </h1>
 
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
@@ -54,7 +307,7 @@
 
         <div class="am-collapse am-topbar-collapse" id="collapse-head">
             <ul class="am-nav am-nav-pills am-topbar-nav">
-                <li class="am-active"><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
+                <li><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
                 <li><a href="boke.html">博客</a></li>
                 <li class="am-dropdown" data-am-dropdown>
                     <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
@@ -62,10 +315,10 @@
                     </a>
                     <ul class="am-dropdown-content">
                         <li class="am-dropdown-header">最近有些忙呀~</li>
-						<li><a href="https://liuhaotian1122.gitee.io/haotians-personal-station/">返回旧版</a></li>
+                        <li><a href="https://liuhaotian1122.gitee.io/haotians-personal-station/">返回旧版</a></li>
                         <li><a href="http://tool.mkblog.cn/relax/" style="color: red;">
-						<div id="panel"><?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel"/><path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/></svg>
-						点击放松一下</a></li>
+                            <div id="panel"><?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel"/><path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/></svg>
+                            点击放松一下</a></li>
                     </ul>
                 </li>
                 <li><a href="game.html">游戏</a></li>
@@ -77,163 +330,52 @@
         </div>
     </div>
 </header>
-        <div class="am-u-sm-12 am-u-md-0 am-u-lg-4 padding-none lrad">
-            <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" id="df_title">
-                <h2 class="am-titlebar-title ">
-                    记录琐碎-1
-                </h2>
-            </div>
-            <div id="hdxq">
-                <h2>Something Just Like This</h2>
-                <h2>你好，蜘蛛侠！<br>我就知道你会回来</h2>
-            </div>
-        </div>
+
+<!-- 搜索框 -->
+<div class="suosui-search">
+    <input type="text" id="searchInput" placeholder="搜索琐碎标题或内容...">
+    <button type="button" id="searchBtn">🔍</button>
+</div>
+
+<!-- 每页显示数量选择器 -->
+<div class="page-size-selector">
+    <span>每页显示：</span>
+    <select id="pageSizeSelect">
+        <option value="2">2条</option>
+        <option value="3" selected>3条</option>
+        <option value="4">4条</option>
+        <option value="5">5条</option>
+    </select>
+</div>
+
+<!-- 加载动画 -->
+<div class="loading-spinner" id="loadingSpinner">
+    <div class="spinner"></div>
+    <p>加载中...</p>
+</div>
+
+<!-- 无结果提示 -->
+<div class="no-results" id="noResults">
+    <div class="icon">🔍</div>
+    <h3>没有找到相关琐碎</h3>
+    <p>请尝试其他关键词</p>
+</div>
+
+<div class="am-container" id="suosuiContainer">
+    <!-- 琐碎记录将通过JavaScript动态生成 -->
+</div>
+
+<!-- 分页控件 -->
+<div class="pagination-container" id="paginationContainer">
+    <ul class="pagination" id="pagination">
+        <!-- 分页按钮将通过JavaScript动态生成 -->
+    </ul>
+    <div class="page-info" id="pageInfo">
+        <!-- 页面信息将通过JavaScript动态生成 -->
     </div>
 </div>
 
-<div class="am-g am-container padding-none">
-
-                        <iframe src="//player.bilibili.com/player.html?aid=41032763&bvid=BV1Vt411a7Kr&cid=72076219&page=1" scrolling="no" border="0" frameborder="no" 
-						framespacing="0" allowfullscreen="true"
-                        style="width: 290px; height: 200px; max-width: 100%；align:left; padding:15px 20px;">
-                         </iframe> 
-
-</div>
-
-
-        <div class="am-u-sm-12 am-u-md-0 am-u-lg-4 padding-none lrad">
-            <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" id="df_title">
-                <h2 class="am-titlebar-title ">
-                    记录琐碎-2
-                </h2>
-            </div>
-            <div id="hdxq">
-                <h2>当幸福来敲门</h2>
-                <h2>接受自己父母的平凡，接受自己的平凡，接受自己子女的平凡</h2>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="am-g am-container padding-none">
-  <iframe src="//player.bilibili.com/player.html?aid=975591558&bvid=BV1s44y1b7s2&cid=410405880&page=1"
-  scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" 
-  style="width: 290px; height: 200px; max-width: 100%；align:left; padding:15px 20px;">
-   </iframe>      
-                        
-</div>
-
-
-
-
-
-        <div class="am-u-sm-12 am-u-md-0 am-u-lg-4 padding-none lrad">
-            <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" id="df_title">
-                <h2 class="am-titlebar-title ">
-                    记录琐碎-3
-                </h2>
-            </div>
-            <div id="hdxq">
-                <h2>Man In The Mirror 镜中人 现场版</h2>
-                <h2>Michael Jackson</h2>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="am-g am-container padding-none">
-	
-  <iframe src="//player.bilibili.com/player.html?aid=9796583&bvid=BV12x411S7AC&cid=16196325&page=1" 
-  scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"
-  style="width: 290px; height: 200px; max-width: 100%；align:left; padding:15px 20px;">
-   </iframe>       
-                        
-</div>
-
-
-
-
-
-
-
-
-
-        <div class="am-u-sm-12 am-u-md-0 am-u-lg-4 padding-none lrad">
-            <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" id="df_title">
-                <h2 class="am-titlebar-title ">
-                    记录琐碎-4
-                </h2>
-            </div>
-            <div id="hdxq">
-                <h2>亲爱的达瓦里氏，听说你还有一些事情放不下来。</h2>
-                <h2>达瓦里氏</h2>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="am-g am-container padding-none">
-	
-	
-  <iframe src="//player.bilibili.com/player.html?aid=890607618&bvid=BV1BP4y1h7to&cid=4
-	11313985&page=1" 
-  scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"
-  style="width: 290px; height: 200px; max-width: 100%；align:left; padding:15px 20px;">
-   </iframe>       
-                        
-</div>
-
-
-
-
-<div class="am-u-sm-12 am-u-md-0 am-u-lg-4 padding-none lrad">
-    <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" id="df_title">
-        <h2 class="am-titlebar-title ">
-            记录琐碎-5
-        </h2>
-    </div>
-    <div id="hdxq">
-        <h2>迈克尔杰克逊超长14分钟惊悚音乐片《颤栗》</h2>
-        <h2>Michael Jackson</h2>
-    </div>
-</div>
-</div>
-</div>
-
-<div class="am-g am-container padding-none">
-
-
-    <iframe src="//player.bilibili.com/player.html?aid=475119277&bvid=BV1cK411Z7pd&cid=922388940&page=1"
-            scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"
-            style="width: 290px; height: 200px; max-width: 100%；align:left; padding:15px 20px;">
-    </iframe>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div data-am-widget="gotop" class="am-gotop am-gotop-fixed" >
+<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
     <a href="#top" title="回到顶部">
         <span class="am-gotop-title">回到顶部</span>
         <i class="am-gotop-icon am-icon-chevron-up"></i>
@@ -241,18 +383,345 @@
 </div>
 
 <footer>
-                <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a href="https://liuhaotian1122.github.io/my-pages/" target="_blank" title="2022 浩天的个人站"><script>
-                    let currentYear = new Date().getFullYear();
-                    document.write(currentYear);
-</script> 浩天的个人站</a></h6>
+    <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a href="https://liuhaotian1122.github.io/my-pages/" target="_blank" title="2025 浩天的个人站"><script>
+        let currentYear = new Date().getFullYear();
+        document.write(currentYear);
+    </script> 浩天的个人站</a></h6>
 </footer>
-</body>
-</html>
+
+<script>
+// 延迟加载JavaScript
+const loadScript = (src, callback) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    if (callback) script.onload = callback;
+    document.head.appendChild(script);
+};
+
+// 立即加载jQuery
+loadScript('assets/js/jquery.min.js', () => {
+    loadScript('assets/js/amazeui.min.js');
+    loadScript('js/public.js');
+});
+
+// 琐碎数据
+const suosuiData = [
+    {
+        id: 1,
+        title: "记录琐碎-1",
+        subtitle: "Something Just Like This",
+        description: "你好，蜘蛛侠！我就知道你会回来",
+        videoUrl: "//player.bilibili.com/player.html?aid=41032763&bvid=BV1Vt411a7Kr&cid=72076219&page=1",
+        tags: ["电影", "蜘蛛侠"],
+        date: "2021-08-15"
+    },
+    {
+        id: 2,
+        title: "记录琐碎-2",
+        subtitle: "当幸福来敲门",
+        description: "接受自己父母的平凡，接受自己的平凡，接受自己子女的平凡",
+        videoUrl: "//player.bilibili.com/player.html?aid=975591558&bvid=BV1s44y1b7s2&cid=410405880&page=1",
+        tags: ["电影", "励志"],
+        date: "2021-09-20"
+    },
+    {
+        id: 3,
+        title: "记录琐碎-3",
+        subtitle: "Man In The Mirror 镜中人 现场版",
+        description: "Michael Jackson",
+        videoUrl: "//player.bilibili.com/player.html?aid=9796583&bvid=BV12x411S7AC&cid=16196325&page=1",
+        tags: ["音乐", "Michael Jackson"],
+        date: "2021-10-10"
+    },
+    {
+        id: 4,
+        title: "记录琐碎-4",
+        subtitle: "亲爱的达瓦里氏，听说你还有一些事情放不下来。",
+        description: "达瓦里氏",
+        videoUrl: "//player.bilibili.com/player.html?aid=890607618&bvid=BV1BP4y1h7to&cid=411313985&page=1",
+        tags: ["音乐", "俄语"],
+        date: "2021-11-05"
+    },
+    {
+        id: 5,
+        title: "记录琐碎-5",
+        subtitle: "迈克尔杰克逊超长14分钟惊悚音乐片《颤栗》",
+        description: "Michael Jackson",
+        videoUrl: "//player.bilibili.com/player.html?aid=475119277&bvid=BV1cK411Z7pd&cid=922388940&page=1",
+        tags: ["音乐", "Michael Jackson", "经典"],
+        date: "2021-12-01"
+    },
+    // 可以继续添加更多琐碎数据
+    {
+        id: 6,
+        title: "记录琐碎-6",
+        subtitle: "经典老歌回忆",
+        description: "那些年我们一起听过的歌",
+        videoUrl: "//player.bilibili.com/player.html?aid=123456789&bvid=BV1234567890&cid=123456789&page=1",
+        tags: ["音乐", "怀旧"],
+        date: "2022-01-15"
+    },
+    {
+        id: 7,
+        title: "记录琐碎-7",
+        subtitle: "生活感悟片段",
+        description: "记录生活中的点点滴滴",
+        videoUrl: "//player.bilibili.com/player.html?aid=987654321&bvid=BV0987654321&cid=987654321&page=1",
+        tags: ["生活", "感悟"],
+        date: "2022-02-20"
+    },
+    {
+        id: 8,
+        title: "记录琐碎-8",
+        subtitle: "美好时光记录",
+        description: "珍藏那些美好的瞬间",
+        videoUrl: "//player.bilibili.com/player.html?aid=456789123&bvid=BV4567891230&cid=456789123&page=1",
+        tags: ["回忆", "美好"],
+        date: "2022-03-10"
+    }
+];
+
+// 分页管理类
+class SuosuiPagination {
+    constructor() {
+        this.currentPage = 1;
+        this.pageSize = 3;
+        this.totalItems = 0;
+        this.filteredData = [...suosuiData];
+        this.searchTerm = '';
+        
+        this.suosuiContainer = document.getElementById('suosuiContainer');
+        this.pagination = document.getElementById('pagination');
+        this.pageInfo = document.getElementById('pageInfo');
+        this.searchInput = document.getElementById('searchInput');
+        this.searchBtn = document.getElementById('searchBtn');
+        this.pageSizeSelect = document.getElementById('pageSizeSelect');
+        this.loadingSpinner = document.getElementById('loadingSpinner');
+        this.noResults = document.getElementById('noResults');
+        
+        this.init();
+    }
+    
+    init() {
+        this.bindEvents();
+        this.updateData();
+        this.render();
+    }
+    
+    bindEvents() {
+        // 搜索事件
+        this.searchBtn.addEventListener('click', () => this.handleSearch());
+        this.searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.handleSearch();
+            }
+        });
+        
+        // 每页显示数量变化
+        this.pageSizeSelect.addEventListener('change', (e) => {
+            this.pageSize = parseInt(e.target.value);
+            this.currentPage = 1;
+            this.updateData();
+            this.render();
+        });
+        
+        // 实时搜索（可选）
+        this.searchInput.addEventListener('input', (e) => {
+            clearTimeout(this.searchTimeout);
+            this.searchTimeout = setTimeout(() => {
+                this.handleSearch();
+            }, 500);
+        });
+    }
+    
+    handleSearch() {
+        this.searchTerm = this.searchInput.value.trim().toLowerCase();
+        this.currentPage = 1;
+        this.updateData();
+        this.render();
+    }
+    
+    updateData() {
+        // 过滤数据
+        if (this.searchTerm) {
+            this.filteredData = suosuiData.filter(item => 
+                item.title.toLowerCase().includes(this.searchTerm) ||
+                item.subtitle.toLowerCase().includes(this.searchTerm) ||
+                item.description.toLowerCase().includes(this.searchTerm) ||
+                item.tags.some(tag => tag.toLowerCase().includes(this.searchTerm))
+            );
+        } else {
+            this.filteredData = [...suosuiData];
+        }
+        
+        this.totalItems = this.filteredData.length;
+    }
+    
+    render() {
+        this.showLoading();
+        
+        // 模拟加载延迟
+        setTimeout(() => {
+            this.renderSuosuiList();
+            this.renderPagination();
+            this.renderPageInfo();
+            this.hideLoading();
+        }, 300);
+    }
+    
+    showLoading() {
+        this.loadingSpinner.style.display = 'block';
+        this.suosuiContainer.style.opacity = '0.5';
+        this.noResults.style.display = 'none';
+    }
+    
+    hideLoading() {
+        this.loadingSpinner.style.display = 'none';
+        this.suosuiContainer.style.opacity = '1';
+    }
+    
+    renderSuosuiList() {
+        const startIndex = (this.currentPage - 1) * this.pageSize;
+        const endIndex = startIndex + this.pageSize;
+        const currentPageData = this.filteredData.slice(startIndex, endIndex);
+        
+        if (currentPageData.length === 0) {
+            this.suosuiContainer.innerHTML = '';
+            this.noResults.style.display = 'block';
+            return;
+        }
+        
+        this.noResults.style.display = 'none';
+        
+        const suosuiHTML = currentPageData.map(item => `
+            <div class="suosui-item">
+                <div class="suosui-content">
+                    <div class="suosui-title">
+                        <h2>${item.title}</h2>
+                    </div>
+                    <div class="suosui-info">
+                        <h2>${item.subtitle}</h2>
+                        <h2>${item.description}</h2>
+                        <div style="margin-top: 10px;">
+                            ${item.tags.map(tag => `<span style="background: #e1652f; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-right: 5px;">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="suosui-video">
+                        <iframe src="${item.videoUrl}" 
+                                scrolling="no" border="0" frameborder="no" framespacing="0" 
+                                allowfullscreen="true" loading="lazy">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+        
+        this.suosuiContainer.innerHTML = suosuiHTML;
+        
+        // 添加动画效果
+        setTimeout(() => {
+            const suosuiItems = this.suosuiContainer.querySelectorAll('.suosui-item');
+            suosuiItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('show');
+                }, index * 100);
+            });
+        }, 50);
+    }
+    
+    renderPagination() {
+        const totalPages = Math.ceil(this.totalItems / this.pageSize);
+        
+        if (totalPages <= 1) {
+            this.pagination.innerHTML = '';
+            return;
+        }
+        
+        let paginationHTML = '';
+        
+        // 上一页按钮
+        if (this.currentPage > 1) {
+            paginationHTML += `<li><a href="#" data-page="${this.currentPage - 1}">‹ 上一页</a></li>`;
+        } else {
+            paginationHTML += `<li><span class="disabled">‹ 上一页</span></li>`;
+        }
+        
+        // 页码按钮
+        const startPage = Math.max(1, this.currentPage - 2);
+        const endPage = Math.min(totalPages, this.currentPage + 2);
+        
+        if (startPage > 1) {
+            paginationHTML += `<li><a href="#" data-page="1">1</a></li>`;
+            if (startPage > 2) {
+                paginationHTML += `<li><span class="disabled">...</span></li>`;
+            }
+        }
+        
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === this.currentPage) {
+                paginationHTML += `<li><span class="current">${i}</span></li>`;
+            } else {
+                paginationHTML += `<li><a href="#" data-page="${i}">${i}</a></li>`;
+            }
+        }
+        
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                paginationHTML += `<li><span class="disabled">...</span></li>`;
+            }
+            paginationHTML += `<li><a href="#" data-page="${totalPages}">${totalPages}</a></li>`;
+        }
+        
+        // 下一页按钮
+        if (this.currentPage < totalPages) {
+            paginationHTML += `<li><a href="#" data-page="${this.currentPage + 1}">下一页 ›</a></li>`;
+        } else {
+            paginationHTML += `<li><span class="disabled">下一页 ›</span></li>`;
+        }
+        
+        this.pagination.innerHTML = paginationHTML;
+        
+        // 绑定分页点击事件
+        this.pagination.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (e.target.tagName === 'A' && e.target.dataset.page) {
+                this.currentPage = parseInt(e.target.dataset.page);
+                this.render();
+                
+                // 滚动到顶部
+                document.querySelector('header').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+            }
+        });
+    }
+    
+    renderPageInfo() {
+        const startItem = (this.currentPage - 1) * this.pageSize + 1;
+        const endItem = Math.min(this.currentPage * this.pageSize, this.totalItems);
+        const totalPages = Math.ceil(this.totalItems / this.pageSize);
+        
+        if (this.totalItems === 0) {
+            this.pageInfo.textContent = '';
+            return;
+        }
+        
+        this.pageInfo.textContent = `显示 ${startItem}-${endItem} 条，共 ${this.totalItems} 条 (第 ${this.currentPage}/${totalPages} 页)`;
+    }
+}
+
+// 页面加载完成后初始化分页
+document.addEventListener('DOMContentLoaded', () => {
+    new SuosuiPagination();
+});
+</script>
+
 <!-- 插件依赖Jquery -->
-<!-- <script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script> -->
-<!-- 如果网站无Jquery，则调用上面一句，有的话可以忽略。 -->
 <script src="https://cloudcache.4ce.cn/uxiaohan/Ku/master/static/ImageBox/HanImageBox.js"></script>
 <script>
 $(function () {$("img[src$=jpg],img[src$=gif],img[src$=png],img[src$=jpeg]").addClass("spotlight").each(function () {this.onclick = function () {return hs.expand(this)}});})
-
 </script>
+
+</body>
+</html>
