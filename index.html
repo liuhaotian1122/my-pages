@@ -1,5 +1,6 @@
 <!doctype html>
 <html class="no-js">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,27 +17,544 @@
     <!--Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Amaze UI"/>
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
     <link rel="apple-touch-icon-precomposed" href="images/i/app.png">
     <!--Win8 or 10 -->
     <meta name="msapplication-TileImage" content="images/i/app.png">
     <meta name="msapplication-TileColor" content="#e1652f">
     <link rel="icon" type="image/png" href="images/i/favicon.png">
-    
+
     <!-- 预加载关键资源 -->
     <link rel="preload" href="assets/css/amazeui.min.css" as="style">
     <link rel="preload" href="css/public.css" as="style">
     <link rel="preload" href="assets/js/jquery.min.js" as="script">
-    
+
     <!-- 关键CSS内联 -->
     <style>
         /* 关键渲染路径CSS */
-        html,body{margin:0 auto;width:100%;overflow-x:hidden;}
-        .banner{margin-top:10px;}
-        .am-topbar{background:#333;}
-        .loading{display:flex;justify-content:center;align-items:center;height:200px;color:#666;}
+        html,
+        body {
+            margin: 0 auto;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .banner {
+            margin-top: 10px;
+        }
+
+        .am-topbar {
+            background: #333;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #666;
+        }
+
+        /* 快捷入口卡片美化样式 */
+        .shortcut-cards {
+            padding: 0;
+            margin: 0;
+        }
+
+        .shortcut-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(225, 101, 47, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shortcut-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #e1652f, #ff8a50);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .shortcut-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(225, 101, 47, 0.15);
+            border-color: rgba(225, 101, 47, 0.2);
+        }
+
+        .shortcut-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .shortcut-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .shortcut-card:hover .shortcut-icon {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(225, 101, 47, 0.2);
+        }
+
+        .shortcut-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .shortcut-content {
+            flex: 1;
+            padding-left: 16px;
+        }
+
+        .shortcut-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 6px 0;
+            line-height: 1.3;
+            transition: color 0.3s ease;
+        }
+
+        .shortcut-card:hover .shortcut-title {
+            color: #e1652f;
+        }
+
+        .shortcut-desc {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .shortcut-card-wrapper {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .shortcut-card-wrapper:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* 特殊卡片样式 */
+        .shortcut-card.music-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .shortcut-card.music-card .shortcut-title,
+        .shortcut-card.music-card .shortcut-desc {
+            color: white;
+        }
+
+        .shortcut-card.hot-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .shortcut-card.hot-card .shortcut-title,
+        .shortcut-card.hot-card .shortcut-desc {
+            color: white;
+        }
+
+        .shortcut-card.zen-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .shortcut-card.zen-card .shortcut-title,
+        .shortcut-card.zen-card .shortcut-desc {
+            color: white;
+        }
+
+        .shortcut-card.game-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        /* 分割线美化 */
+        .shortcut-divider {
+            display: none;
+        }
+
+        /* 记录日常卡片美化样式 */
+        .daily-records {
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .daily-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .daily-header img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            filter: brightness(0) invert(1);
+        }
+
+        .daily-header span {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .daily-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .daily-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
+        .daily-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .daily-card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+
+        .daily-card-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+
+        .daily-card:hover .daily-card-image {
+            transform: scale(1.1);
+        }
+
+        .daily-card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+        }
+
+        .daily-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .daily-card-desc {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* 特殊主题卡片 */
+        .daily-card.work-card .daily-card-content {
+            background: linear-gradient(transparent, rgba(52, 152, 219, 0.9));
+        }
+
+        .daily-card.experience-card .daily-card-content {
+            background: linear-gradient(transparent, rgba(155, 89, 182, 0.9));
+        }
+
+        .daily-card.food-card .daily-card-content {
+            background: linear-gradient(transparent, rgba(231, 76, 60, 0.9));
+        }
+
+        .daily-card.life-card .daily-card-content {
+            background: linear-gradient(transparent, rgba(46, 204, 113, 0.9));
+        }
+
+        /* 卡片装饰元素 */
+        .daily-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e1652f, #ff8a50);
+            z-index: 2;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .daily-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* 关于我板块美化样式 */
+        .about-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #e1652f;
+        }
+
+        .about-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0;
+            position: relative;
+        }
+
+        .about-title::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(135deg, #e1652f, #ff8a50);
+            border-radius: 3px;
+        }
+
+        .about-nav {
+            color: #e1652f;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #e1652f;
+        }
+
+        .about-nav:hover {
+            background: #e1652f;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+        /* 文雅一下板块 */
+        .poetry-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .poetry-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: white !important;
+        }
+
+        .poetry-content {
+            font-size: 18px;
+            line-height: 1.6;
+            color: white !important;
+        }
+
+        .poetry-info {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        /* 个人特色卡片 */
+        .about-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .about-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(225, 101, 47, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e1652f, #ff8a50);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .about-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(225, 101, 47, 0.15);
+        }
+
+        .about-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .about-card-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .about-card-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .about-card:hover .about-card-image {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(225, 101, 47, 0.2);
+        }
+
+        .about-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-card-info {
+            flex: 1;
+        }
+
+        .about-card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 8px 0;
+            transition: color 0.3s ease;
+        }
+
+        .about-card:hover .about-card-title {
+            color: #e1652f;
+        }
+
+        .about-card-desc {
+            font-size: 15px;
+            color: #6c757d;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* 特殊主题卡片 */
+        .about-card.tech-card .about-card-title {
+            color: #3498db;
+        }
+
+        .about-card.music-card .about-card-title {
+            color: #9b59b6;
+        }
+
+        .about-card.hero-card .about-card-title {
+            color: #e74c3c;
+        }
+
+        /* 广告区域美化 */
+        .about-ad {
+            margin-top: 30px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .about-ad:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .about-ad img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .shortcut-card {
+                padding: 16px;
+                margin-bottom: 12px;
+            }
+
+            .shortcut-icon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .shortcut-content {
+                padding-left: 12px;
+            }
+
+            .shortcut-title {
+                font-size: 16px;
+            }
+
+            .shortcut-desc {
+                font-size: 13px;
+            }
+        }
     </style>
-    
+
     <!-- 非关键CSS异步加载 -->
     <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
@@ -45,375 +563,408 @@
         <link rel="stylesheet" href="css/public.css">
     </noscript>
 </head>
+
 <body>
-<!-- 雪花效果延迟加载 -->
-<script>
-    // 延迟加载雪花效果
-    setTimeout(() => {
-        const script = document.createElement('script');
-        script.src = 'https://api.vvhan.com/api/script/snow';
-        script.async = true;
-        document.head.appendChild(script);
-    }, 2000);
-</script>
+    <!-- 雪花效果延迟加载 -->
+    <script>
+        // 延迟加载雪花效果
+        setTimeout(() => {
+            const script = document.createElement('script');
+            script.src = 'https://api.vvhan.com/api/script/snow';
+            script.async = true;
+            document.head.appendChild(script);
+        }, 2000);
+    </script>
 
-<header class="am-topbar am-topbar-fixed-top wos-header">
-    <div class="am-container">
-        <h1 class="am-topbar-brand">
-            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt="" loading="lazy"></a>
-        </h1>
+    <header class="am-topbar am-topbar-fixed-top wos-header">
+        <div class="am-container">
+            <h1 class="am-topbar-brand">
+                <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt=""
+                        loading="lazy"></a>
+            </h1>
 
-        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
+            <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
                 data-am-collapse="{target: '#collapse-head'}">
-            <span class="am-sr-only">导航切换</span>
-            <span class="am-icon-bars"></span>
-        </button>
+                <span class="am-sr-only">导航切换</span>
+                <span class="am-icon-bars"></span>
+            </button>
 
-        <div class="am-collapse am-topbar-collapse" id="collapse-head">
-            <ul class="am-nav am-nav-pills am-topbar-nav">
-                <li class="am-active"><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
-                <li><a href="boke.html">博客</a></li>
-                <li class="am-dropdown" data-am-dropdown>
-                    <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
-                        小事 <span class="am-icon-caret-down"></span>
-                    </a>
-                    <ul class="am-dropdown-content">
-                        <li class="am-dropdown-header">最近有些忙呀~</li>
-                        <li><a href="https://link3.cc/xuwibanxia">个人站下载</a></li>
-                        <li><a href="http://tool.mkblog.cn/relax/" style="color: red;">
-                            <div id="panel"><?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel"/><path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/></svg>
-                                点击放松一下</a></li>
+            <div class="am-collapse am-topbar-collapse" id="collapse-head">
+                <ul class="am-nav am-nav-pills am-topbar-nav">
+                    <li class="am-active"><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
+                    <li><a href="boke.html">博客</a></li>
+                    <li class="am-dropdown" data-am-dropdown>
+                        <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+                            小事 <span class="am-icon-caret-down"></span>
+                        </a>
+                        <ul class="am-dropdown-content">
+                            <li class="am-dropdown-header">最近有些忙呀~</li>
+                            <li><a href="https://link3.cc/xuwibanxia">个人站下载</a></li>
+                            <li><a href="http://tool.mkblog.cn/relax/" style="color: red;">
+                                    <div id="panel">
+                                        <?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30"
+                                            viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                                            <path
+                                                d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z"
+                                                fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel" />
+                                            <path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333"
+                                                stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel" />
+                                            <path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square"
+                                                stroke-linejoin="bevel" />
+                                            <path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square"
+                                                stroke-linejoin="bevel" />
+                                        </svg>
+                                        点击放松一下
+                                </a></li>
+                        </ul>
+                    </li>
+                    <li><a href="game.html">游戏</a></li>
+                    <li><a href="最近更新.html">更新</a></li>
+                    <li><a href="https://support.qq.com/product/374554">论坛</a></li>
+                </ul>
+                <div class="am-topbar-right">
+                    <a href="https://www.lanzouw.com/b02oefvsf"><button
+                            class="am-btn am-btn-danger am-topbar-btn am-btn-sm"><span
+                                class="am-icon-user"></span>下载文件</button></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!--banner-->
+    <div class="banner">
+        <div class="am-g am-container">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-8">
+                <div data-am-widget="slider" class="am-slider am-slider-c1" data-am-slider='{"directionNav":false}'>
+                    <ul class="am-slides">
+                        <li>
+                            <a href="boke.html"><img src="https://api.vvhan.com/api/bing" alt="必应每日图片"
+                                    loading="lazy"></a>
+                            <div class="am-slider-desc"><span id="jinrishici-sentence">正在加载今日诗词....</span></div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://api.vvhan.com/api/wallpaper/acg" alt="ACG壁纸"
+                                    loading="lazy"></a>
+                            <div class="am-slider-desc" id="one-sentence">正在加载每日一句...</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="Temp-images/bb3.jpg" alt="轮播图3" loading="lazy"></a>
+                            <div class="am-slider-desc">不要太担心 只因为我相信 终会走过这条遥远的道路</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="Temp-images/bb4.jpg" alt="轮播图4" loading="lazy"></a>
+                            <div class="am-slider-desc">我要送给你好运 就像买可乐 打开瓶盖写着再来一瓶</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="Temp-images/bb5.jpg" alt="轮播图5" loading="lazy"></a>
+                            <div class="am-slider-desc">今天阴 那又怎样 我可以做你的小太阳啊</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="Temp-images/bb6.jpg" alt="轮播图6" loading="lazy"></a>
+                            <div class="am-slider-desc">十年饮冰 难凉热血</div>
+                        </li>
                     </ul>
-                </li>
-                <li><a href="game.html">游戏</a></li>
-                <li><a href="最近更新.html">更新</a></li>
-                <li><a href="https://support.qq.com/product/374554">论坛</a></li>
-            </ul>
-            <div class="am-topbar-right">
-                <a href="https://www.lanzouw.com/b02oefvsf"><button class="am-btn am-btn-danger am-topbar-btn am-btn-sm"><span class="am-icon-user"></span>下载文件</button></a>
+                </div>
+            </div>
+            <div class="am-u-sm-0 am-u-md-0 am-u-lg-4 padding-none">
+                <div class="daily-records">
+                    <!-- 记录日常标题 -->
+                    <div class="daily-header">
+                        <img src="images/star.png" loading="lazy" alt="记录日常">
+                        <span>记录日常</span>
+                    </div>
+
+                    <!-- 记录日常卡片网格 -->
+                    <ul class="daily-grid">
+                        <!-- 记录工作卡片 -->
+                        <li class="daily-card work-card">
+                            <a href="work.html" class="daily-card-link">
+                                <img src="Temp-images/work.gif" loading="lazy" alt="记录工作" class="daily-card-image">
+                                <div class="daily-card-content">
+                                    <h3 class="daily-card-title">记录工作</h3>
+                                </div>
+                            </a>
+                        </li>
+
+                        <!-- 记录经历卡片 -->
+                        <li class="daily-card experience-card">
+                            <a href="jingli.html" class="daily-card-link">
+                                <img src="Temp-images/jinli.gif" loading="lazy" alt="记录经历" class="daily-card-image">
+                                <div class="daily-card-content">
+                                    <h3 class="daily-card-title">记录经历</h3>
+                                </div>
+                            </a>
+                        </li>
+
+                        <!-- 记录美食卡片 -->
+                        <li class="daily-card food-card">
+                            <a href="food.html" class="daily-card-link">
+                                <img src="Temp-images/food.gif" loading="lazy" alt="记录美食" class="daily-card-image">
+                                <div class="daily-card-content">
+                                    <h3 class="daily-card-title">记录美食</h3>
+                                </div>
+                            </a>
+                        </li>
+
+                        <!-- 记录琐碎卡片 -->
+                        <li class="daily-card life-card">
+                            <a href="suosui.html" class="daily-card-link">
+                                <img src="Temp-images/suosui.gif" loading="lazy" alt="记录琐碎" class="daily-card-image">
+                                <div class="daily-card-content">
+                                    <h3 class="daily-card-title">记录琐碎</h3>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-</header>
 
-<!--banner-->
-<div class="banner">
-    <div class="am-g am-container">
-        <div class="am-u-sm-12 am-u-md-12 am-u-lg-8">
-            <div data-am-widget="slider" class="am-slider am-slider-c1" data-am-slider='{"directionNav":false}' >
-                <ul class="am-slides">
-                    <li>
-                        <a href="boke.html"><img src="https://api.vvhan.com/api/bing" alt="必应每日图片" loading="lazy"></a>
-                        <div class="am-slider-desc"><span id="jinrishici-sentence">正在加载今日诗词....</span></div>
-                    </li>
-                    <li>
-                        <a href="boke.html"><img src="https://api.vvhan.com/api/wallpaper/acg" alt="ACG壁纸" loading="lazy"></a>
-                        <div class="am-slider-desc" id="one-sentence">正在加载每日一句...</div>
-                    </li>
-                    <li>
-                        <a href="boke.html"><img src="Temp-images/bb3.jpg" alt="轮播图3" loading="lazy"></a>
-                        <div class="am-slider-desc">不要太担心 只因为我相信 终会走过这条遥远的道路</div>
-                    </li>
-                    <li>
-                        <a href="boke.html"><img src="Temp-images/bb4.jpg" alt="轮播图4" loading="lazy"></a>
-                        <div class="am-slider-desc">我要送给你好运 就像买可乐 打开瓶盖写着再来一瓶</div>
-                    </li>
-                    <li>
-                        <a href="boke.html"><img src="Temp-images/bb5.jpg" alt="轮播图5" loading="lazy"></a>
-                        <div class="am-slider-desc">今天阴 那又怎样 我可以做你的小太阳啊</div>
-                    </li>
-                    <li>
-                        <a href="boke.html"><img src="Temp-images/bb6.jpg" alt="轮播图6" loading="lazy"></a>
-                        <div class="am-slider-desc">十年饮冰 难凉热血</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="am-u-sm-0 am-u-md-0 am-u-lg-4 padding-none">
-            <div class="star am-container"><span><img src="images/star.png" loading="lazy">记录日常</span></div>
-            <ul class="padding-none am-gallery am-avg-sm-2 am-avg-md-4 am-avg-lg-2 am-gallery-overlay" data-am-gallery="{ pureview: true }" >
-                <li>
-                    <div class="am-gallery-item">
-                        <a href="work.html">
-                            <img src="Temp-images/work.gif" loading="lazy" alt="记录工作">
-                            <h3 class="am-gallery-title">记录工作</h3>
-                            <div class="am-gallery-desc">2375-09-26</div>
-                        </a>
-                    </div>
-                </li>
-                <li>
-                    <div class="am-gallery-item">
-                        <a href="jingli.html">
-                            <img src="Temp-images/jinli.gif" loading="lazy" alt="记录经历"/>
-                            <h3 class="am-gallery-title">记录经历</h3>
-                            <div class="am-gallery-desc">2375-09-26</div>
-                        </a>
-                    </div>
-                </li>
-                <li>
-                    <div class="am-gallery-item">
-                        <a href="food.html">
-                            <img src="Temp-images/food.gif" loading="lazy" alt="记录美食"/>
-                            <h3 class="am-gallery-title">记录美食</h3>
-                            <div class="am-gallery-desc">2375-09-26</div>
-                        </a>
-                    </div>
-                </li>
-                <li>
-                    <div class="am-gallery-item">
-                        <a href="suosui.html">
-                            <img src="Temp-images/suosui.gif" loading="lazy" alt="记录琐碎"/>
-                            <h3 class="am-gallery-title">记录琐碎</h3>
-                            <div class="am-gallery-desc">2375-09-26</div>
-                        </a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+    <!--news-->
+    <div class="am-g am-container newatype">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-8 oh">
+            <div class="about-section" data-am-scrollspy="{animation:'fade'}">
+                <!-- 关于我标题 -->
+                <div class="about-header">
+                    <h2 class="about-title">关于我</h2>
+                    <a href="https://weibo.com/u/5603126701?is_all=1" class="about-nav">我的微博 &raquo;</a>
+                </div>
 
-<!--news-->
-<div class="am-g am-container newatype">
-    <div class="am-u-sm-12 am-u-md-12 am-u-lg-8 oh">
-        <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" style="border-bottom: 0px; margin-bottom: -10px">
-            <h2 class="am-titlebar-title ">
-                关于我
-            </h2>
-            <nav class="am-titlebar-nav">
-                <a href="https://weibo.com/u/5603126701?is_all=1">我的微博 &raquo;</a>
-            </nav>
-        </div>
-
-        <div data-am-widget="list_news" class="am-list-news am-list-news-default news">
-            <div class="am-list-news-bd">
-                <ul class="am-list">
-                    <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-scrollspy="{animation:'fade'}">
-                        <h1 style="text-align:center" class="yanse">文雅一下</h1>
-                        <div class="am-slider-desc">
-                            <h3 style="color: #2F0000;" align="center">
-                                <div id="poem_sentence">正在加载今日诗词...</div>
-                                <div id="poem_info"></div>
-                            </h3>
-                        </div>
-                    </li>
-
-                    <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-scrollspy="{animation:'fade'}">
-                        <div class="am-u-sm-5 am-list-thumb">
-                            <a href="https://weibo.com/u/5603126701?is_all=1">
-                                <img src="https://pic.rmb.bdstatic.com/20ad29c2a476c25195fcdd4e583f9b62.gif" alt="科技教徒" loading="lazy"/>
-                            </a>
-                        </div>
-
-                        <div class=" am-u-sm-7 am-list-main">
-                            <h3 class="am-list-item-hd"><a href="https://weibo.com/u/5603126701?is_all=1">科技及创新爱好者</a></h3>
-                            <div class="am-list-item-text">科技教徒，热爱电子相关技术及工业设计爱好者。</div>
-                        </div>
-                    </li>
-
-                    <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-scrollspy="{animation:'fade'}">
-                        <div class="am-u-sm-7 am-list-thumb">
-                            <a href="https://gitee.com/liuhaotian1122">
-                                <img src="https://pic.rmb.bdstatic.com/bjh/9941c25e7e23c9d07cdb0de927753add2269.gif" alt="迈克杰克逊" loading="lazy"/>
-                            </a>
-                        </div>
-
-                        <div class=" am-u-sm-5 am-list-main">
-                            <h3 class="am-list-item-hd"><a href="https://gitee.com/liuhaotian1122">迈克杰克逊粉丝</a></h3>
-                            <div class="am-list-item-text">如果世界上有神的话，那就是迈克！</div>
-                        </div>
-                    </li>
-
-                    <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left" data-am-scrollspy="{animation:'fade'}">
-                        <div class="am-u-sm-5 am-list-thumb">
-                            <a href="https://github.com/liuhaotian1122">
-                                <img src="https://pic.rmb.bdstatic.com/bjh/down/0c6680949f2c6983aba9fdff82ef7ec4.gif" alt="我最喜欢的一张画" loading="lazy"/>
-                            </a>
-                        </div>
-
-                        <div class=" am-u-sm-7 am-list-main">
-                            <h3 class="am-list-item-hd"><a href="https://github.com/liuhaotian1122">奥特曼坚定维护者</a></h3>
-                            <div class="am-list-item-text">喜欢西瓜与路边摊，对香菜痴迷,相信光，相信奥特曼。</div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <a href="#"><img src="Temp-images/ad2.png" class="am-img-responsive" width="100%" loading="lazy" alt="广告"/></a>
-        </div>
-    </div>
-    
-    <div class="am-u-sm-12 am-u-md-12 am-u-lg-4">
-        <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default">
-            <h2 class="am-titlebar-title ">
-                快捷入口
-            </h2>
-            <nav class="am-titlebar-nav">
-                <a href="https://gitee.com/liuhaotian1122">GitHub &raquo;</a>
-            </nav>
-        </div>
-        <div data-am-widget="list_news" class="am-list-news am-list-news-default right-bg" data-am-scrollspy="{animation:'fade'}">
-            <ul class="am-list"  >
-                <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
-                    <div class="am-u-sm-4 am-list-thumb">
-                        <a href="https://zz123.com/">
-                            <img src="https://img.mp.sohu.com/upload/20170620/68b9e5f55fdd416a9697c7402cb3d436_th.png" class="face" loading="lazy" alt="听音乐VIP"/>
-                        </a>
-                    </div>
-
-                    <div class=" am-u-sm-8 am-list-main">
-                        <h3 class="am-list-item-hd"><a href="https://zz123.com/">听音乐VIP</a></h3>
-                        <div class="am-list-item-text">各家音乐可以免费听哟</div>
-                    </div>
-                </li>
-                <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-                <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
-                    <div class="am-u-sm-4 am-list-thumb">
-                        <a href="hotnews.html">
-                            <img src="Temp-images/hotnews.jpg" class="face" loading="lazy" alt="今日热榜"/>
-                        </a>
-                    </div>
-
-                    <div class=" am-u-sm-8 am-list-main">
-                        <h3 class="am-list-item-hd"><a href="hotnews.html">今日热榜</a></h3>
-                        <div class="am-list-item-text">聚集众多平台热榜热搜</div>
-                    </div>
-                </li>
-                <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-                <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
-                    <div class="am-u-sm-4 am-list-thumb">
-                        <a href="https://liuhaotian1122.github.io/muyu/">
-                            <img src="Temp-images/cctv.jpg" class="face" loading="lazy" alt="我的木鱼"/>
-                        </a>
-                    </div>
-
-                    <div class=" am-u-sm-8 am-list-main">
-                        <h3 class="am-list-item-hd"><a href="https://liuhaotian1122.github.io/muyu/">我的木鱼</a></h3>
-                        <div class="am-list-item-text">电子木鱼积攒功德必备</div>
-                    </div>
-                </li>
-                <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
-                <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
-                    <div class="am-u-sm-4 am-list-thumb">
-                        <a href="game.html">
-                            <img src="Temp-images/game.jpg" class="face" loading="lazy" alt="小游戏"/>
-                        </a>
-                    </div>
-
-                    <div class=" am-u-sm-8 am-list-main">
-                        <h3 class="am-list-item-hd"><a href="game.html">小游戏</a></h3>
-                        <div class="am-list-item-text">基于web前端小游戏</div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        
-        <ul class="am-gallery am-avg-sm-1 am-avg-md-1 am-avg-lg-1 am-gallery-default" data-am-gallery="{ pureview: true }" >
-            <li>
-                <div class="am-gallery-item">
-                    <h3 class="am-gallery-title">
-                    </h3>
-                    <div class="am-gallery-desc">
-                        <div class="am-fr">
-                            <span id="busuanzi_container_site_uv">本站累计访问量：<span id="busuanzi_value_site_uv">统计中...</span></span>
-                        </div>
+                <!-- 文雅一下板块 -->
+                <div class="poetry-section">
+                    <h1 class="poetry-title">文雅一下</h1>
+                    <div class="poetry-content">
+                        <div id="poem_sentence">正在加载今日诗词...</div>
+                        <div id="poem_info" class="poetry-info"></div>
                     </div>
                 </div>
-            </li>
-        </ul>
+
+                <!-- 个人特色卡片 -->
+                <div class="about-cards">
+                    <!-- 科技及创新爱好者卡片 -->
+                    <div class="about-card tech-card">
+                        <a href="https://weibo.com/u/5603126701?is_all=1" class="about-card-content">
+                            <div class="about-card-image">
+                                <img src="https://pic.rmb.bdstatic.com/20ad29c2a476c25195fcdd4e583f9b62.gif" alt="科技教徒"
+                                    loading="lazy" />
+                            </div>
+                            <div class="about-card-info">
+                                <h3 class="about-card-title">科技及创新爱好者</h3>
+                                <p class="about-card-desc">科技教徒，热爱电子相关技术及工业设计爱好者。</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- 迈克杰克逊粉丝卡片 -->
+                    <div class="about-card music-card">
+                        <a href="https://gitee.com/liuhaotian1122" class="about-card-content">
+                            <div class="about-card-image">
+                                <img src="https://pic.rmb.bdstatic.com/bjh/9941c25e7e23c9d07cdb0de927753add2269.gif"
+                                    alt="迈克杰克逊" loading="lazy" />
+                            </div>
+                            <div class="about-card-info">
+                                <h3 class="about-card-title">迈克杰克逊粉丝</h3>
+                                <p class="about-card-desc">如果世界上有神的话，那就是迈克！</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- 奥特曼坚定维护者卡片 -->
+                    <div class="about-card hero-card">
+                        <a href="https://github.com/liuhaotian1122" class="about-card-content">
+                            <div class="about-card-image">
+                                <img src="https://pic.rmb.bdstatic.com/bjh/down/0c6680949f2c6983aba9fdff82ef7ec4.gif"
+                                    alt="我最喜欢的一张画" loading="lazy" />
+                            </div>
+                            <div class="about-card-info">
+                                <h3 class="about-card-title">奥特曼坚定维护者</h3>
+                                <p class="about-card-desc">喜欢西瓜与路边摊，对香菜痴迷,相信光，相信奥特曼。</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 广告区域 -->
+            </div>
+        </div>
+
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-4">
+            <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default">
+                <h2 class="am-titlebar-title ">
+                    快捷入口
+                </h2>
+                <nav class="am-titlebar-nav">
+                    <a href="https://gitee.com/liuhaotian1122">GitHub &raquo;</a>
+                </nav>
+            </div>
+            <div class="shortcut-cards" data-am-scrollspy="{animation:'fade'}">
+                <!-- 听音乐VIP卡片 -->
+                <div class="shortcut-card music-card">
+                    <a href="https://zz123.com/" class="shortcut-card-wrapper">
+                        <div class="shortcut-icon">
+                            <img src="https://img.mp.sohu.com/upload/20170620/68b9e5f55fdd416a9697c7402cb3d436_th.png"
+                                loading="lazy" alt="听音乐VIP" />
+                        </div>
+                        <div class="shortcut-content">
+                            <h3 class="shortcut-title">听音乐VIP</h3>
+                            <p class="shortcut-desc">各家音乐可以免费听哟</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 今日热榜卡片 -->
+                <div class="shortcut-card hot-card">
+                    <a href="hotnews.html" class="shortcut-card-wrapper">
+                        <div class="shortcut-icon">
+                            <img src="Temp-images/hotnews.jpg" loading="lazy" alt="今日热榜" />
+                        </div>
+                        <div class="shortcut-content">
+                            <h3 class="shortcut-title">今日热榜</h3>
+                            <p class="shortcut-desc">聚集众多平台热榜热搜</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 我的木鱼卡片 -->
+                <div class="shortcut-card zen-card">
+                    <a href="https://liuhaotian1122.github.io/muyu/" class="shortcut-card-wrapper">
+                        <div class="shortcut-icon">
+                            <img src="Temp-images/cctv.jpg" loading="lazy" alt="我的木鱼" />
+                        </div>
+                        <div class="shortcut-content">
+                            <h3 class="shortcut-title">我的木鱼</h3>
+                            <p class="shortcut-desc">电子木鱼积攒功德必备</p>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 小游戏卡片 -->
+                <div class="shortcut-card game-card">
+                    <a href="game.html" class="shortcut-card-wrapper">
+                        <div class="shortcut-icon">
+                            <img src="Temp-images/game.jpg" loading="lazy" alt="小游戏" />
+                        </div>
+                        <div class="shortcut-content">
+                            <h3 class="shortcut-title">小游戏</h3>
+                            <p class="shortcut-desc">基于web前端小游戏</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <ul class="am-gallery am-avg-sm-1 am-avg-md-1 am-avg-lg-1 am-gallery-default"
+                data-am-gallery="{ pureview: true }">
+                <li>
+                    <div class="am-gallery-item">
+                        <h3 class="am-gallery-title">
+                        </h3>
+                        <div class="am-gallery-desc">
+                            <div class="am-fr">
+                                <span id="busuanzi_container_site_uv">本站累计访问量：<span
+                                        id="busuanzi_value_site_uv">统计中...</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
 
-<div data-am-widget="gotop" class="am-gotop am-gotop-fixed" >
-    <a href="#top" title="回到顶部">
-        <span class="am-gotop-title">回到顶部</span>
-        <i class="am-gotop-icon am-icon-hand-o-up"></i>
-    </a>
-</div>
+    <div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
+        <a href="#top" title="回到顶部">
+            <span class="am-gotop-title">回到顶部</span>
+            <i class="am-gotop-icon am-icon-hand-o-up"></i>
+        </a>
+    </div>
 
-<footer>
-    <h6 class="right copy-right"><a href="   ">Copyright</a> &copy; <a href="    " target="_blank" title="2025 浩天的个人站"><script>
-        let currentYear = new Date().getFullYear();
-        document.write(currentYear);
-    </script> 浩天的个人站</a></h6>
-</footer>
+    <footer>
+        <h6 class="right copy-right"><a href="   ">Copyright</a> &copy; <a href="    " target="_blank"
+                title="2025 浩天的个人站">
+                <script>
+                    let currentYear = new Date().getFullYear();
+                    document.write(currentYear);
+                </script> 浩天的个人站
+            </a></h6>
+    </footer>
 
-<!-- 延迟加载JS -->
-<script>
-    // 关键JS立即加载
-    const loadScript = (src, callback) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = true;
-        if (callback) script.onload = callback;
-        document.head.appendChild(script);
-    };
-    
-    // 立即加载jQuery
-    loadScript('assets/js/jquery.min.js', () => {
-        // jQuery加载完成后加载其他依赖
-        loadScript('assets/js/amazeui.min.js');
-        loadScript('js/public.js');
-    });
-    
-    // 延迟加载非关键功能
-    window.addEventListener('load', () => {
-        // 延迟加载今日诗词
-        setTimeout(() => {
-            loadScript('https://sdk.jinrishici.com/v2/browser/jinrishici.js', () => {
-                if (typeof jinrishici !== 'undefined') {
-                    jinrishici.load(function(result) {
-                        const sentence = document.querySelector("#poem_sentence");
-                        const info = document.querySelector("#poem_info");
-                        if (sentence && info && result && result.data) {
-                            sentence.innerHTML = result.data.content;
-                            info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》';
+    <!-- 延迟加载JS -->
+    <script>
+        // 关键JS立即加载
+        const loadScript = (src, callback) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            if (callback) script.onload = callback;
+            document.head.appendChild(script);
+        };
+
+        // 立即加载jQuery
+        loadScript('assets/js/jquery.min.js', () => {
+            // jQuery加载完成后加载其他依赖
+            loadScript('assets/js/amazeui.min.js');
+            loadScript('js/public.js');
+        });
+
+        // 延迟加载非关键功能
+        window.addEventListener('load', () => {
+            // 延迟加载今日诗词
+            setTimeout(() => {
+                loadScript('https://sdk.jinrishici.com/v2/browser/jinrishici.js', () => {
+                    if (typeof jinrishici !== 'undefined') {
+                        jinrishici.load(function (result) {
+                            const sentence = document.querySelector("#poem_sentence");
+                            const info = document.querySelector("#poem_info");
+                            if (sentence && info && result && result.data) {
+                                sentence.innerHTML = result.data.content;
+                                info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》';
+                            }
+                        });
+                    }
+                });
+            }, 1000);
+
+            // 延迟加载每日一句API
+            setTimeout(() => {
+                loadScript('https://api.xygeng.cn/openapi/one/get/', () => {
+                    // 每日一句API加载完成
+                });
+            }, 1200);
+
+            // 延迟加载时间API
+            setTimeout(() => {
+                loadScript('https://api.vvhan.com/api/ian?type=js', () => {
+                    if (typeof vhan === 'function') {
+                        try {
+                            vhan();
+                        } catch (e) {
+                            document.getElementById('current-time').innerHTML = '&nbsp;&nbsp;&nbsp;' + new Date().toLocaleString();
                         }
-                    });
-                }
-            });
-        }, 1000);
-        
-        // 延迟加载每日一句API
-        setTimeout(() => {
-            loadScript('https://api.xygeng.cn/openapi/one/get/', () => {
-                // 每日一句API加载完成
-            });
-        }, 1200);
-        
-        // 延迟加载时间API
-        setTimeout(() => {
-            loadScript('https://api.vvhan.com/api/ian?type=js', () => {
-                if (typeof vhan === 'function') {
-                    try {
-                        vhan();
-                    } catch(e) {
+                    } else {
                         document.getElementById('current-time').innerHTML = '&nbsp;&nbsp;&nbsp;' + new Date().toLocaleString();
                     }
-                } else {
-                    document.getElementById('current-time').innerHTML = '&nbsp;&nbsp;&nbsp;' + new Date().toLocaleString();
+                });
+            }, 1500);
+
+            // 延迟加载访问统计
+            setTimeout(() => {
+                loadScript('//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js');
+            }, 2000);
+        });
+
+        // 轮播图API图片替换为本地图片（避免外部API延迟）
+        document.addEventListener('DOMContentLoaded', () => {
+            // 如果需要动态背景，可以在页面加载完成后再替换
+            setTimeout(() => {
+                const slides = document.querySelectorAll('.am-slides li');
+                if (slides.length > 0) {
+                    // 可以在这里添加动态背景替换逻辑
+                    // 但为了性能，建议使用本地图片
                 }
-            });
-        }, 1500);
-        
-        // 延迟加载访问统计
-        setTimeout(() => {
-            loadScript('//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js');
-        }, 2000);
-    });
-    
-    // 轮播图API图片替换为本地图片（避免外部API延迟）
-    document.addEventListener('DOMContentLoaded', () => {
-        // 如果需要动态背景，可以在页面加载完成后再替换
-        setTimeout(() => {
-            const slides = document.querySelectorAll('.am-slides li');
-            if (slides.length > 0) {
-                // 可以在这里添加动态背景替换逻辑
-                // 但为了性能，建议使用本地图片
-            }
-        }, 3000);
-    });
-</script>
+            }, 3000);
+        });
+    </script>
 </body>
+
 </html>
-
-
