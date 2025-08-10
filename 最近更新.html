@@ -1,5 +1,6 @@
 <!doctype html>
 <html class="no-js">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,24 +18,33 @@
     <!--Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Amaze UI"/>
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
     <link rel="apple-touch-icon-precomposed" href="images/i/app.png">
     <!--Win8 or 10 -->
     <meta name="msapplication-TileImage" content="images/i/app.png">
     <meta name="msapplication-TileColor" content="#e1652f">
 
     <link rel="icon" type="image/png" href="images/i/favicon.png">
-    
+
     <!-- 预加载关键资源 -->
     <link rel="preload" href="assets/css/amazeui.min.css" as="style">
     <link rel="preload" href="css/public.css" as="style">
     <link rel="preload" href="assets/js/jquery.min.js" as="script">
-    
+
     <!-- 关键CSS内联 -->
     <style>
         /* 关键渲染路径CSS */
-        html,body{margin:0 auto;width:100%;overflow-x:hidden;}
-        .am-topbar{background:#333;}
+        html,
+        body {
+            margin: 0 auto;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .am-topbar {
+            background: #333;
+        }
+
         body {
             display: flex;
             flex-direction: column;
@@ -42,20 +52,24 @@
             align-items: center;
             transition: all 0.5s linear;
         }
+
         .qiehuan {
             background-color: #fff;
             color: #000;
         }
+
         button:active {
             box-shadow: none;
             transform: translateY(2px);
         }
+
         .shizhong {
             position: relative;
             width: 200px;
             height: 200px;
             border-radius: 50%;
         }
+
         .shizhong .zhongxindian {
             position: absolute;
             top: 50%;
@@ -66,6 +80,7 @@
             height: 10px;
             background-color: skyblue;
         }
+
         .zhongxindian::after {
             content: '';
             position: absolute;
@@ -77,6 +92,7 @@
             height: 5px;
             background-color: #fff;
         }
+
         .zhizhendaxiao {
             position: absolute;
             top: 50%;
@@ -87,20 +103,24 @@
             transform-origin: bottom center;
             transition: all .4s linear;
         }
+
         .zhizhendaxiao.hour {
             transform: translate(-50%, -100%) rotate(0deg);
             background-color: #fff;
         }
+
         .zhizhendaxiao.minute {
             height: 80px;
             transform: translate(-50%, -100%) rotate(0deg);
             background-color: #fff;
         }
+
         .zhizhendaxiao.seconds {
             height: 90px;
             transform: translate(-50%, -100%) rotate(0deg);
             background-color: #e74c3f;
         }
+
         .time {
             display: flex;
             flex-direction: row;
@@ -111,9 +131,11 @@
             padding: 10px 10px;
             box-shadow: 0 3px 3px #ccc;
         }
+
         .shijian {
             margin-right: 10px;
         }
+
         .data {
             color: #aaa;
             font-size: 12px;
@@ -121,6 +143,7 @@
             text-transform: uppercase;
             margin-top: 10px;
         }
+
         .data .circle {
             border-radius: 50%;
             height: 18px;
@@ -134,17 +157,20 @@
             transition: all 0.5s ease-in;
             font-size: 12px;
         }
+
         .beijingqiehuan {
             background-color: #000;
             color: #fff;
             transition: all .4s linear;
         }
+
         .container ul {
             list-style: none;
             padding: 20px;
             max-width: 800px;
             margin: 20px auto;
         }
+
         .container li {
             margin: 15px 0;
             padding: 15px;
@@ -155,22 +181,240 @@
             align-items: flex-start;
             gap: 10px;
         }
+
         .container li svg {
             flex-shrink: 0;
             margin-top: 2px;
         }
-        footer{
-            background-color:#222;
-            color:#fff;
-            padding:15px 0 2px;
-            text-align:center;
-            width:100%;
+
+        /* 分页样式 */
+        .pagination-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .pagination-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .page-size-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-size-selector select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            color: #333;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #e1652f;
+            color: white;
+            border-color: #e1652f;
+        }
+
+        .pagination button.active {
+            background: #e1652f;
+            color: white;
+            border-color: #e1652f;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            text-align: center;
+            color: #666;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        /* 统计卡片样式 */
+        .stats-card {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: linear-gradient(135deg, #e1652f, #d4541f);
+            border-radius: 20px;
+            padding: 40px 50px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(225, 101, 47, 0.3);
+            width: 90%;
+        }
+
+        .stats-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .stats-icon {
+            font-size: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* 搜索和筛选区域样式 */
+        .search-filter-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 60px 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .search-box input:focus {
+            border-color: #e1652f;
+            box-shadow: 0 0 0 3px rgba(225, 101, 47, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            border: none;
+            background: #e1652f;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #d4541f;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-controls select {
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 14px;
+            background: white;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .filter-controls select:focus,
+        .filter-controls select:hover {
+            border-color: #e1652f;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 36px;
+            }
+
+            .filter-controls {
+                flex-direction: column;
+            }
+
+            .filter-controls select {
+                width: 100%;
+            }
+        }
+
+        footer {
+            background-color: #222;
+            color: #fff;
+            padding: 15px 0 2px;
+            text-align: center;
+            width: 100%;
             margin-top: 40px;
         }
-        footer a{color:#ddd;}
-        footer a:hover{color:#fff;}
+
+        footer a {
+            color: #ddd;
+        }
+
+        footer a:hover {
+            color: #fff;
+        }
     </style>
-    
+
     <!-- 非关键CSS异步加载 -->
     <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
@@ -181,259 +425,679 @@
 </head>
 
 <body>
-<header class="am-topbar am-topbar-fixed-top wos-header">
-    <div class="am-container">
-        <h1 class="am-topbar-brand">
-            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt="" loading="lazy"></a>
-        </h1>
+    <header class="am-topbar am-topbar-fixed-top wos-header">
+        <div class="am-container">
+            <h1 class="am-topbar-brand">
+                <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt=""
+                        loading="lazy"></a>
+            </h1>
 
-        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
+            <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
                 data-am-collapse="{target: '#collapse-head'}">
-            <span class="am-sr-only">导航切换</span>
-            <span class="am-icon-bars"></span>
-        </button>
+                <span class="am-sr-only">导航切换</span>
+                <span class="am-icon-bars"></span>
+            </button>
 
-        <div class="am-collapse am-topbar-collapse" id="collapse-head">
-            <ul class="am-nav am-nav-pills am-topbar-nav">
-                <li><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
-                <li><a href="boke.html">博客</a></li>
-                <li class="am-dropdown" data-am-dropdown>
-                    <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
-                        小事 <span class="am-icon-caret-down"></span>
-                    </a>
-                    <ul class="am-dropdown-content">
-                        <li class="am-dropdown-header">最近有些忙呀~</li>
-                        <li><a href="https://liuhaotian1122.gitee.io/haotians-personal-station/">返回旧版</a></li>
-                        <li><a href="http://tool.mkblog.cn/relax/" style="color: red;">
-                            <div id="panel"><?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><path d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel"/><path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/><path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel"/></svg>
-                            点击放松一下</a></li>
-                    </ul>
-                </li>
-                <li><a href="game.html">游戏</a></li>
-                <li class="am-active"><a href="最近更新.html">更新</a></li>
-            </ul>
-            <div class="am-topbar-right">
-                <a href="https://www.lanzouw.com/b02oefvsf"><button class="am-btn am-btn-danger am-topbar-btn am-btn-sm"><span class="am-icon-user"></span>下载文件</button></a>
+            <div class="am-collapse am-topbar-collapse" id="collapse-head">
+                <ul class="am-nav am-nav-pills am-topbar-nav">
+                    <li><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
+                    <li><a href="boke.html">博客</a></li>
+                    <li class="am-dropdown" data-am-dropdown>
+                        <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
+                            小事 <span class="am-icon-caret-down"></span>
+                        </a>
+                        <ul class="am-dropdown-content">
+                            <li class="am-dropdown-header">最近有些忙呀~</li>
+                            <li><a href="https://liuhaotian1122.gitee.io/haotians-personal-station/">返回旧版</a></li>
+                            <li><a href="http://tool.mkblog.cn/relax/" style="color: red;">
+                                    <div id="panel">
+                                        <?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30"
+                                            viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                                            <path
+                                                d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z"
+                                                fill="#f8e71c" stroke="#333" stroke-width="2" stroke-linejoin="bevel" />
+                                            <path d="M31 31C31 31 29 35 24 35C19 35 17 31 17 31" stroke="#333"
+                                                stroke-width="2" stroke-linecap="square" stroke-linejoin="bevel" />
+                                            <path d="M31 18V22" stroke="#333" stroke-width="2" stroke-linecap="square"
+                                                stroke-linejoin="bevel" />
+                                            <path d="M17 18V22" stroke="#333" stroke-width="2" stroke-linecap="square"
+                                                stroke-linejoin="bevel" />
+                                        </svg>
+                                        点击放松一下
+                                </a></li>
+                        </ul>
+                    </li>
+                    <li><a href="game.html">游戏</a></li>
+                    <li class="am-active"><a href="最近更新.html">更新</a></li>
+                </ul>
+                <div class="am-topbar-right">
+                    <a href="https://www.lanzouw.com/b02oefvsf"><button
+                            class="am-btn am-btn-danger am-topbar-btn am-btn-sm"><span
+                                class="am-icon-user"></span>下载文件</button></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 时钟组件 -->
+    <div class="shizhong beijingqiehuan">
+        <div class="zhongxindian"></div>
+        <div class="hour zhizhendaxiao"></div>
+        <div class="minute zhizhendaxiao"></div>
+        <div class="seconds zhizhendaxiao"></div>
+    </div>
+    <div class="time">
+        <div class="shijian"></div>
+        <div class="shijianduan"></div>
+    </div>
+    <div class="data">
+        <span class="circle"></span>
+    </div>
+
+    <!-- 更新统计卡片 -->
+    <div class="stats-card">
+        <div class="stats-header">
+            <span class="stats-icon">📊</span>
+            <span class="stats-title">更新统计</span>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number" id="totalUpdates">14</div>
+                <div class="stat-label">总更新数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="currentYear">2025</div>
+                <div class="stat-label">当前年份</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="yearUpdates">1</div>
+                <div class="stat-label">本年更新</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="monthUpdates">1</div>
+                <div class="stat-label">月均更新</div>
             </div>
         </div>
     </div>
-</header>
 
-<!-- 时钟组件 -->
-<div class="shizhong beijingqiehuan">
-    <div class="zhongxindian"></div>
-    <div class="hour zhizhendaxiao"></div>
-    <div class="minute zhizhendaxiao"></div>
-    <div class="seconds zhizhendaxiao"></div>
-</div>
-<div class="time">
-    <div class="shijian"></div>
-    <div class="shijianduan"></div>
-</div>
-<div class="data">
-    <span class="circle"></span>
-</div>
+    <!-- 搜索和筛选区域 -->
+    <div class="search-filter-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索更新内容...">
+            <button class="search-btn" onclick="performSearch()">🔍</button>
+        </div>
+        <div class="filter-controls">
+            <select id="yearFilter">
+                <option value="">所有年份</option>
+                <option value="2025" selected>2025年</option>
+                <option value="2023">2023年</option>
+                <option value="2022">2022年</option>
+                <option value="2021">2021年</option>
+            </select>
+            <select id="pageSize">
+                <option value="5">每页5条</option>
+                <option value="8" selected>每页8条</option>
+                <option value="10">每页10条</option>
+                <option value="15">每页15条</option>
+            </select>
+        </div>
+    </div>
 
-<!-- 更新日志 -->
-<div class="container">
-    <ul>
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>记录对工作的描述，删除冗余反馈及联系我板块，调整页面布局（2021.10.28）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>小游戏入口更新2款小游戏，更新主页若干图片，主页代码优化（2021.11.1）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>增加最近更新板块，记录每一次的欢喜更新，Yeah！（2021.11.2）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>更新博客"h5阻止左右滑动"，对页面布局右侧留白填充，修改部分代码。（2021.11.4）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>引入评论功能模块，大家可以给我提意见了！嘤嘤嘤~（2021.11.8）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>更新底部导航栏及创建一个"回到顶部"按钮，请往下滚动，体验效果。（2021.11.11）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>更新一篇博客"一些工具"，引入互动动漫纸片人✨。（2021.11.17）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>游戏入口更新三款游戏，完成对"深色模式的适配",主页添加告示及"放松一下"模块，欢迎体验。（2021.11.26）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>新版来袭，船新的版本，船新的体验，向年轻人靠拢💌。（2022.1.16）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>对失效链接重新绑定，张灯结彩过新年，新年快乐😍！（2023.1.14）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>logo重绘，前言替换为短则笑话，博您一笑😎！（2023.5.12）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>更新页面加入对话反馈，可以与我chat一下❤。（2023.5.24）</span>
-        </li>
-        
-        <li>
-            <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01"/><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4" stroke-linejoin="round"/><path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span>修复失效链接，服务迁移至Github继续托管。（2025.8.8）</span>
-        </li>
-    </ul>      
-</div>
+    <!-- 更新日志 -->
+    <div class="container">
+        <ul id="updateList">
+            <li data-date="2021.10.28">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>记录对工作的描述，删除冗余反馈及联系我板块，调整页面布局（2021.10.28）</span>
+            </li>
 
-<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
-    <a href="#top" title="回到顶部">
-        <span class="am-gotop-title">回到顶部</span>
-        <i class="am-gotop-icon am-icon-chevron-up"></i>
-    </a>
-</div>
+            <li data-date="2021.11.1">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>小游戏入口更新2款小游戏，更新主页若干图片，主页代码优化（2021.11.1）</span>
+            </li>
 
-<footer>
-    <h6 class="right copy-right"><a href="Secret%20Base.html">Copyright</a> &copy; <a href="    " target="_blank" title="2025 浩天的个人站"><script>
-        let currentYear = new Date().getFullYear();
-        document.write(currentYear);
-    </script> 浩天的个人站</a></h6>
-</footer>
+            <li data-date="2021.11.2">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>增加最近更新板块，记录每一次的欢喜更新，Yeah！（2021.11.2）</span>
+            </li>
 
-<!-- 延迟加载JavaScript -->
-<script>
-    // 关键JS立即加载
-    const loadScript = (src, callback) => {
-        const script = document.createElement('script');
-        script.src = src;
-        script.async = true;
-        if (callback) script.onload = callback;
-        document.head.appendChild(script);
-    };
-    
-    // 立即加载jQuery和时钟功能
-    loadScript('assets/js/jquery.min.js', () => {
-        // jQuery加载完成后加载其他依赖
-        loadScript('assets/js/amazeui.min.js');
-        loadScript('js/public.js');
-        
-        // 时钟功能
-        const days = ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-        const months = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
-        
-        const hourEl = document.querySelector('.hour');
-        const minuteEl = document.querySelector('.minute');
-        const secondsEl = document.querySelector('.seconds');
-        const shijianduan = document.querySelector('.shijianduan');
-        const shijian = document.querySelector('.shijian');
-        const dataEl = document.querySelector('.data');
-        
-        let showTime = (hour) => {
-            if (hour > 3 && hour <= 6) {
-                shijianduan.innerHTML = '凌晨';
-            } else if (hour > 6 && hour <= 8) {
-                shijianduan.innerHTML = '早晨';
-            } else if (hour > 8 && hour <= 11) {
-                shijianduan.innerHTML = '上午';
-            } else if (hour > 11 && hour <= 13) {
-                shijianduan.innerHTML = '中午';
-            } else if (hour > 13 && hour <= 17) {
-                shijianduan.innerHTML = '下午';
-            } else if (hour > 17 && hour <= 19) {
-                shijianduan.innerHTML = '傍晚';
-            } else if (hour > 19 && hour <= 23) {
-                shijianduan.innerHTML = '晚上';
-            } else if (hour > 23 && hour <= 3) {
-                shijianduan.innerHTML = '深夜';
+            <li data-date="2021.11.4">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>更新博客"h5阻止左右滑动"，对页面布局右侧留白填充，修改部分代码。（2021.11.4）</span>
+            </li>
+
+            <li data-date="2021.11.8">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>引入评论功能模块，大家可以给我提意见了！嘤嘤嘤~（2021.11.8）</span>
+            </li>
+
+            <li data-date="2021.11.11">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>更新底部导航栏及创建一个"回到顶部"按钮，请往下滚动，体验效果。（2021.11.11）</span>
+            </li>
+
+            <li data-date="2021.11.17">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>更新一篇博客"一些工具"，引入互动动漫纸片人✨。（2021.11.17）</span>
+            </li>
+
+            <li data-date="2021.11.26">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>游戏入口更新三款游戏，完成对"深色模式的适配",主页添加告示及"放松一下"模块，欢迎体验。（2021.11.26）</span>
+            </li>
+
+            <li data-date="2022.1.16">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>新版来袭，船新的版本，船新的体验，向年轻人靠拢💌。（2022.1.16）</span>
+            </li>
+
+            <li data-date="2023.1.14">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>对失效链接重新绑定，张灯结彩过新年，新年快乐😍！（2023.1.14）</span>
+            </li>
+
+            <li data-date="2023.5.12">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>logo重绘，前言替换为短则笑话，博您一笑😎！（2023.5.12）</span>
+            </li>
+
+            <li data-date="2023.5.24">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>更新页面加入对话反馈，可以与我chat一下❤。（2023.5.24）</span>
+            </li>
+
+            <li data-date="2025.8.8">
+                <?xml version="1.0" encoding="UTF-8"?><svg width="24" height="24" viewBox="0 0 48 48" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" fill="white" fill-opacity="0.01" />
+                    <rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#333" stroke-width="4"
+                        stroke-linejoin="round" />
+                    <path d="M32 28L24 20L16 28" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M24 36V20.5" stroke="#333" stroke-width="4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M16 14H32" stroke="#333" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span>修复失效链接，服务迁移至Github继续托管。（2025.8.8）</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 分页导航 -->
+    <div class="pagination-container">
+        <div class="pagination" id="pagination">
+            <!-- 分页按钮将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
+        <a href="#top" title="回到顶部">
+            <span class="am-gotop-title">回到顶部</span>
+            <i class="am-gotop-icon am-icon-chevron-up"></i>
+        </a>
+    </div>
+
+    <footer>
+        <h6 class="right copy-right"><a href="Secret%20Base.html">Copyright</a> &copy; <a href="    " target="_blank"
+                title="2025 浩天的个人站">
+                <script>
+                    let currentYear = new Date().getFullYear();
+                    document.write(currentYear);
+                </script> 浩天的个人站
+            </a></h6>
+    </footer>
+
+    <!-- 延迟加载JavaScript -->
+    <script>
+        // 关键JS立即加载
+        const loadScript = (src, callback) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.async = true;
+            if (callback) script.onload = callback;
+            document.head.appendChild(script);
+        };
+
+        // 立即加载jQuery和时钟功能
+        loadScript('assets/js/jquery.min.js', () => {
+            // jQuery加载完成后加载其他依赖
+            loadScript('assets/js/amazeui.min.js');
+            loadScript('js/public.js');
+
+            // 时钟功能
+            const days = ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            const months = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+
+            const hourEl = document.querySelector('.hour');
+            const minuteEl = document.querySelector('.minute');
+            const secondsEl = document.querySelector('.seconds');
+            const shijianduan = document.querySelector('.shijianduan');
+            const shijian = document.querySelector('.shijian');
+            const dataEl = document.querySelector('.data');
+
+            let showTime = (hour) => {
+                if (hour > 3 && hour <= 6) {
+                    shijianduan.innerHTML = '凌晨';
+                } else if (hour > 6 && hour <= 8) {
+                    shijianduan.innerHTML = '早晨';
+                } else if (hour > 8 && hour <= 11) {
+                    shijianduan.innerHTML = '上午';
+                } else if (hour > 11 && hour <= 13) {
+                    shijianduan.innerHTML = '中午';
+                } else if (hour > 13 && hour <= 17) {
+                    shijianduan.innerHTML = '下午';
+                } else if (hour > 17 && hour <= 19) {
+                    shijianduan.innerHTML = '傍晚';
+                } else if (hour > 19 && hour <= 23) {
+                    shijianduan.innerHTML = '晚上';
+                } else if (hour > 23 && hour <= 3) {
+                    shijianduan.innerHTML = '深夜';
+                }
             }
-        }
-        
-        let setDate = () => {
-            const date = new Date();
-            const month = date.getMonth();
-            const weeks = date.getDay();
-            const day = date.getDate();
-            let hour = date.getHours();
-            hour = hour < 10 ? '0' + hour : hour;
-            let minute = date.getMinutes();
-            minute = minute < 10 ? '0' + minute : minute;
-            let secondes = date.getSeconds();
-            secondes = secondes < 10 ? '0' + secondes : secondes;
-            
-            if (hourEl) hourEl.style.transform = `translate(-50%, -100%) rotate(${scale(hour, 0, 12, 0, 360)}deg)`;
-            if (minuteEl) minuteEl.style.transform = `translate(-50%, -100%) rotate(${minute*6}deg)`;
-            if (secondsEl) secondsEl.style.transform = `translate(-50%, -100%) rotate(${secondes*6}deg)`;
-            if (shijian) shijian.innerHTML = `${hour}:${minute}`;
-            if (dataEl) dataEl.innerHTML = `${days[weeks]}, ${months[month]} <span class="circle">${day}</span>`;
-            showTime(hour);
-        }
-        
-        const scale = (num, in_min, in_max, out_min, out_max) => {
-            return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-        }
-        
-        setDate();
-        setInterval(setDate, 1000);
-    });
-    
-    // 延迟加载非关键功能
-    window.addEventListener('load', () => {
-        // 延迟加载樱花效果
-        setTimeout(() => {
-            loadScript('https://api.vvhan.com/api/script/yinghua');
-        }, 2000);
-        
-        // 延迟加载客服系统
-        setTimeout(() => {
-            (function (w, d, n, a, j) {
-                w[n] = w[n] || function () {
-                    (w[n].a = w[n].a || []).push(arguments);
+
+            let setDate = () => {
+                const date = new Date();
+                const month = date.getMonth();
+                const weeks = date.getDay();
+                const day = date.getDate();
+                let hour = date.getHours();
+                hour = hour < 10 ? '0' + hour : hour;
+                let minute = date.getMinutes();
+                minute = minute < 10 ? '0' + minute : minute;
+                let secondes = date.getSeconds();
+                secondes = secondes < 10 ? '0' + secondes : secondes;
+
+                if (hourEl) hourEl.style.transform = `translate(-50%, -100%) rotate(${scale(hour, 0, 12, 0, 360)}deg)`;
+                if (minuteEl) minuteEl.style.transform = `translate(-50%, -100%) rotate(${minute * 6}deg)`;
+                if (secondsEl) secondsEl.style.transform = `translate(-50%, -100%) rotate(${secondes * 6}deg)`;
+                if (shijian) shijian.innerHTML = `${hour}:${minute}`;
+                if (dataEl) dataEl.innerHTML = `${days[weeks]}, ${months[month]} <span class="circle">${day}</span>`;
+                showTime(hour);
+            }
+
+            const scale = (num, in_min, in_max, out_min, out_max) => {
+                return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+            }
+
+            setDate();
+            setInterval(setDate, 1000);
+
+            // 初始化功能
+            initPagination();
+            initStats();
+            initSearch();
+        });
+
+        // 延迟加载非关键功能
+        window.addEventListener('load', () => {
+            // 延迟加载樱花效果
+            setTimeout(() => {
+                loadScript('https://api.vvhan.com/api/script/yinghua');
+            }, 2000);
+
+            // 延迟加载客服系统
+            setTimeout(() => {
+                (function (w, d, n, a, j) {
+                    w[n] = w[n] || function () {
+                        (w[n].a = w[n].a || []).push(arguments);
+                    };
+                    j = d.createElement('script');
+                    j.async = true;
+                    j.src = 'https://qiyukf.com/script/1508080c20975f712fc12e5ce25697a2.js';
+                    d.body.appendChild(j);
+                })(window, document, 'ysf');
+            }, 3000);
+
+            // 延迟加载其他非必要JS
+            setTimeout(() => {
+                const scripts = [
+                    'js/jquery.js',
+                    'js/bootstrap.min.js',
+                    'https://use.fontawesome.com/releases/v5.0.6/js/all.js',
+                    'js/jquery.mixitup.min.js',
+                    'js/jquery.prettyPhoto.js',
+                    'js/jquery.isotope.js',
+                    'js/jquery.bsPhotoGallery.js',
+                    'js/main.js'
+                ];
+
+                scripts.forEach((src, index) => {
+                    setTimeout(() => {
+                        loadScript(src);
+                    }, index * 200);
+                });
+            }, 1000);
+        });
+
+        // 分页功能实现
+        function initPagination() {
+            const updateList = document.getElementById('updateList');
+            const pagination = document.getElementById('pagination');
+            const pageSizeSelect = document.getElementById('pageSize');
+            const yearFilter = document.getElementById('yearFilter');
+
+            let currentPage = 1;
+            let pageSize = parseInt(pageSizeSelect.value);
+            let allItems = Array.from(updateList.children);
+            let filteredItems = [...allItems];
+
+            // 渲染当前页面的内容
+            function renderPage() {
+                const startIndex = (currentPage - 1) * pageSize;
+                const endIndex = startIndex + pageSize;
+
+                // 隐藏所有项目
+                allItems.forEach(item => {
+                    item.style.display = 'none';
+                });
+
+                // 显示当前页的项目
+                for (let i = startIndex; i < endIndex && i < filteredItems.length; i++) {
+                    filteredItems[i].style.display = 'flex';
+                }
+            }
+
+            // 渲染分页按钮
+            function renderPagination() {
+                const totalPages = Math.ceil(filteredItems.length / pageSize);
+                pagination.innerHTML = '';
+
+                if (totalPages <= 1) return;
+
+                // 上一页按钮
+                const prevBtn = document.createElement('button');
+                prevBtn.textContent = '上一页';
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.onclick = () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderPage();
+                        renderPagination();
+                    }
                 };
-                j = d.createElement('script');
-                j.async = true;
-                j.src = 'https://qiyukf.com/script/1508080c20975f712fc12e5ce25697a2.js';
-                d.body.appendChild(j);
-            })(window, document, 'ysf');
-        }, 3000);
-        
-        // 延迟加载其他非必要JS
-        setTimeout(() => {
-            const scripts = [
-                'js/jquery.js',
-                'js/bootstrap.min.js',
-                'https://use.fontawesome.com/releases/v5.0.6/js/all.js',
-                'js/jquery.mixitup.min.js',
-                'js/jquery.prettyPhoto.js',
-                'js/jquery.isotope.js',
-                'js/jquery.bsPhotoGallery.js',
-                'js/main.js'
-            ];
-            
-            scripts.forEach((src, index) => {
-                setTimeout(() => {
-                    loadScript(src);
-                }, index * 200);
+                pagination.appendChild(prevBtn);
+
+                // 页码按钮
+                const startPage = Math.max(1, currentPage - 2);
+                const endPage = Math.min(totalPages, currentPage + 2);
+
+                if (startPage > 1) {
+                    const firstBtn = document.createElement('button');
+                    firstBtn.textContent = '1';
+                    firstBtn.onclick = () => {
+                        currentPage = 1;
+                        renderPage();
+                        renderPagination();
+                    };
+                    pagination.appendChild(firstBtn);
+
+                    if (startPage > 2) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '...';
+                        ellipsis.style.padding = '8px 4px';
+                        ellipsis.style.color = '#666';
+                        pagination.appendChild(ellipsis);
+                    }
+                }
+
+                for (let i = startPage; i <= endPage; i++) {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.textContent = i;
+                    pageBtn.className = i === currentPage ? 'active' : '';
+                    pageBtn.onclick = () => {
+                        currentPage = i;
+                        renderPage();
+                        renderPagination();
+                    };
+                    pagination.appendChild(pageBtn);
+                }
+
+                if (endPage < totalPages) {
+                    if (endPage < totalPages - 1) {
+                        const ellipsis = document.createElement('span');
+                        ellipsis.textContent = '...';
+                        ellipsis.style.padding = '8px 4px';
+                        ellipsis.style.color = '#666';
+                        pagination.appendChild(ellipsis);
+                    }
+
+                    const lastBtn = document.createElement('button');
+                    lastBtn.textContent = totalPages;
+                    lastBtn.onclick = () => {
+                        currentPage = totalPages;
+                        renderPage();
+                        renderPagination();
+                    };
+                    pagination.appendChild(lastBtn);
+                }
+
+                // 下一页按钮
+                const nextBtn = document.createElement('button');
+                nextBtn.textContent = '下一页';
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.onclick = () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderPage();
+                        renderPagination();
+                    }
+                };
+                pagination.appendChild(nextBtn);
+            }
+
+            // 筛选功能
+            function applyFilters() {
+                const yearValue = yearFilter.value;
+                const searchValue = document.getElementById('searchInput').value.toLowerCase();
+
+                filteredItems = allItems.filter(item => {
+                    const dateAttr = item.getAttribute('data-date');
+                    const textContent = item.textContent.toLowerCase();
+
+                    // 年份筛选
+                    if (yearValue && !dateAttr.startsWith(yearValue)) {
+                        return false;
+                    }
+
+                    // 搜索筛选
+                    if (searchValue && !textContent.includes(searchValue)) {
+                        return false;
+                    }
+
+                    return true;
+                });
+
+                currentPage = 1;
+                renderPage();
+                renderPagination();
+            }
+
+            // 事件监听
+            pageSizeSelect.onchange = () => {
+                pageSize = parseInt(pageSizeSelect.value);
+                currentPage = 1;
+                renderPage();
+                renderPagination();
+            };
+
+            yearFilter.onchange = applyFilters;
+
+            // 搜索功能
+            window.performSearch = applyFilters;
+            document.getElementById('searchInput').addEventListener('input', applyFilters);
+
+            // 初始化显示
+            applyFilters(); // 应用默认筛选条件
+        }
+
+        // 统计功能实现
+        function initStats() {
+            const allItems = Array.from(document.getElementById('updateList').children);
+            const currentYear = new Date().getFullYear();
+
+            // 计算统计数据
+            const totalUpdates = allItems.length;
+            const yearUpdates = allItems.filter(item => {
+                const date = item.getAttribute('data-date');
+                return date && date.startsWith(currentYear.toString());
+            }).length;
+
+            // 计算月均更新（基于有更新记录的年份）
+            const years = [...new Set(allItems.map(item => {
+                const date = item.getAttribute('data-date');
+                return date ? date.split('.')[0] : null;
+            }).filter(Boolean))];
+
+            const monthsWithData = years.length * 12;
+            const monthlyAverage = monthsWithData > 0 ? Math.round(totalUpdates / monthsWithData * 10) / 10 : 0;
+
+            // 更新统计显示
+            document.getElementById('totalUpdates').textContent = totalUpdates;
+            document.getElementById('currentYear').textContent = currentYear;
+            document.getElementById('yearUpdates').textContent = yearUpdates;
+            document.getElementById('monthUpdates').textContent = monthlyAverage;
+        }
+
+        // 搜索功能
+        function initSearch() {
+            const searchInput = document.getElementById('searchInput');
+
+            // 回车键搜索
+            searchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
             });
-        }, 1000);
-    });
-</script>
+
+            // 实时搜索（延迟执行）
+            let searchTimeout;
+            searchInput.addEventListener('input', function () {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(performSearch, 300);
+            });
+        }
+    </script>
 </body>
+
 </html>
