@@ -7,8 +7,7 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>工作</title>
-
+    <title>浩天的个人站</title>
     <!--360 browser -->
     <meta name="renderer" content="webkit">
     <meta name="author" content="wos">
@@ -23,15 +22,16 @@
     <!--Win8 or 10 -->
     <meta name="msapplication-TileImage" content="images/i/app.png">
     <meta name="msapplication-TileColor" content="#e1652f">
-
     <link rel="icon" type="image/png" href="images/i/favicon.png">
 
     <!-- 预加载关键资源 -->
     <link rel="preload" href="assets/css/amazeui.min.css" as="style">
     <link rel="preload" href="css/public.css" as="style">
+    <link rel="preload" href="assets/js/jquery.min.js" as="script">
 
     <!-- 关键CSS内联 -->
     <style>
+        /* 关键渲染路径CSS */
         html,
         body {
             margin: 0 auto;
@@ -39,292 +39,312 @@
             overflow-x: hidden;
         }
 
+        .banner {
+            margin-top: 10px;
+        }
+
         .am-topbar {
             background: #333;
         }
 
-        /* 图片悬停效果 */
-        .gallery-img {
-            transition: transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            border-radius: 8px;
-            margin: 5px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .gallery-img:hover {
-            transform: scale(1.05);
-            opacity: 0.9;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        /* 图片画廊容器 */
-        .image-gallery {
+        .loading {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
             justify-content: center;
-            padding: 20px;
+            align-items: center;
+            height: 200px;
+            color: #666;
         }
 
-        /* 图片查看器模态框 */
-        .image-viewer {
-            display: none;
-            position: fixed;
+        /* 快捷入口卡片美化样式 */
+        .shortcut-cards {
+            padding: 0;
+            margin: 0;
+        }
+
+        .shortcut-card {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(225, 101, 47, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shortcut-card::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #e1652f, #ff8a50);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .shortcut-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(225, 101, 47, 0.15);
+            border-color: rgba(225, 101, 47, 0.2);
+        }
+
+        .shortcut-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .shortcut-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .shortcut-card:hover .shortcut-icon {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(225, 101, 47, 0.2);
+        }
+
+        .shortcut-icon img {
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .image-viewer.active {
-            display: flex;
-        }
-
-        .viewer-container {
-            position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .viewer-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        /* 导航按钮 */
-        .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.8);
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 20px;
-            color: #333;
+            object-fit: cover;
             transition: all 0.3s ease;
-            z-index: 10001;
         }
 
-        .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.95);
-            transform: translateY(-50%) scale(1.1);
+        .shortcut-content {
+            flex: 1;
+            padding-left: 16px;
         }
 
-        .nav-btn:active {
-            transform: translateY(-50%) scale(0.95);
-        }
-
-        .nav-btn.prev {
-            left: 20px;
-        }
-
-        .nav-btn.next {
-            right: 20px;
-        }
-
-        /* 关闭按钮 */
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.8);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
+        .shortcut-title {
             font-size: 18px;
-            color: #333;
-            transition: all 0.3s ease;
-            z-index: 10001;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 6px 0;
+            line-height: 1.3;
+            transition: color 0.3s ease;
         }
 
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.95);
+        .shortcut-card:hover .shortcut-title {
+            color: #e1652f;
+        }
+
+        .shortcut-desc {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .shortcut-card-wrapper {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .shortcut-card-wrapper:hover {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* 特殊卡片样式 */
+        .shortcut-card.music-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .shortcut-card.music-card .shortcut-title,
+        .shortcut-card.music-card .shortcut-desc {
+            color: white;
+        }
+
+        .shortcut-card.hot-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .shortcut-card.hot-card .shortcut-title,
+        .shortcut-card.hot-card .shortcut-desc {
+            color: white;
+        }
+
+        .shortcut-card.zen-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .shortcut-card.zen-card .shortcut-title,
+        .shortcut-card.zen-card .shortcut-desc {
+            color: white;
+        }
+
+        .shortcut-card.game-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        /* 分割线美化 */
+        .shortcut-divider {
+            display: none;
+        }
+
+        /* 记录日常卡片美化样式 */
+        .daily-records {
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .daily-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .daily-header img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            filter: brightness(0) invert(1);
+        }
+
+        .daily-header span {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .daily-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .daily-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
+        .daily-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .daily-card-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+        }
+
+        .daily-card-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+
+        .daily-card:hover .daily-card-image {
             transform: scale(1.1);
         }
 
-        /* 图片信息 */
-        .image-info {
+        .daily-card-content {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.6);
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 16px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
             color: white;
-            padding: 8px 15px;
-            border-radius: 15px;
-            font-size: 13px;
-            z-index: 10001;
-            backdrop-filter: blur(5px);
-            max-width: 300px;
         }
 
-        /* 缩略图导航 */
-        .thumbnail-nav {
+        .daily-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .daily-card-desc {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* 特殊主题卡片 */
+        .daily-card.work-card .daily-card-content {
+            background: linear-gradient(transparent, rgba(52, 152, 219, 0.9));
+        }
+
+        .daily-card.experience-card .daily-card-content {
+            background: linear-gradient(transparent, rgba(155, 89, 182, 0.9));
+        }
+
+        .daily-card.food-card .daily-card-content {
+            background: linear-gradient(transparent, rgba(231, 76, 60, 0.9));
+        }
+
+        .daily-card.life-card .daily-card-content {
+            background: linear-gradient(transparent, rgba(46, 204, 113, 0.9));
+        }
+
+        /* 卡片装饰元素 */
+        .daily-card::before {
+            content: '';
             position: absolute;
-            top: 20px;
-            right: 80px;
-            display: flex;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 8px;
-            border-radius: 20px;
-            max-width: 400px;
-            overflow-x: auto;
-            z-index: 10001;
-            backdrop-filter: blur(5px);
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e1652f, #ff8a50);
+            z-index: 2;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
         }
 
-        .thumbnail {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 8px;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .thumbnail:hover {
-            opacity: 0.8;
-        }
-
-        .thumbnail.active {
-            opacity: 1;
-            border-color: #fff;
-        }
-
-        /* 加载动画 */
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 18px;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, .3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+        .daily-card:hover::before {
+            transform: scaleX(1);
         }
 
         /* 响应式设计 */
         @media (max-width: 768px) {
-            .nav-btn {
-                width: 40px;
-                height: 40px;
+            .shortcut-card {
+                padding: 16px;
+                margin-bottom: 12px;
+            }
+
+            .shortcut-icon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .shortcut-content {
+                padding-left: 12px;
+            }
+
+            .shortcut-title {
                 font-size: 16px;
             }
 
-            .nav-btn.prev {
-                left: 10px;
+            .shortcut-desc {
+                font-size: 13px;
             }
-
-            .nav-btn.next {
-                right: 10px;
-            }
-
-            .close-btn {
-                top: 10px;
-                right: 10px;
-                width: 35px;
-                height: 35px;
-                font-size: 16px;
-            }
-
-            .thumbnail-nav {
-                top: 10px;
-                right: 55px;
-                max-width: 200px;
-                padding: 6px;
-            }
-
-            .thumbnail {
-                width: 35px;
-                height: 35px;
-            }
-
-            .image-info {
-                top: 10px;
-                left: 10px;
-                font-size: 11px;
-                padding: 6px 12px;
-                max-width: 200px;
-            }
-        }
-
-        /* 工作记录样式 */
-        .work-section {
-            margin: 20px 0;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .work-title {
-            color: #333;
-            border-bottom: 2px solid #e1652f;
-            padding-bottom: 10px;
-            margin-bottom: 15px;
-        }
-
-        .work-info {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            border-left: 4px solid #e1652f;
-        }
-
-        .work-info h2 {
-            margin: 5px 0;
-            font-size: 16px;
-            color: #666;
-        }
-
-        footer {
-            background-color: #222;
-            color: #fff;
-            padding: 15px 0 2px;
-            text-align: center;
-            width: 100%;
-            margin-top: 40px;
-        }
-
-        footer a {
-            color: #ddd;
-        }
-
-        footer a:hover {
-            color: #fff;
         }
     </style>
 
@@ -338,6 +358,17 @@
 </head>
 
 <body>
+    <!-- 雪花效果延迟加载 -->
+    <script>
+        // 延迟加载雪花效果
+        setTimeout(() => {
+            const script = document.createElement('script');
+            script.src = 'https://api.vvhan.com/api/script/snow';
+            script.async = true;
+            document.head.appendChild(script);
+        }, 2000);
+    </script>
+
     <header class="am-topbar am-topbar-fixed-top wos-header">
         <div class="am-container">
             <h1 class="am-topbar-brand">
@@ -353,7 +384,7 @@
 
             <div class="am-collapse am-topbar-collapse" id="collapse-head">
                 <ul class="am-nav am-nav-pills am-topbar-nav">
-                    <li><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
+                    <li class="am-active"><a href="https://liuhaotian1122.github.io/my-pages/">首页</a></li>
                     <li><a href="boke.html">博客</a></li>
                     <li class="am-dropdown" data-am-dropdown>
                         <a class="am-dropdown-toggle" data-am-dropdown-toggle href="javascript:;">
@@ -361,7 +392,7 @@
                         </a>
                         <ul class="am-dropdown-content">
                             <li class="am-dropdown-header">最近有些忙呀~</li>
-                            <li><a href="https://liuhaotian1122.gitee.io/haotians-personal-station/">返回旧版</a></li>
+                            <li><a href="https://link3.cc/xuwibanxia">个人站下载</a></li>
                             <li><a href="http://tool.mkblog.cn/relax/" style="color: red;">
                                     <div id="panel">
                                         <?xml version="1.0" encoding="UTF-8"?><svg width="30" height="30"
@@ -383,6 +414,7 @@
                     </li>
                     <li><a href="game.html">游戏</a></li>
                     <li><a href="最近更新.html">更新</a></li>
+                    <li><a href="https://support.qq.com/product/374554">论坛</a></li>
                 </ul>
                 <div class="am-topbar-right">
                     <a href="https://www.lanzouw.com/b02oefvsf"><button
@@ -393,84 +425,266 @@
         </div>
     </header>
 
-    <div class="am-g am-container">
-        <!-- 工作记录1 -->
-        <div class="work-section">
-            <div class="work-title">
-                <h2>记录工作-1</h2>
+    <!--banner-->
+    <div class="banner">
+        <div class="am-g am-container">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-8">
+                <div data-am-widget="slider" class="am-slider am-slider-c1" data-am-slider='{"directionNav":false}'>
+                    <ul class="am-slides">
+                        <li>
+                            <a href="boke.html"><img src="https://api.vvhan.com/api/bing" alt="必应每日图片"
+                                    loading="lazy"></a>
+                            <div class="am-slider-desc"><span id="jinrishici-sentence">正在加载今日诗词....</span></div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://api.vvhan.com/api/wallpaper/acg" alt="ACG壁纸"
+                                    loading="lazy"></a>
+                            <div class="am-slider-desc" id="one-sentence">正在加载每日一句...</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="Temp-images/bb3.jpg" alt="轮播图3" loading="lazy"></a>
+                            <div class="am-slider-desc">不要太担心 只因为我相信 终会走过这条遥远的道路</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="Temp-images/bb4.jpg" alt="轮播图4" loading="lazy"></a>
+                            <div class="am-slider-desc">我要送给你好运 就像买可乐 打开瓶盖写着再来一瓶</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="Temp-images/bb5.jpg" alt="轮播图5" loading="lazy"></a>
+                            <div class="am-slider-desc">今天阴 那又怎样 我可以做你的小太阳啊</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="Temp-images/bb6.jpg" alt="轮播图6" loading="lazy"></a>
+                            <div class="am-slider-desc">十年饮冰 难凉热血</div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="work-info">
-                <h2>时间：2021.8.17</h2>
-                <h2>地点：帮助社区做一些辅导作业、课程讲解一类的工作</h2>
-            </div>
-            <div class="image-gallery" data-gallery="work1">
-                <img src="images/sq0.jpg" width="120" height="110" class="gallery-img" alt="工作照片1" loading="lazy"
-                    data-title="社区辅导工作 - 照片1" data-date="2021.8.17">
-                <img src="images/sq1.jpg" width="120" height="110" class="gallery-img" alt="工作照片2" loading="lazy"
-                    data-title="社区辅导工作 - 照片2" data-date="2021.8.17">
-                <img src="images/sq2.jpg" width="120" height="110" class="gallery-img" alt="工作照片3" loading="lazy"
-                    data-title="社区辅导工作 - 照片3" data-date="2021.8.17">
-            </div>
-        </div>
+            <div class="am-u-sm-0 am-u-md-0 am-u-lg-4 padding-none">
+                <div class="daily-records">
+                    <!-- 记录日常标题 -->
+                    <div class="daily-header">
+                        <img src="images/star.png" loading="lazy" alt="记录日常">
+                        <span>记录日常</span>
+                    </div>
 
-        <!-- 工作记录2 -->
-        <div class="work-section">
-            <div class="work-title">
-                <h2>记录工作-2</h2>
-            </div>
-            <div class="work-info">
-                <h2>时间：2022.2.2</h2>
-                <h2>记录新年，喜上眉梢</h2>
-            </div>
-            <div class="image-gallery" data-gallery="work2">
-                <img src="images/n1.jpg" width="120" height="110" class="gallery-img" alt="新年照片1" loading="lazy"
-                    data-title="新年记录 - 照片1" data-date="2022.2.2">
-                <img src="images/n4.jpg" width="120" height="110" class="gallery-img" alt="新年照片2" loading="lazy"
-                    data-title="新年记录 - 照片2" data-date="2022.2.2">
-                <img src="images/n2.jpg" width="120" height="110" class="gallery-img" alt="新年照片3" loading="lazy"
-                    data-title="新年记录 - 照片3" data-date="2022.2.2">
-                <img src="images/n3.jpg" width="120" height="110" class="gallery-img" alt="新年照片4" loading="lazy"
-                    data-title="新年记录 - 照片4" data-date="2022.2.2">
+                    <!-- 记录日常卡片网格 -->
+                    <ul class="daily-grid">
+                        <!-- 记录工作卡片 -->
+                        <li class="daily-card work-card">
+                            <a href="work.html" class="daily-card-link">
+                                <img src="Temp-images/work.gif" loading="lazy" alt="记录工作" class="daily-card-image">
+                                <div class="daily-card-content">
+                                    <h3 class="daily-card-title">记录工作</h3>
+                                </div>
+                            </a>
+                        </li>
+
+                        <!-- 记录经历卡片 -->
+                        <li class="daily-card experience-card">
+                            <a href="jingli.html" class="daily-card-link">
+                                <img src="Temp-images/jinli.gif" loading="lazy" alt="记录经历" class="daily-card-image">
+                                <div class="daily-card-content">
+                                    <h3 class="daily-card-title">记录经历</h3>
+                                </div>
+                            </a>
+                        </li>
+
+                        <!-- 记录美食卡片 -->
+                        <li class="daily-card food-card">
+                            <a href="food.html" class="daily-card-link">
+                                <img src="Temp-images/food.gif" loading="lazy" alt="记录美食" class="daily-card-image">
+                                <div class="daily-card-content">
+                                    <h3 class="daily-card-title">记录美食</h3>
+                                </div>
+                            </a>
+                        </li>
+
+                        <!-- 记录琐碎卡片 -->
+                        <li class="daily-card life-card">
+                            <a href="suosui.html" class="daily-card-link">
+                                <img src="Temp-images/suosui.gif" loading="lazy" alt="记录琐碎" class="daily-card-image">
+                                <div class="daily-card-content">
+                                    <h3 class="daily-card-title">记录琐碎</h3>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 图片查看器模态框 -->
-    <div class="image-viewer" id="imageViewer">
-        <div class="loading" id="imageLoading">
-            <div class="spinner"></div>
-            <div>加载中...</div>
+    <!--news-->
+    <div class="am-g am-container newatype">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-8 oh">
+            <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default"
+                style="border-bottom: 0px; margin-bottom: -10px">
+                <h2 class="am-titlebar-title ">
+                    关于我
+                </h2>
+                <nav class="am-titlebar-nav">
+                    <a href="https://weibo.com/u/5603126701?is_all=1">我的微博 &raquo;</a>
+                </nav>
+            </div>
+
+            <div data-am-widget="list_news" class="am-list-news am-list-news-default news">
+                <div class="am-list-news-bd">
+                    <ul class="am-list">
+                        <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left"
+                            data-am-scrollspy="{animation:'fade'}">
+                            <h1 style="text-align:center" class="yanse">文雅一下</h1>
+                            <div class="am-slider-desc">
+                                <h3 style="color: #2F0000;" align="center">
+                                    <div id="poem_sentence">正在加载今日诗词...</div>
+                                    <div id="poem_info"></div>
+                                </h3>
+                            </div>
+                        </li>
+
+                        <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left"
+                            data-am-scrollspy="{animation:'fade'}">
+                            <div class="am-u-sm-5 am-list-thumb">
+                                <a href="https://weibo.com/u/5603126701?is_all=1">
+                                    <img src="https://pic.rmb.bdstatic.com/20ad29c2a476c25195fcdd4e583f9b62.gif"
+                                        alt="科技教徒" loading="lazy" />
+                                </a>
+                            </div>
+
+                            <div class=" am-u-sm-7 am-list-main">
+                                <h3 class="am-list-item-hd"><a
+                                        href="https://weibo.com/u/5603126701?is_all=1">科技及创新爱好者</a></h3>
+                                <div class="am-list-item-text">科技教徒，热爱电子相关技术及工业设计爱好者。</div>
+                            </div>
+                        </li>
+
+                        <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left"
+                            data-am-scrollspy="{animation:'fade'}">
+                            <div class="am-u-sm-7 am-list-thumb">
+                                <a href="https://gitee.com/liuhaotian1122">
+                                    <img src="https://pic.rmb.bdstatic.com/bjh/9941c25e7e23c9d07cdb0de927753add2269.gif"
+                                        alt="迈克杰克逊" loading="lazy" />
+                                </a>
+                            </div>
+
+                            <div class=" am-u-sm-5 am-list-main">
+                                <h3 class="am-list-item-hd"><a href="https://gitee.com/liuhaotian1122">迈克杰克逊粉丝</a></h3>
+                                <div class="am-list-item-text">如果世界上有神的话，那就是迈克！</div>
+                            </div>
+                        </li>
+
+                        <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left"
+                            data-am-scrollspy="{animation:'fade'}">
+                            <div class="am-u-sm-5 am-list-thumb">
+                                <a href="https://github.com/liuhaotian1122">
+                                    <img src="https://pic.rmb.bdstatic.com/bjh/down/0c6680949f2c6983aba9fdff82ef7ec4.gif"
+                                        alt="我最喜欢的一张画" loading="lazy" />
+                                </a>
+                            </div>
+
+                            <div class=" am-u-sm-7 am-list-main">
+                                <h3 class="am-list-item-hd"><a href="https://github.com/liuhaotian1122">奥特曼坚定维护者</a>
+                                </h3>
+                                <div class="am-list-item-text">喜欢西瓜与路边摊，对香菜痴迷,相信光，相信奥特曼。</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <div class="viewer-container">
-            <img class="viewer-image" id="viewerImage" alt="查看图片">
+        <div class="am-u-sm-12 am-u-md-12 am-u-lg-4">
+            <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default">
+                <h2 class="am-titlebar-title ">
+                    快捷入口
+                </h2>
+                <nav class="am-titlebar-nav">
+                    <a href="https://gitee.com/liuhaotian1122">GitHub &raquo;</a>
+                </nav>
+            </div>
+            <div class="shortcut-cards" data-am-scrollspy="{animation:'fade'}">
+                <!-- 听音乐VIP卡片 -->
+                <div class="shortcut-card music-card">
+                    <a href="https://zz123.com/" class="shortcut-card-wrapper">
+                        <div class="shortcut-icon">
+                            <img src="https://img.mp.sohu.com/upload/20170620/68b9e5f55fdd416a9697c7402cb3d436_th.png"
+                                loading="lazy" alt="听音乐VIP" />
+                        </div>
+                        <div class="shortcut-content">
+                            <h3 class="shortcut-title">听音乐VIP</h3>
+                            <p class="shortcut-desc">各家音乐可以免费听哟</p>
+                        </div>
+                    </a>
+                </div>
 
-            <button class="nav-btn prev" id="prevBtn" title="上一张">‹</button>
-            <button class="nav-btn next" id="nextBtn" title="下一张">›</button>
+                <!-- 今日热榜卡片 -->
+                <div class="shortcut-card hot-card">
+                    <a href="hotnews.html" class="shortcut-card-wrapper">
+                        <div class="shortcut-icon">
+                            <img src="Temp-images/hotnews.jpg" loading="lazy" alt="今日热榜" />
+                        </div>
+                        <div class="shortcut-content">
+                            <h3 class="shortcut-title">今日热榜</h3>
+                            <p class="shortcut-desc">聚集众多平台热榜热搜</p>
+                        </div>
+                    </a>
+                </div>
 
-            <button class="close-btn" id="closeBtn" title="关闭">×</button>
+                <!-- 我的木鱼卡片 -->
+                <div class="shortcut-card zen-card">
+                    <a href="https://liuhaotian1122.github.io/muyu/" class="shortcut-card-wrapper">
+                        <div class="shortcut-icon">
+                            <img src="Temp-images/cctv.jpg" loading="lazy" alt="我的木鱼" />
+                        </div>
+                        <div class="shortcut-content">
+                            <h3 class="shortcut-title">我的木鱼</h3>
+                            <p class="shortcut-desc">电子木鱼积攒功德必备</p>
+                        </div>
+                    </a>
+                </div>
 
-            <div class="image-info" id="imageInfo">
-                <span id="imageTitle">图片标题</span>
-                <span id="imageCounter"> (1/1)</span>
+                <!-- 小游戏卡片 -->
+                <div class="shortcut-card game-card">
+                    <a href="game.html" class="shortcut-card-wrapper">
+                        <div class="shortcut-icon">
+                            <img src="Temp-images/game.jpg" loading="lazy" alt="小游戏" />
+                        </div>
+                        <div class="shortcut-content">
+                            <h3 class="shortcut-title">小游戏</h3>
+                            <p class="shortcut-desc">基于web前端小游戏</p>
+                        </div>
+                    </a>
+                </div>
             </div>
 
-            <div class="thumbnail-nav" id="thumbnailNav">
-                <!-- 缩略图将通过JavaScript动态生成 -->
-            </div>
+            <ul class="am-gallery am-avg-sm-1 am-avg-md-1 am-avg-lg-1 am-gallery-default"
+                data-am-gallery="{ pureview: true }">
+                <li>
+                    <div class="am-gallery-item">
+                        <h3 class="am-gallery-title">
+                        </h3>
+                        <div class="am-gallery-desc">
+                            <div class="am-fr">
+                                <span id="busuanzi_container_site_uv">本站累计访问量：<span
+                                        id="busuanzi_value_site_uv">统计中...</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
     </div>
 
     <div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
         <a href="#top" title="回到顶部">
             <span class="am-gotop-title">回到顶部</span>
-            <i class="am-gotop-icon am-icon-chevron-up"></i>
+            <i class="am-gotop-icon am-icon-hand-o-up"></i>
         </a>
     </div>
 
     <footer>
-        <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a
-                href="https://liuhaotian1122.github.io/my-pages/" target="_blank" title="2025 浩天的个人站">
+        <h6 class="right copy-right"><a href="   ">Copyright</a> &copy; <a href="    " target="_blank"
+                title="2025 浩天的个人站">
                 <script>
                     let currentYear = new Date().getFullYear();
                     document.write(currentYear);
@@ -478,8 +692,9 @@
             </a></h6>
     </footer>
 
+    <!-- 延迟加载JS -->
     <script>
-        // 延迟加载JavaScript
+        // 关键JS立即加载
         const loadScript = (src, callback) => {
             const script = document.createElement('script');
             script.src = src;
@@ -490,209 +705,67 @@
 
         // 立即加载jQuery
         loadScript('assets/js/jquery.min.js', () => {
+            // jQuery加载完成后加载其他依赖
             loadScript('assets/js/amazeui.min.js');
             loadScript('js/public.js');
         });
 
-        // 图片查看器功能
-        class ImageViewer {
-            constructor() {
-                this.currentImages = [];
-                this.currentIndex = 0;
-                this.isOpen = false;
-
-                this.viewer = document.getElementById('imageViewer');
-                this.viewerImage = document.getElementById('viewerImage');
-                this.imageInfo = document.getElementById('imageInfo');
-                this.imageTitle = document.getElementById('imageTitle');
-                this.imageCounter = document.getElementById('imageCounter');
-                this.thumbnailNav = document.getElementById('thumbnailNav');
-                this.loading = document.getElementById('imageLoading');
-
-                this.prevBtn = document.getElementById('prevBtn');
-                this.nextBtn = document.getElementById('nextBtn');
-                this.closeBtn = document.getElementById('closeBtn');
-
-                this.init();
-            }
-
-            init() {
-                // 为所有图片添加点击事件
-                document.querySelectorAll('.gallery-img').forEach((img, index) => {
-                    img.addEventListener('click', (e) => {
-                        const gallery = e.target.closest('[data-gallery]');
-                        const galleryImages = gallery.querySelectorAll('.gallery-img');
-                        const imageIndex = Array.from(galleryImages).indexOf(e.target);
-                        this.openViewer(galleryImages, imageIndex);
-                    });
-                });
-
-                // 导航按钮事件
-                this.prevBtn.addEventListener('click', () => this.showPrevious());
-                this.nextBtn.addEventListener('click', () => this.showNext());
-                this.closeBtn.addEventListener('click', () => this.closeViewer());
-
-                // 键盘事件
-                document.addEventListener('keydown', (e) => {
-                    if (!this.isOpen) return;
-
-                    switch (e.key) {
-                        case 'ArrowLeft':
-                            this.showPrevious();
-                            break;
-                        case 'ArrowRight':
-                            this.showNext();
-                            break;
-                        case 'Escape':
-                            this.closeViewer();
-                            break;
+        // 延迟加载非关键功能
+        window.addEventListener('load', () => {
+            // 延迟加载今日诗词
+            setTimeout(() => {
+                loadScript('https://sdk.jinrishici.com/v2/browser/jinrishici.js', () => {
+                    if (typeof jinrishici !== 'undefined') {
+                        jinrishici.load(function (result) {
+                            const sentence = document.querySelector("#poem_sentence");
+                            const info = document.querySelector("#poem_info");
+                            if (sentence && info && result && result.data) {
+                                sentence.innerHTML = result.data.content;
+                                info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》';
+                            }
+                        });
                     }
                 });
+            }, 1000);
 
-                // 点击背景关闭
-                this.viewer.addEventListener('click', (e) => {
-                    if (e.target === this.viewer) {
-                        this.closeViewer();
-                    }
+            // 延迟加载每日一句API
+            setTimeout(() => {
+                loadScript('https://api.xygeng.cn/openapi/one/get/', () => {
+                    // 每日一句API加载完成
                 });
+            }, 1200);
 
-                // 触摸滑动支持
-                this.addTouchSupport();
-            }
-
-            openViewer(images, startIndex = 0) {
-                this.currentImages = Array.from(images);
-                this.currentIndex = startIndex;
-                this.isOpen = true;
-
-                this.viewer.classList.add('active');
-                document.body.style.overflow = 'hidden';
-
-                this.showImage(this.currentIndex);
-                this.createThumbnails();
-            }
-
-            showImage(index) {
-                if (index < 0 || index >= this.currentImages.length) return;
-
-                this.currentIndex = index;
-                const img = this.currentImages[index];
-
-                // 显示加载动画
-                this.loading.style.display = 'block';
-                this.viewerImage.style.display = 'none';
-
-                // 加载图片
-                const newImg = new Image();
-                newImg.onload = () => {
-                    this.viewerImage.src = newImg.src;
-                    this.viewerImage.alt = img.alt;
-
-                    // 更新信息
-                    this.imageTitle.textContent = img.dataset.title || img.alt || '图片';
-                    this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
-
-                    // 隐藏加载动画，显示图片
-                    this.loading.style.display = 'none';
-                    this.viewerImage.style.display = 'block';
-
-                    // 更新缩略图状态
-                    this.updateThumbnails();
-                };
-
-                newImg.onerror = () => {
-                    this.loading.style.display = 'none';
-                    this.imageTitle.textContent = '图片加载失败';
-                    this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
-                };
-
-                newImg.src = img.src;
-
-                // 更新导航按钮状态
-                this.prevBtn.style.display = this.currentImages.length > 1 ? 'block' : 'none';
-                this.nextBtn.style.display = this.currentImages.length > 1 ? 'block' : 'none';
-            }
-
-            showPrevious() {
-                const newIndex = this.currentIndex > 0 ? this.currentIndex - 1 : this.currentImages.length - 1;
-                this.showImage(newIndex);
-            }
-
-            showNext() {
-                const newIndex = this.currentIndex < this.currentImages.length - 1 ? this.currentIndex + 1 : 0;
-                this.showImage(newIndex);
-            }
-
-            closeViewer() {
-                this.isOpen = false;
-                this.viewer.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-
-            createThumbnails() {
-                if (this.currentImages.length <= 1) {
-                    this.thumbnailNav.style.display = 'none';
-                    return;
-                }
-
-                this.thumbnailNav.style.display = 'flex';
-                this.thumbnailNav.innerHTML = '';
-
-                this.currentImages.forEach((img, index) => {
-                    const thumbnail = document.createElement('img');
-                    thumbnail.src = img.src;
-                    thumbnail.className = 'thumbnail';
-                    thumbnail.alt = `缩略图 ${index + 1}`;
-                    thumbnail.addEventListener('click', () => this.showImage(index));
-                    this.thumbnailNav.appendChild(thumbnail);
-                });
-            }
-
-            updateThumbnails() {
-                const thumbnails = this.thumbnailNav.querySelectorAll('.thumbnail');
-                thumbnails.forEach((thumb, index) => {
-                    thumb.classList.toggle('active', index === this.currentIndex);
-                });
-            }
-
-            addTouchSupport() {
-                let startX = 0;
-                let startY = 0;
-
-                this.viewerImage.addEventListener('touchstart', (e) => {
-                    startX = e.touches[0].clientX;
-                    startY = e.touches[0].clientY;
-                });
-
-                this.viewerImage.addEventListener('touchend', (e) => {
-                    if (!startX || !startY) return;
-
-                    const endX = e.changedTouches[0].clientX;
-                    const endY = e.changedTouches[0].clientY;
-
-                    const diffX = startX - endX;
-                    const diffY = startY - endY;
-
-                    // 水平滑动距离大于垂直滑动距离，且滑动距离足够
-                    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
-                        if (diffX > 0) {
-                            // 向左滑动，显示下一张
-                            this.showNext();
-                        } else {
-                            // 向右滑动，显示上一张
-                            this.showPrevious();
+            // 延迟加载时间API
+            setTimeout(() => {
+                loadScript('https://api.vvhan.com/api/ian?type=js', () => {
+                    if (typeof vhan === 'function') {
+                        try {
+                            vhan();
+                        } catch (e) {
+                            document.getElementById('current-time').innerHTML = '&nbsp;&nbsp;&nbsp;' + new Date().toLocaleString();
                         }
+                    } else {
+                        document.getElementById('current-time').innerHTML = '&nbsp;&nbsp;&nbsp;' + new Date().toLocaleString();
                     }
-
-                    startX = 0;
-                    startY = 0;
                 });
-            }
-        }
+            }, 1500);
 
-        // 页面加载完成后初始化图片查看器
+            // 延迟加载访问统计
+            setTimeout(() => {
+                loadScript('//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js');
+            }, 2000);
+        });
+
+        // 轮播图API图片替换为本地图片（避免外部API延迟）
         document.addEventListener('DOMContentLoaded', () => {
-            new ImageViewer();
+            // 如果需要动态背景，可以在页面加载完成后再替换
+            setTimeout(() => {
+                const slides = document.querySelectorAll('.am-slides li');
+                if (slides.length > 0) {
+                    // 可以在这里添加动态背景替换逻辑
+                    // 但为了性能，建议使用本地图片
+                }
+            }, 3000);
         });
     </script>
 </body>
