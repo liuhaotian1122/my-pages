@@ -322,213 +322,6 @@
             transform: scaleX(1);
         }
 
-        /* 关于我板块美化样式 */
-        .about-section {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 20px;
-            padding: 30px;
-            margin: 20px 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .about-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #e1652f;
-        }
-
-        .about-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin: 0;
-            position: relative;
-        }
-
-        .about-title::before {
-            content: '';
-            position: absolute;
-            left: -15px;
-            top: 0;
-            bottom: 0;
-            width: 5px;
-            background: linear-gradient(135deg, #e1652f, #ff8a50);
-            border-radius: 3px;
-        }
-
-        .about-nav {
-            color: #e1652f;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 2px solid #e1652f;
-        }
-
-        .about-nav:hover {
-            background: #e1652f;
-            color: white;
-            text-decoration: none;
-            transform: translateY(-2px);
-        }
-
-        /* 文雅一下板块 */
-        .poetry-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-            color: white;
-            text-align: center;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .poetry-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: white !important;
-        }
-
-        .poetry-content {
-            font-size: 18px;
-            line-height: 1.6;
-            color: white !important;
-        }
-
-        .poetry-info {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-top: 15px;
-            font-style: italic;
-        }
-
-        /* 个人特色卡片 */
-        .about-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .about-card {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(225, 101, 47, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .about-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #e1652f, #ff8a50);
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .about-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 35px rgba(225, 101, 47, 0.15);
-        }
-
-        .about-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .about-card-content {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .about-card-image {
-            width: 80px;
-            height: 80px;
-            border-radius: 12px;
-            overflow: hidden;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .about-card:hover .about-card-image {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(225, 101, 47, 0.2);
-        }
-
-        .about-card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .about-card-info {
-            flex: 1;
-        }
-
-        .about-card-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin: 0 0 8px 0;
-            transition: color 0.3s ease;
-        }
-
-        .about-card:hover .about-card-title {
-            color: #e1652f;
-        }
-
-        .about-card-desc {
-            font-size: 15px;
-            color: #6c757d;
-            line-height: 1.5;
-            margin: 0;
-        }
-
-        /* 特殊主题卡片 */
-        .about-card.tech-card .about-card-title {
-            color: #3498db;
-        }
-
-        .about-card.music-card .about-card-title {
-            color: #9b59b6;
-        }
-
-        .about-card.hero-card .about-card-title {
-            color: #e74c3c;
-        }
-
-        /* 广告区域美化 */
-        .about-ad {
-            margin-top: 30px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .about-ad:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .about-ad img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
         /* 响应式设计 */
         @media (max-width: 768px) {
             .shortcut-card {
@@ -725,68 +518,78 @@
     <!--news-->
     <div class="am-g am-container newatype">
         <div class="am-u-sm-12 am-u-md-12 am-u-lg-8 oh">
-            <div class="about-section" data-am-scrollspy="{animation:'fade'}">
-                <!-- 关于我标题 -->
-                <div class="about-header">
-                    <h2 class="about-title">关于我</h2>
-                    <a href="https://weibo.com/u/5603126701?is_all=1" class="about-nav">我的微博 &raquo;</a>
+            <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default"
+                style="border-bottom: 0px; margin-bottom: -10px">
+                <h2 class="am-titlebar-title ">
+                    关于我
+                </h2>
+                <nav class="am-titlebar-nav">
+                    <a href="https://weibo.com/u/5603126701?is_all=1">我的微博 &raquo;</a>
+                </nav>
+            </div>
+
+            <div data-am-widget="list_news" class="am-list-news am-list-news-default news">
+                <div class="am-list-news-bd">
+                    <ul class="am-list">
+                        <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left"
+                            data-am-scrollspy="{animation:'fade'}">
+                            <h1 style="text-align:center" class="yanse">文雅一下</h1>
+                            <div class="am-slider-desc">
+                                <h3 style="color: #2F0000;" align="center">
+                                    <div id="poem_sentence">正在加载今日诗词...</div>
+                                    <div id="poem_info"></div>
+                                </h3>
+                            </div>
+                        </li>
+
+                        <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left"
+                            data-am-scrollspy="{animation:'fade'}">
+                            <div class="am-u-sm-5 am-list-thumb">
+                                <a href="https://weibo.com/u/5603126701?is_all=1">
+                                    <img src="https://pic.rmb.bdstatic.com/20ad29c2a476c25195fcdd4e583f9b62.gif"
+                                        alt="科技教徒" loading="lazy" />
+                                </a>
+                            </div>
+
+                            <div class=" am-u-sm-7 am-list-main">
+                                <h3 class="am-list-item-hd"><a
+                                        href="https://weibo.com/u/5603126701?is_all=1">科技及创新爱好者</a></h3>
+                                <div class="am-list-item-text">科技教徒，热爱电子相关技术及工业设计爱好者。</div>
+                            </div>
+                        </li>
+
+                        <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left"
+                            data-am-scrollspy="{animation:'fade'}">
+                            <div class="am-u-sm-7 am-list-thumb">
+                                <a href="https://gitee.com/liuhaotian1122">
+                                    <img src="https://pic.rmb.bdstatic.com/bjh/9941c25e7e23c9d07cdb0de927753add2269.gif"
+                                        alt="迈克杰克逊" loading="lazy" />
+                                </a>
+                            </div>
+
+                            <div class=" am-u-sm-5 am-list-main">
+                                <h3 class="am-list-item-hd"><a href="https://gitee.com/liuhaotian1122">迈克杰克逊粉丝</a></h3>
+                                <div class="am-list-item-text">如果世界上有神的话，那就是迈克！</div>
+                            </div>
+                        </li>
+
+                        <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left"
+                            data-am-scrollspy="{animation:'fade'}">
+                            <div class="am-u-sm-5 am-list-thumb">
+                                <a href="https://github.com/liuhaotian1122">
+                                    <img src="https://pic.rmb.bdstatic.com/bjh/down/0c6680949f2c6983aba9fdff82ef7ec4.gif"
+                                        alt="我最喜欢的一张画" loading="lazy" />
+                                </a>
+                            </div>
+
+                            <div class=" am-u-sm-7 am-list-main">
+                                <h3 class="am-list-item-hd"><a href="https://github.com/liuhaotian1122">奥特曼坚定维护者</a>
+                                </h3>
+                                <div class="am-list-item-text">喜欢西瓜与路边摊，对香菜痴迷,相信光，相信奥特曼。</div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-
-                <!-- 文雅一下板块 -->
-                <div class="poetry-section">
-                    <h1 class="poetry-title">文雅一下</h1>
-                    <div class="poetry-content">
-                        <div id="poem_sentence">正在加载今日诗词...</div>
-                        <div id="poem_info" class="poetry-info"></div>
-                    </div>
-                </div>
-
-                <!-- 个人特色卡片 -->
-                <div class="about-cards">
-                    <!-- 科技及创新爱好者卡片 -->
-                    <div class="about-card tech-card">
-                        <a href="https://weibo.com/u/5603126701?is_all=1" class="about-card-content">
-                            <div class="about-card-image">
-                                <img src="https://pic.rmb.bdstatic.com/20ad29c2a476c25195fcdd4e583f9b62.gif" alt="科技教徒"
-                                    loading="lazy" />
-                            </div>
-                            <div class="about-card-info">
-                                <h3 class="about-card-title">科技及创新爱好者</h3>
-                                <p class="about-card-desc">科技教徒，热爱电子相关技术及工业设计爱好者。</p>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- 迈克杰克逊粉丝卡片 -->
-                    <div class="about-card music-card">
-                        <a href="https://gitee.com/liuhaotian1122" class="about-card-content">
-                            <div class="about-card-image">
-                                <img src="https://pic.rmb.bdstatic.com/bjh/9941c25e7e23c9d07cdb0de927753add2269.gif"
-                                    alt="迈克杰克逊" loading="lazy" />
-                            </div>
-                            <div class="about-card-info">
-                                <h3 class="about-card-title">迈克杰克逊粉丝</h3>
-                                <p class="about-card-desc">如果世界上有神的话，那就是迈克！</p>
-                            </div>
-                        </a>
-                    </div>
-
-                    <!-- 奥特曼坚定维护者卡片 -->
-                    <div class="about-card hero-card">
-                        <a href="https://github.com/liuhaotian1122" class="about-card-content">
-                            <div class="about-card-image">
-                                <img src="https://pic.rmb.bdstatic.com/bjh/down/0c6680949f2c6983aba9fdff82ef7ec4.gif"
-                                    alt="我最喜欢的一张画" loading="lazy" />
-                            </div>
-                            <div class="about-card-info">
-                                <h3 class="about-card-title">奥特曼坚定维护者</h3>
-                                <p class="about-card-desc">喜欢西瓜与路边摊，对香菜痴迷,相信光，相信奥特曼。</p>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 广告区域 -->
             </div>
         </div>
 
