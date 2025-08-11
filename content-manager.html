@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .tab-nav {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .tab-button:hover {
+            background: #e9ecef;
+        }
+
+        .tab-button.active:hover {
+            background: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .data-list {
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .data-item {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border-left: 5px solid #667eea;
+            transition: transform 0.2s ease;
+        }
+
+        .data-item:hover {
+            transform: translateX(5px);
+        }
+
+        .data-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .data-item-title {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .data-item-date {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .data-item-content {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .data-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            min-width: auto;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .tab-nav {
+                flex-wrap: wrap;
+            }
+
+            .tab-button {
+                flex: 1 1 50%;
+                padding: 15px 10px;
+                font-size: 14px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                flex: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 内容管理系统</h1>
+            <p>统一管理工作、经历、美食、琐碎内容</p>
+        </div>
+        <div class="main-card">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number" id="workCount">0</div>
+                    <div class="stat-label">工作记录</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="experienceCount">0</div>
+                    <div class="stat-label">经历记录</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="foodCount">0</div>
+                    <div class="stat-label">美食记录</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="suosuiCount">0</div>
+                    <div class="stat-label">琐碎记录</div>
+                </div>
+            </div>
+            <div class="tab-nav">
+                <button class="tab-button active" onclick="switchTab('work')">💼 工作管理</button>
+                <button class="tab-button" onclick="switchTab('experience')">🎯 经历管理</button>
+                <button class="tab-button" onclick="switchTab('food')">🍽️ 美食管理</button>
+                <button class="tab-button" onclick="switchTab('suosui')">📝 琐碎管理</button>
+            </div>
+            <div id="work-tab" class="tab-content active">
+                <form id="workForm">
+                    <div class="form-group"><label>工作标题</label><input type="text" id="workTitle" placeholder="输入工作标题"
+                            required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>时间</label><input type="text" id="workTime"
+                                placeholder="例如：2021.8.17" required></div>
+                        <div class="form-group"><label>地点/描述</label><input type="text" id="workLocation"
+                                placeholder="工作地点或描述"></div>
+                    </div>
+                    <div class="form-group"><label>详细内容</label><textarea id="workContent" rows="3"
+                            placeholder="详细描述工作内容"></textarea></div>
+                    <div class="form-group"><label>图片链接</label><textarea id="workImages" rows="2"
+                            placeholder="输入图片链接，每行一个链接，例如：&#10;images/w1.jpg&#10;images/w2.jpg&#10;images/w3.jpg"></textarea>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">添加工作记录</button>
+                        <button type="button" class="btn btn-info" onclick="insertDataToPage('work')">插入到页面</button>
+                        <button type="button" class="btn btn-danger" onclick="clearData('work')">清空数据</button>
+                    </div>
+                </form>
+                <div class="data-list" id="workList"></div>
+            </div>
+            <div id="experience-tab" class="tab-content">
+                <form id="experienceForm">
+                    <div class="form-group"><label>经历标题</label><input type="text" id="experienceTitle"
+                            placeholder="输入经历标题" required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>时间</label><input type="text" id="experienceTime"
+                                placeholder="例如：2021.10.4" required></div>
+                        <div class="form-group"><label>地点/描述</label><input type="text" id="experienceLocation"
+                                placeholder="经历地点或描述"></div>
+                    </div>
+                    <div class="form-group"><label>详细内容</label><textarea id="experienceContent" rows="3"
+                            placeholder="详细描述这次经历"></textarea></div>
+                    <div class="form-group"><label>图片链接</label><textarea id="experienceImages" rows="2"
+                            placeholder="输入图片链接，每行一个链接，例如：&#10;images/jd1.jpg&#10;images/jd2.jpg&#10;images/jd3.jpg"></textarea>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">添加经历记录</button>
+                        <button type="button" class="btn btn-info"
+                            onclick="insertDataToPage('experience')">插入到页面</button>
+                        <button type="button" class="btn btn-danger" onclick="clearData('experience')">清空数据</button>
+                    </div>
+                </form>
+                <div class="data-list" id="experienceList"></div>
+            </div>
+            <div id="food-tab" class="tab-content">
+                <form id="foodForm">
+                    <div class="form-group"><label>美食标题</label><input type="text" id="foodTitle" placeholder="输入美食标题"
+                            required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>时间</label><input type="text" id="foodTime"
+                                placeholder="例如：2022.4.29" required></div>
+                        <div class="form-group"><label>地点/描述</label><input type="text" id="foodLocation"
+                                placeholder="餐厅地点或描述"></div>
+                    </div>
+                    <div class="form-group"><label>详细内容</label><textarea id="foodContent" rows="3"
+                            placeholder="详细描述美食体验"></textarea></div>
+                    <div class="form-group"><label>图片链接</label><textarea id="foodImages" rows="2"
+                            placeholder="输入图片链接，每行一个链接，例如：&#10;https://i.postimg.cc/yJrMYkFG/IMG-20200819-205634.jpg&#10;https://i.postimg.cc/6qckQbhZ/2832080519158827362.jpg"></textarea>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">添加美食记录</button>
+                        <button type="button" class="btn btn-info" onclick="insertDataToPage('food')">插入到页面</button>
+                        <button type="button" class="btn btn-danger" onclick="clearData('food')">清空数据</button>
+                    </div>
+                </form>
+                <div class="data-list" id="foodList"></div>
+            </div>
+            <div id="suosui-tab" class="tab-content">
+                <form id="suosuiForm">
+                    <div class="form-group"><label>琐碎标题</label><input type="text" id="suosuiTitle" placeholder="输入琐碎标题"
+                            required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>副标题</label><input type="text" id="suosuiSubtitle"
+                                placeholder="副标题"></div>
+                        <div class="form-group"><label>日期</label><input type="text" id="suosuiDate"
+                                placeholder="例如：2021-08-15" required></div>
+                    </div>
+                    <div class="form-group"><label>描述</label><textarea id="suosuiDescription" rows="3"
+                            placeholder="详细描述内容"></textarea></div>
+                    <div class="form-group"><label>视频URL</label><input type="url" id="suosuiVideoUrl"
+                            placeholder="B站嵌入代码URL"></div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">添加琐碎记录</button>
+                        <button type="button" class="btn btn-info" onclick="insertDataToPage('suosui')">插入到页面</button>
+                        <button type="button" class="btn btn-danger" onclick="clearData('suosui')">清空数据</button>
+                    </div>
+                </form>
+                <div class="data-list" id="suosuiList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let data = { work: [], experience: [], food: [], suosui: [] };
+        let currentTab = 'work';
+
+        function loadData() {
+            try {
+                data.work = JSON.parse(localStorage.getItem('contentWork') || '[]');
+                data.experience = JSON.parse(localStorage.getItem('contentExperience') || '[]');
+                data.food = JSON.parse(localStorage.getItem('contentFood') || '[]');
+                data.suosui = JSON.parse(localStorage.getItem('contentSuosui') || '[]');
+            } catch (error) { console.error('加载数据失败:', error); }
+        }
+
+        function saveData(type) {
+            try {
+                localStorage.setItem('content' + type.charAt(0).toUpperCase() + type.slice(1), JSON.stringify(data[type]));
+            } catch (error) { console.error('保存数据失败:', error); }
+        }
+
+        function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+        function formatDate(date) { return new Date(date).toLocaleString('zh-CN'); }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            const targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab) targetTab.classList.add('active');
+            const buttons = document.querySelectorAll('.tab-button');
+            const tabOrder = ['work', 'experience', 'food', 'suosui'];
+            const tabIndex = tabOrder.indexOf(tabName);
+            if (tabIndex !== -1 && buttons[tabIndex]) buttons[tabIndex].classList.add('active');
+            currentTab = tabName;
+            renderList(tabName);
+        }
+
+        function updateStats() {
+            document.getElementById('workCount').textContent = data.work.length;
+            document.getElementById('experienceCount').textContent = data.experience.length;
+            document.getElementById('foodCount').textContent = data.food.length;
+            document.getElementById('suosuiCount').textContent = data.suosui.length;
+        }
+
+        function renderList(type) {
+            const container = document.getElementById(type + 'List');
+            if (!container) return;
+            container.innerHTML = '';
+            if (data[type].length === 0) {
+                container.innerHTML = '<div class="empty-state">暂无记录，快来添加第一条吧！</div>';
+                return;
+            }
+            data[type].forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'data-item';
+                div.innerHTML = generateItemHTML(type, item);
+                container.appendChild(div);
+            });
+        }
+
+        function generateItemHTML(type, item) {
+            return '<div class="data-item-header"><div class="data-item-title">' + item.title + '</div><div class="data-item-date">' + formatDate(item.createdAt) + '</div></div><div class="data-item-content">' + getItemContent(type, item) + '</div><div class="data-actions"><button class="btn btn-sm btn-danger" onclick="deleteItem(\'' + type + '\', \'' + item.id + '\')">删除</button></div>';
+        }
+
+        function getItemContent(type, item) {
+            switch (type) {
+                case 'work':
+                case 'experience':
+                case 'food':
+                    const imageInfo = item.images && item.images.length > 0
+                        ? `<p><strong>图片:</strong> ${item.images.length}张图片</p>`
+                        : '<p><strong>图片:</strong> 无</p>';
+                    return '<p><strong>时间:</strong> ' + item.time + '</p><p><strong>地点:</strong> ' + (item.location || '无') + '</p><p><strong>内容:</strong> ' + (item.content || '无') + '</p>' + imageInfo;
+                case 'suosui':
+                    return '<p><strong>副标题:</strong> ' + (item.subtitle || '无') + '</p><p><strong>描述:</strong> ' + (item.description || '无') + '</p><p><strong>日期:</strong> ' + item.date + '</p><p><strong>视频:</strong> ' + (item.videoUrl ? '已设置' : '无') + '</p>';
+                default: return '<p>未知内容</p>';
+            }
+        }
+
+        function deleteItem(type, id) {
+            if (confirm('确定要删除这条记录吗？')) {
+                data[type] = data[type].filter(item => item.id !== id);
+                saveData(type); renderList(type); updateStats();
+                showNotification('记录删除成功！', 'info');
+            }
+        }
+
+        function clearData(type) {
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
+            if (confirm('确定要清空所有' + typeNames[type] + '数据吗？此操作不可恢复！')) {
+                data[type] = []; saveData(type); renderList(type); updateStats();
+                showNotification(typeNames[type] + '数据已清空！', 'info');
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 1000;
+                padding: 15px 20px; border-radius: 10px; color: white;
+                background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                transform: translateX(100%); transition: transform 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.style.transform = 'translateX(0)', 100);
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        function insertDataToPage(type) {
+            if (data[type].length === 0) {
+                showNotification('没有数据可以插入！', 'error');
+                return;
+            }
+
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
+            const fileName = type === 'suosui' ? 'suosui.html' :
+                type === 'experience' ? 'jingli.html' :
+                    type + '.html';
+
+            // 转换数据格式以匹配目标页面的数据结构
+            const convertedData = convertDataForPage(type, data[type]);
+
+            // 获取目标页面现有的数据
+            const storageKey = getTargetPageStorageKey(type);
+            let existingData = [];
+            try {
+                existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            } catch (error) {
+                console.error('读取现有数据失败:', error);
+            }
+
+            // 将新数据添加到现有数据前面
+            const mergedData = [...convertedData, ...existingData];
+
+            // 直接保存到目标页面的localStorage中
+            localStorage.setItem(storageKey, JSON.stringify(mergedData));
+
+            // 将数据也存储到sessionStorage中用于即时显示
+            sessionStorage.setItem(`insertedData_${type}`, JSON.stringify(convertedData));
+
+            // 打开对应页面并传递插入标识
+            const targetUrl = `${fileName}?inserted=${type}`;
+            window.open(targetUrl, '_blank');
+
+            showNotification(`成功插入${data[type].length}条${typeNames[type]}记录到${fileName}，数据已持久化保存`, 'success');
+        }
+
+        function getTargetPageStorageKey(type) {
+            // 根据目标页面的实际localStorage键名返回对应的键
+            switch (type) {
+                case 'work':
+                    return 'workData'; // work.html使用的localStorage键
+                case 'experience':
+                    return 'experienceData'; // jingli.html使用的localStorage键
+                case 'food':
+                    return 'foodData'; // food.html使用的localStorage键
+                case 'suosui':
+                    return 'suosuiData'; // suosui.html使用的localStorage键
+                default:
+                    return `${type}Data`;
+            }
+        }
+
+        function convertDataForPage(type, items) {
+            return items.map((item, index) => {
+                const baseId = Date.now() + index;
+
+                switch (type) {
+                    case 'work':
+                        return {
+                            id: baseId,
+                            title: item.title,
+                            time: item.time,
+                            location: item.location || item.content || '工作地点',
+                            images: item.images && item.images.length > 0 ? item.images : generatePlaceholderImages(3),
+                            content: item.content || item.location || '工作内容描述'
+                        };
+
+                    case 'experience':
+                        return {
+                            id: baseId,
+                            title: item.title,
+                            time: item.time,
+                            location: item.location || item.content || '经历地点',
+                            images: item.images && item.images.length > 0 ? item.images : generatePlaceholderImages(4),
+                            content: item.content || item.location || '经历内容描述'
+                        };
+
+                    case 'food':
+                        return {
+                            id: baseId,
+                            title: item.title,
+                            time: item.time,
+                            location: item.location || item.content || '美食地点',
+                            images: item.images && item.images.length > 0 ? item.images : generatePlaceholderImages(3),
+                            content: item.content || item.location || '美食体验描述'
+                        };
+
+                    case 'suosui':
+                        return {
+                            id: baseId,
+                            title: item.title,
+                            subtitle: item.subtitle || '副标题',
+                            description: item.description || '描述内容',
+                            videoUrl: item.videoUrl || '//player.bilibili.com/player.html?aid=41032763&bvid=BV1Vt411a7Kr&cid=72076219&page=1',
+                            tags: ['标签1', '标签2'],
+                            date: item.date || formatDateForSuosui(new Date())
+                        };
+
+                    default:
+                        return item;
+                }
+            });
+        }
+
+        function generatePlaceholderImages(count) {
+            const placeholderImages = [
+                'images/w1.jpg', 'images/w2.jpg', 'images/w3.jpg', 'images/w4.jpg',
+                'images/n1.jpg', 'images/n2.jpg', 'images/n3.jpg', 'images/n4.jpg',
+                'images/jd1.jpg', 'images/jd2.jpg', 'images/jd3.jpg'
+            ];
+
+            const result = [];
+            for (let i = 0; i < count; i++) {
+                result.push(placeholderImages[i % placeholderImages.length]);
+            }
+            return result;
+        }
+
+        function formatDateForSuosui(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // 图片链接处理函数
+        function parseImageLinks(imageText) {
+            if (!imageText || !imageText.trim()) return [];
+            return imageText.split('\n')
+                .map(link => link.trim())
+                .filter(link => link.length > 0);
+        }
+
+        // 表单提交处理
+        document.getElementById('workForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const item = {
+                id: generateId(),
+                title: document.getElementById('workTitle').value,
+                time: document.getElementById('workTime').value,
+                location: document.getElementById('workLocation').value,
+                content: document.getElementById('workContent').value,
+                images: parseImageLinks(document.getElementById('workImages').value),
+                createdAt: new Date()
+            };
+            data.work.push(item);
+            saveData('work');
+            renderList('work');
+            updateStats();
+            this.reset();
+            showNotification('工作记录添加成功！');
+        });
+
+        document.getElementById('experienceForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const item = {
+                id: generateId(),
+                title: document.getElementById('experienceTitle').value,
+                time: document.getElementById('experienceTime').value,
+                location: document.getElementById('experienceLocation').value,
+                content: document.getElementById('experienceContent').value,
+                images: parseImageLinks(document.getElementById('experienceImages').value),
+                createdAt: new Date()
+            };
+            data.experience.push(item);
+            saveData('experience');
+            renderList('experience');
+            updateStats();
+            this.reset();
+            showNotification('经历记录添加成功！');
+        });
+
+        document.getElementById('foodForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const item = {
+                id: generateId(),
+                title: document.getElementById('foodTitle').value,
+                time: document.getElementById('foodTime').value,
+                location: document.getElementById('foodLocation').value,
+                content: document.getElementById('foodContent').value,
+                images: parseImageLinks(document.getElementById('foodImages').value),
+                createdAt: new Date()
+            };
+            data.food.push(item);
+            saveData('food');
+            renderList('food');
+            updateStats();
+            this.reset();
+            showNotification('美食记录添加成功！');
+        });
+
+        document.getElementById('suosuiForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const item = {
+                id: generateId(),
+                title: document.getElementById('suosuiTitle').value,
+                subtitle: document.getElementById('suosuiSubtitle').value,
+                date: document.getElementById('suosuiDate').value,
+                description: document.getElementById('suosuiDescription').value,
+                videoUrl: document.getElementById('suosuiVideoUrl').value,
+                createdAt: new Date()
+            };
+            data.suosui.push(item);
+            saveData('suosui');
+            renderList('suosui');
+            updateStats();
+            this.reset();
+            showNotification('琐碎记录添加成功！');
+        });
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            loadData();
+            updateStats();
+            renderList('work');
+        });
+    </script>
+</body>
+
+</html>
