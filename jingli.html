@@ -676,8 +676,10 @@
             loadScript('js/public.js');
         });
 
-        // 经历数据
-        const experienceData = [
+
+
+        // 默认经历数据
+        const defaultExperienceData = [
             {
                 id: 1,
                 title: "经历工作-1",
@@ -719,6 +721,24 @@
                 content: "记录小可爱王怡宁的日常成长.part4"
             }
         ];
+
+        // 从localStorage加载数据，如果没有则使用默认数据
+        function loadExperienceData() {
+            try {
+                const savedData = localStorage.getItem('experienceData');
+                if (savedData) {
+                    return JSON.parse(savedData);
+                }
+            } catch (error) {
+                console.error('加载保存的数据失败:', error);
+            }
+            return [...defaultExperienceData];
+        }
+
+        // 经历数据
+        let experienceData = loadExperienceData();
+
+
 
         // 分页管理类
         class ExperiencePagination {
