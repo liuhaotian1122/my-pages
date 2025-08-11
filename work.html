@@ -676,30 +676,7 @@
             loadScript('js/public.js');
         });
 
-        // 检查是否有从内容管理系统传递过来的数据
-        function loadInsertedData() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const insertedType = urlParams.get('inserted');
-            
-            if (insertedType === 'work') {
-                const insertedData = sessionStorage.getItem('insertedData_work');
-                if (insertedData) {
-                    try {
-                        const newData = JSON.parse(insertedData);
-                        // 将新数据添加到现有数据前面
-                        experienceData.unshift(...newData);
-                        sessionStorage.removeItem('insertedData_work'); // 清除已使用的数据
-                        
-                        // 显示成功消息
-                        setTimeout(() => {
-                            alert(`成功插入${newData.length}条工作记录！`);
-                        }, 500);
-                    } catch (error) {
-                        console.error('解析插入数据失败:', error);
-                    }
-                }
-            }
-        }
+
 
         // 默认经历数据
         const defaultExperienceData = [
@@ -737,8 +714,7 @@
         // 经历数据
         let experienceData = loadExperienceData();
 
-        // 页面加载时检查插入的数据
-        loadInsertedData();
+
 
         // 分页管理类
         class ExperiencePagination {
@@ -1170,7 +1146,6 @@
 
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', () => {
-            loadInsertedData(); // 先检查插入的数据
             // 初始化分页功能
             window.experiencePagination = new ExperiencePagination();
 
@@ -1181,4 +1156,3 @@
 </body>
 
 </html>
-
