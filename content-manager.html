@@ -431,6 +431,49 @@
         function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
         function formatDate(date) { return new Date(date).toLocaleString('zh-CN'); }
 
+        // 获取当前时间的格式化字符串
+        function getCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}.${month}.${day}`;
+        }
+
+        // 获取当前日期的格式化字符串（用于琐碎记录）
+        function getCurrentDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // 设置表单默认值
+        function setFormDefaults(tabName) {
+            const currentTime = getCurrentTime();
+            const currentDate = getCurrentDate();
+            
+            switch (tabName) {
+                case 'work':
+                    document.getElementById('workTitle').value = '工作记录-';
+                    document.getElementById('workTime').value = currentTime;
+                    break;
+                case 'experience':
+                    document.getElementById('experienceTitle').value = '经历记录-';
+                    document.getElementById('experienceTime').value = currentTime;
+                    break;
+                case 'food':
+                    document.getElementById('foodTitle').value = '美食记录-';
+                    document.getElementById('foodTime').value = currentTime;
+                    break;
+                case 'suosui':
+                    document.getElementById('suosuiTitle').value = '琐碎记录-';
+                    document.getElementById('suosuiDate').value = currentDate;
+                    break;
+            }
+        }
+
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
@@ -442,6 +485,9 @@
             if (tabIndex !== -1 && buttons[tabIndex]) buttons[tabIndex].classList.add('active');
             currentTab = tabName;
             renderList(tabName);
+            
+            // 设置当前标签页的默认值
+            setFormDefaults(tabName);
         }
 
         function updateStats() {
@@ -468,10 +514,29 @@
         }
 
         function generateItemHTML(type, item) {
-            return '<div class="data-item-header"><div class="data-item-title">' + item.title + '</div><div class="data-item-date">' + formatDate(item.createdAt) + '</div></div><div class="data-item-content">' + getItemContent(type, item) + '</div><div class="data-actions"><button class="btn btn-sm btn-danger" onclick="deleteItem(\'' + type + '\', \'' + item.id + '\')">删除</button></div>';
+            const resetButton = item.inserted 
+                ? '<button class="btn btn-sm btn-success" onclick="resetInsertStatus(\'' + type + '\', \'' + item.id + '\')">重置状态</button>' 
+                : '';
+            return '<div class="data-item-header"><div class="data-item-title">' + item.title + '</div><div class="data-item-date">' + formatDate(item.createdAt) + '</div></div><div class="data-item-content">' + getItemContent(type, item) + '</div><div class="data-actions">' + resetButton + '<button class="btn btn-sm btn-danger" onclick="deleteItem(\'' + type + '\', \'' + item.id + '\')">删除</button></div>';
+        }
+
+        function resetInsertStatus(type, id) {
+            if (confirm('确定要重置这条记录的插入状态吗？重置后可以重新插入。')) {
+                const item = data[type].find(dataItem => dataItem.id === id);
+                if (item) {
+                    item.inserted = false;
+                    saveData(type);
+                    renderList(type);
+                    showNotification('插入状态已重置！', 'success');
+                }
+            }
         }
 
         function getItemContent(type, item) {
+            const insertedStatus = item.inserted 
+                ? '<p><strong>状态:</strong> <span style="color: #28a745;">✅ 已插入</span></p>' 
+                : '<p><strong>状态:</strong> <span style="color: #dc3545;">⏳ 未插入</span></p>';
+                
             switch (type) {
                 case 'work':
                 case 'experience':
@@ -479,26 +544,87 @@
                     const imageInfo = item.images && item.images.length > 0
                         ? `<p><strong>图片:</strong> ${item.images.length}张图片</p>`
                         : '<p><strong>图片:</strong> 无</p>';
-                    return '<p><strong>时间:</strong> ' + item.time + '</p><p><strong>地点:</strong> ' + (item.location || '无') + '</p><p><strong>内容:</strong> ' + (item.content || '无') + '</p>' + imageInfo;
+                    return '<p><strong>时间:</strong> ' + item.time + '</p><p><strong>地点:</strong> ' + (item.location || '无') + '</p><p><strong>内容:</strong> ' + (item.content || '无') + '</p>' + imageInfo + insertedStatus;
                 case 'suosui':
-                    return '<p><strong>副标题:</strong> ' + (item.subtitle || '无') + '</p><p><strong>描述:</strong> ' + (item.description || '无') + '</p><p><strong>日期:</strong> ' + item.date + '</p><p><strong>视频:</strong> ' + (item.videoUrl ? '已设置' : '无') + '</p>';
+                    return '<p><strong>副标题:</strong> ' + (item.subtitle || '无') + '</p><p><strong>描述:</strong> ' + (item.description || '无') + '</p><p><strong>日期:</strong> ' + item.date + '</p><p><strong>视频:</strong> ' + (item.videoUrl ? '已设置' : '无') + '</p>' + insertedStatus;
                 default: return '<p>未知内容</p>';
             }
         }
 
         function deleteItem(type, id) {
-            if (confirm('确定要删除这条记录吗？')) {
+            if (confirm('确定要删除这条记录吗？这将同时删除目标页面中对应的数据！')) {
+                // 找到要删除的记录
+                const itemToDelete = data[type].find(item => item.id === id);
+                if (!itemToDelete) {
+                    showNotification('未找到要删除的记录！', 'error');
+                    return;
+                }
+
+                // 从内容管理系统中删除
                 data[type] = data[type].filter(item => item.id !== id);
-                saveData(type); renderList(type); updateStats();
+                saveData(type);
+
+                // 如果记录已经插入过，也要从目标页面删除
+                if (itemToDelete.inserted) {
+                    deleteFromTargetPage(type, itemToDelete);
+                }
+
+                renderList(type); 
+                updateStats();
                 showNotification('记录删除成功！', 'info');
+            }
+        }
+
+        function deleteFromTargetPage(type, itemToDelete) {
+            try {
+                const storageKey = getTargetPageStorageKey(type);
+                let targetData = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                
+                // 根据标题和时间匹配要删除的数据
+                const originalLength = targetData.length;
+                targetData = targetData.filter(targetItem => {
+                    // 匹配条件：标题和时间都相同
+                    const titleMatch = targetItem.title === itemToDelete.title;
+                    const timeMatch = targetItem.time === itemToDelete.time;
+                    
+                    // 对于琐碎记录，使用日期而不是时间
+                    if (type === 'suosui') {
+                        const dateMatch = targetItem.date === itemToDelete.date;
+                        return !(titleMatch && dateMatch);
+                    } else {
+                        return !(titleMatch && timeMatch);
+                    }
+                });
+
+                // 保存更新后的目标页面数据
+                localStorage.setItem(storageKey, JSON.stringify(targetData));
+                
+                const deletedCount = originalLength - targetData.length;
+                if (deletedCount > 0) {
+                    console.log(`已从目标页面删除 ${deletedCount} 条匹配的记录`);
+                } else {
+                    console.log('在目标页面中未找到匹配的记录');
+                }
+            } catch (error) {
+                console.error('从目标页面删除数据时出错:', error);
             }
         }
 
         function clearData(type) {
             const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
-            if (confirm('确定要清空所有' + typeNames[type] + '数据吗？此操作不可恢复！')) {
-                data[type] = []; saveData(type); renderList(type); updateStats();
-                showNotification(typeNames[type] + '数据已清空！', 'info');
+            if (confirm('确定要清空所有' + typeNames[type] + '数据吗？这将同时清空目标页面中对应的数据！此操作不可恢复！')) {
+                // 清空内容管理系统中的数据
+                data[type] = []; 
+                saveData(type); 
+                
+                // 同时清空目标页面中的数据
+                const storageKey = getTargetPageStorageKey(type);
+                localStorage.removeItem(storageKey);
+                console.log(`已清空目标页面数据，localStorage键: ${storageKey}`);
+                
+                renderList(type); 
+                updateStats();
+                showNotification(typeNames[type] + '数据已清空（包括目标页面数据）！', 'info');
             }
         }
 
@@ -526,13 +652,22 @@
                 return;
             }
 
+            // 筛选出未插入的数据
+            const uninsertedData = data[type].filter(item => !item.inserted);
+            
+            if (uninsertedData.length === 0) {
+                showNotification('所有数据都已经插入过了！', 'info');
+                return;
+            }
+
             const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
             const fileName = type === 'suosui' ? 'suosui.html' :
                 type === 'experience' ? 'jingli.html' :
                     type + '.html';
 
             // 转换数据格式以匹配目标页面的数据结构
-            const convertedData = convertDataForPage(type, data[type]);
+            const convertedData = convertDataForPage(type, uninsertedData);
+            console.log(`准备插入${type}数据:`, convertedData);
 
             // 获取目标页面现有的数据
             const storageKey = getTargetPageStorageKey(type);
@@ -545,18 +680,29 @@
 
             // 将新数据添加到现有数据前面
             const mergedData = [...convertedData, ...existingData];
+            console.log(`合并后的${type}数据:`, mergedData);
 
             // 直接保存到目标页面的localStorage中
             localStorage.setItem(storageKey, JSON.stringify(mergedData));
+            console.log(`数据已保存到localStorage键: ${storageKey}`);
 
-            // 将数据也存储到sessionStorage中用于即时显示
-            sessionStorage.setItem(`insertedData_${type}`, JSON.stringify(convertedData));
+            // 标记这些数据为已插入
+            uninsertedData.forEach(item => {
+                const originalItem = data[type].find(dataItem => dataItem.id === item.id);
+                if (originalItem) {
+                    originalItem.inserted = true;
+                }
+            });
+            
+            // 保存更新后的数据
+            saveData(type);
+            renderList(type);
 
-            // 打开对应页面并传递插入标识
-            const targetUrl = `${fileName}?inserted=${type}`;
+            // 打开对应页面（不需要传递插入标识，因为数据已经在localStorage中）
+            const targetUrl = fileName;
             window.open(targetUrl, '_blank');
 
-            showNotification(`成功插入${data[type].length}条${typeNames[type]}记录到${fileName}，数据已持久化保存`, 'success');
+            showNotification(`成功插入${uninsertedData.length}条未插入的${typeNames[type]}记录到${fileName}，数据已持久化保存`, 'success');
         }
 
         function getTargetPageStorageKey(type) {
@@ -586,7 +732,7 @@
                             title: item.title,
                             time: item.time,
                             location: item.location || item.content || '工作地点',
-                            images: item.images && item.images.length > 0 ? item.images : generatePlaceholderImages(3),
+                            images: item.images && item.images.length > 0 ? item.images : [],
                             content: item.content || item.location || '工作内容描述'
                         };
 
@@ -596,7 +742,7 @@
                             title: item.title,
                             time: item.time,
                             location: item.location || item.content || '经历地点',
-                            images: item.images && item.images.length > 0 ? item.images : generatePlaceholderImages(4),
+                            images: item.images && item.images.length > 0 ? item.images : [],
                             content: item.content || item.location || '经历内容描述'
                         };
 
@@ -606,7 +752,7 @@
                             title: item.title,
                             time: item.time,
                             location: item.location || item.content || '美食地点',
-                            images: item.images && item.images.length > 0 ? item.images : generatePlaceholderImages(3),
+                            images: item.images && item.images.length > 0 ? item.images : [],
                             content: item.content || item.location || '美食体验描述'
                         };
 
@@ -738,6 +884,8 @@
             loadData();
             updateStats();
             renderList('work');
+            // 设置初始默认值（工作管理标签页）
+            setFormDefaults('work');
         });
     </script>
 </body>
