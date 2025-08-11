@@ -676,8 +676,10 @@
             loadScript('js/public.js');
         });
 
-        // 经历数据
-        const experienceData = [
+
+
+        // 默认经历数据
+        const defaultExperienceData = [
             {
                 id: 1,
                 title: "记录美食-1",
@@ -685,40 +687,24 @@
                 location: "记录美食",
                 images: ["https://i.postimg.cc/yJrMYkFG/IMG-20200819-205634.jpg", "https://i.postimg.cc/6qckQbhZ/2832080519158827362.jpg", "https://i.postimg.cc/2yNkWtvX/IMG-20220330-192234-305832992923123.jpg"],
                 content: "记录美食"
-            },
-            // {
-            //     id: 2,
-            //     title: "记录工作-2",
-            //     time: "2022.2.2",
-            //     location: "记录新年，喜上眉梢",
-            //     images: ["images/n1.jpg", "images/n2.jpg", "images/n3.jpg", "images/n4.jpg"],
-            //     content: "记录新年，喜上眉梢"
-            // },
-            // {
-            //     id: 3,
-            //     title: "记录工作-3",
-            //     time: "2021.12.31",
-            //     location: "记录小可爱王怡宁的日常成长.part2",
-            //     images: ["images/w4.jpg", "images/w3.jpg", "images/w2.jpg", "images/w1.jpg"],
-            //     content: "记录小可爱王怡宁的日常成长.part2"
-            // },
-            // {
-            //     id: 4,
-            //     title: "记录工作-4",
-            //     time: "2022.1.30",
-            //     location: "记录小可爱王怡宁的日常成长.part3",
-            //     images: ["images/w7.jpg", "images/w9.jpg", "images/w8.jpg", "images/w10.jpg"],
-            //     content: "记录小可爱王怡宁的日常成长.part3"
-            // },
-            // {
-            //     id: 5,
-            //     title: "记录工作-5",
-            //     time: "2023.1.14",
-            //     location: "记录小可爱王怡宁的日常成长.part4",
-            //     images: ["images/w11.jpg", "images/w12.jpg", "images/w13.jpg", "images/w14.jpg"],
-            //     content: "记录小可爱王怡宁的日常成长.part4"
-            // }
+            }
         ];
+
+        // 从localStorage加载数据，如果没有则使用默认数据
+        function loadExperienceData() {
+            try {
+                const savedData = localStorage.getItem('foodData');
+                if (savedData) {
+                    return JSON.parse(savedData);
+                }
+            } catch (error) {
+                console.error('加载保存的数据失败:', error);
+            }
+            return [...defaultExperienceData];
+        }
+
+        // 经历数据 - 先声明，稍后初始化
+        let experienceData = [];
 
         // 分页管理类
         class ExperiencePagination {
@@ -1150,6 +1136,10 @@
 
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', () => {
+            // 加载数据
+            experienceData = loadExperienceData();
+            console.log('数据加载完成:', experienceData.length, '条记录');
+            
             // 初始化分页功能
             window.experiencePagination = new ExperiencePagination();
 
