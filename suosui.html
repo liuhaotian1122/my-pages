@@ -405,8 +405,10 @@ loadScript('assets/js/jquery.min.js', () => {
     loadScript('js/public.js');
 });
 
-// 琐碎数据
-const suosuiData = [
+
+
+// 默认琐碎数据
+const defaultSuosuiData = [
     {
         id: 1,
         title: "记录琐碎-1",
@@ -481,6 +483,22 @@ const suosuiData = [
         date: "2022-03-10"
     }
 ];
+
+// 从localStorage加载数据，如果没有则使用默认数据
+function loadSuosuiData() {
+    try {
+        const savedData = localStorage.getItem('suosuiData');
+        if (savedData) {
+            return JSON.parse(savedData);
+        }
+    } catch (error) {
+        console.error('加载保存的数据失败:', error);
+    }
+    return [...defaultSuosuiData];
+}
+
+// 琐碎数据
+let suosuiData = loadSuosuiData();
 
 // 分页管理类
 class SuosuiPagination {
