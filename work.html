@@ -676,8 +676,33 @@
             loadScript('js/public.js');
         });
 
-        // 经历数据
-        const experienceData = [
+        // 检查是否有从内容管理系统传递过来的数据
+        function loadInsertedData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const insertedType = urlParams.get('inserted');
+            
+            if (insertedType === 'work') {
+                const insertedData = sessionStorage.getItem('insertedData_work');
+                if (insertedData) {
+                    try {
+                        const newData = JSON.parse(insertedData);
+                        // 将新数据添加到现有数据前面
+                        experienceData.unshift(...newData);
+                        sessionStorage.removeItem('insertedData_work'); // 清除已使用的数据
+                        
+                        // 显示成功消息
+                        setTimeout(() => {
+                            alert(`成功插入${newData.length}条工作记录！`);
+                        }, 500);
+                    } catch (error) {
+                        console.error('解析插入数据失败:', error);
+                    }
+                }
+            }
+        }
+
+        // 默认经历数据
+        const defaultExperienceData = [
             {
                 id: 1,
                 title: "记录工作-1",
@@ -693,32 +718,27 @@
                 location: "记录新年，喜上眉梢",
                 images: ["images/n1.jpg", "images/n2.jpg", "images/n3.jpg", "images/n4.jpg"],
                 content: "记录新年，喜上眉梢"
-            },
-            // {
-            //     id: 3,
-            //     title: "记录工作-3",
-            //     time: "2021.12.31",
-            //     location: "记录小可爱王怡宁的日常成长.part2",
-            //     images: ["images/w4.jpg", "images/w3.jpg", "images/w2.jpg", "images/w1.jpg"],
-            //     content: "记录小可爱王怡宁的日常成长.part2"
-            // },
-            // {
-            //     id: 4,
-            //     title: "记录工作-4",
-            //     time: "2022.1.30",
-            //     location: "记录小可爱王怡宁的日常成长.part3",
-            //     images: ["images/w7.jpg", "images/w9.jpg", "images/w8.jpg", "images/w10.jpg"],
-            //     content: "记录小可爱王怡宁的日常成长.part3"
-            // },
-            // {
-            //     id: 5,
-            //     title: "记录工作-5",
-            //     time: "2023.1.14",
-            //     location: "记录小可爱王怡宁的日常成长.part4",
-            //     images: ["images/w11.jpg", "images/w12.jpg", "images/w13.jpg", "images/w14.jpg"],
-            //     content: "记录小可爱王怡宁的日常成长.part4"
-            // }
+            }
         ];
+
+        // 从localStorage加载数据，如果没有则使用默认数据
+        function loadExperienceData() {
+            try {
+                const savedData = localStorage.getItem('workData');
+                if (savedData) {
+                    return JSON.parse(savedData);
+                }
+            } catch (error) {
+                console.error('加载保存的数据失败:', error);
+            }
+            return [...defaultExperienceData];
+        }
+
+        // 经历数据
+        let experienceData = loadExperienceData();
+
+        // 页面加载时检查插入的数据
+        loadInsertedData();
 
         // 分页管理类
         class ExperiencePagination {
@@ -1150,6 +1170,7 @@
 
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', () => {
+            loadInsertedData(); // 先检查插入的数据
             // 初始化分页功能
             window.experiencePagination = new ExperiencePagination();
 
