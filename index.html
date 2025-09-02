@@ -39,16 +39,33 @@
     <script src="js/public.js"></script>
     <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
     </script>
+    <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="assets/css/amazeui.min.css">
+        <link rel="stylesheet" href="css/public.css">
+    </noscript>
 </head>
 <body>
 <!-- 	<api接口> -->
 <!--        <script src="https://api.vvhan.com/api/script/denglong"></script>-->
-<script src="https://api.vvhan.com/api/script/snow"></script>
+<!-- 雪花效果延迟加载 -->
+<script>
+    // 延迟加载雪花效果
+    setTimeout(() => {
+        const script = document.createElement('script');
+        script.src = 'https://api.vvhan.com/api/script/snow';
+        script.async = true;
+        document.head.appendChild(script);
+    }, 2000);
+</script>
 <header class="am-topbar am-topbar-fixed-top wos-header">
     <div class="am-container">
         <h1 class="am-topbar-brand">
-            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt=""></a>
+            <a href="https://liuhaotian1122.github.io/my-pages/"><img src="images/logo.png" alt=""
+                                                                      loading="lazy"></a>
         </h1>
+
 
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-warning am-show-sm-only"
                 data-am-collapse="{target: '#collapse-head'}">
@@ -89,13 +106,13 @@
             <div data-am-widget="slider" class="am-slider am-slider-c1" data-am-slider='{"directionNav":false}' >
                 <ul class="am-slides">
 
-                    <li>
-                        <a href="boke.html"><img src="https://api.vvhan.com/api/bing"></a>
-                        <div class="am-slider-desc"><span id="jinrishici-sentence">正在加载今日诗词....</span>
-                            <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script></div>
+<!--                    <li>-->
+<!--                        <a href="boke.html"><img src="https://api.vvhan.com/api/bing"></a>-->
+<!--                        <div class="am-slider-desc"><span id="jinrishici-sentence">正在加载今日诗词....</span>-->
+<!--                            <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script></div>-->
 
 
-                    </li>
+<!--                    </li>-->
 <!--                    <li>-->
 <!--                        <a href="boke.html"><img src="https://api.vvhan.com/api/wallpaper/acg"></a>-->
 <!--                        <div class="am-slider-desc"><script type="text/javascript" src="https://api.xygeng.cn/openapi/one/get/">-->
@@ -105,70 +122,72 @@
 
                     <li>
                         <a href="boke.html"><img src="Temp-images/bb3.jpg"></a>
-                        <div class="am-slider-desc">不要太担心 只因为我相信 终会走过这条遥远的道路</div>
+                                           <div class="am-slider-desc"><span id="jinrishici-sentence">正在加载今日诗词....</span>
+                                             <script src="https://sdk.jinrishici.com/v2/browser/jinrishici.js" charset="utf-8"></script></div>
 
-                    </li>
-                    <li>
-                        <a href="boke.html"><img src="Temp-images/bb4.jpg"></a>
-                        <div class="am-slider-desc">我要送给你好运 就像买可乐 打开瓶盖写着再来一瓶</div>
+                                            </li>
+                                            <li>
+                                                <a href="boke.html"><img src="Temp-images/bb4.jpg"></a>
+                                                <div class="am-slider-desc"><script type="text/javascript" src="https://api.xygeng.cn/openapi/one/get/">
+                                                </script></div>
 
-                    </li>
-                    <li>
-                        <a href="boke.html"><img src="Temp-images/bb5.jpg"></a>
-                        <div class="am-slider-desc">今天阴 那又怎样 我可以做你的小太阳啊</div>
-                    </li>
-                    <li>
-                        <a href="boke.html"><img src="Temp-images/bb6.jpg"></a>
-                        <div class="am-slider-desc">十年饮冰 难凉热血</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="am-u-sm-0 am-u-md-0 am-u-lg-4 padding-none">
-            <div class="star am-container"><span><img src="images/star.png">记录日常</span></div>
-            <ul class="padding-none am-gallery am-avg-sm-2 am-avg-md-4 am-avg-lg-2 am-gallery-overlay" data-am-gallery="{ pureview: true }" >
-                <li>
-                    <div class="am-gallery-item">
-                        <a href="work.html">
-                            <img src="Temp-images/work.gif">
-                            <h3 class="am-gallery-title">记录工作</h3>
-                            <div class="am-gallery-desc">2375-09-26</div>
-                        </a>
-                    </div>
-                </li>
-                <li>
-                    <div class="am-gallery-item">
-                        <a href="jingli.html">
-                            <img src="Temp-images/jinli.gif"远方 有一个地方 那里种有我们的梦想"/>
-                            <h3 class="am-gallery-title">记录经历</h3>
-                            <div class="am-gallery-desc">2375-09-26</div>
-                        </a>
-                    </div>
-                </li>
-                <li>
-                    <div class="am-gallery-item">
-                        <a href="food.html">
-                            <img src="Temp-images/food.gif"远方 有一个地方 那里种有我们的梦想"/>
-                            <h3 class="am-gallery-title">记录美食</h3>
-                            <div class="am-gallery-desc">2375-09-26</div>
-                        </a>
-                    </div>
-                </li>
-                <li>
-                    <div class="am-gallery-item">
-                        <a href="suosui.html">
-                            <img src="Temp-images/suosui.gif"远方 有一个地方 那里种有我们的梦想"/>
-                            <h3 class="am-gallery-title">记录琐碎</h3>
-                            <div class="am-gallery-desc">2375-09-26</div>
-                        </a>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-</div>
+                                            </li>
+                                            <li>
+                                                <a href="boke.html"><img src="Temp-images/bb5.jpg"></a>
+                                                <div class="am-slider-desc">今天阴 那又怎样 我可以做你的小太阳啊</div>
+                                            </li>
+                                            <li>
+                                                <a href="boke.html"><img src="Temp-images/bb6.jpg"></a>
+                                                <div class="am-slider-desc">十年饮冰 难凉热血</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="am-u-sm-0 am-u-md-0 am-u-lg-4 padding-none">
+                                    <div class="star am-container"><span><img src="images/star.png">记录日常</span></div>
+                                    <ul class="padding-none am-gallery am-avg-sm-2 am-avg-md-4 am-avg-lg-2 am-gallery-overlay" data-am-gallery="{ pureview: true }" >
+                                        <li>
+                                            <div class="am-gallery-item">
+                                                <a href="work.html">
+                                                    <img src="Temp-images/work.gif" loading="lazy">
+                                                    <h3 class="am-gallery-title">记录工作</h3>
+                                                    <div class="am-gallery-desc">2375-09-26</div>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="am-gallery-item">
+                                                <a href="jingli.html">
+                                                    <img src="Temp-images/jinli.gif" loading="lazy">
+                                                    <h3 class="am-gallery-title">记录经历</h3>
+                                                    <div class="am-gallery-desc">2375-09-26</div>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="am-gallery-item">
+                                                <a href="food.html">
+                                                    <img src="Temp-images/food.gif"  loading="lazy">
+                                                    <h3 class="am-gallery-title">记录美食</h3>
+                                                    <div class="am-gallery-desc">2375-09-26</div>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="am-gallery-item">
+                                                <a href="suosui.html">
+                                                    <img src="Temp-images/suosui.gif"loading="lazy">
+                                                    <h3 class="am-gallery-title">记录琐碎</h3>
+                                                    <div class="am-gallery-desc">2375-09-26</div>
+                                                </a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
 
-<!--news-->
+                        <!--news-->
 <div class="am-g am-container newatype">
     <div class="am-u-sm-12 am-u-md-12 am-u-lg-8 oh">
         <div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" style="border-bottom: 0px; margin-bottom: -10px">
