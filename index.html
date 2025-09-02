@@ -24,6 +24,9 @@
     <link rel="icon" type="image/png" href="images/i/favicon.png">
     <link rel="stylesheet" href="assets/css/amazeui.css">
     <link rel="stylesheet" href="css/public.css">
+    <link rel="preload" href="assets/css/amazeui.min.css" as="style">
+    <link rel="preload" href="css/public.css" as="style">
+    <link rel="preload" href="assets/js/jquery.min.js" as="script">
     <!--[if (gte IE 9)|!(IE)]><!-->
     <script src="assets/js/jquery.min.js"></script>
     <!--<![endif]-->
@@ -93,12 +96,12 @@
 
 
                     </li>
-                    <li>
-                        <a href="boke.html"><img src="https://api.vvhan.com/api/wallpaper/acg"></a>
-                        <div class="am-slider-desc"><script type="text/javascript" src="https://api.xygeng.cn/openapi/one/get/">
-                        </script></div>
+<!--                    <li>-->
+<!--                        <a href="boke.html"><img src="https://api.vvhan.com/api/wallpaper/acg"></a>-->
+<!--                        <div class="am-slider-desc"><script type="text/javascript" src="https://api.xygeng.cn/openapi/one/get/">-->
+<!--                        </script></div>-->
 
-                    </li>
+<!--                    </li>-->
 
                     <li>
                         <a href="boke.html"><img src="Temp-images/bb3.jpg"></a>
@@ -294,15 +297,15 @@
                 <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
                 <li class="am-g am-list-item-desced am-list-item-thumbed am-list-item-thumb-left">
                     <div class="am-u-sm-4 am-list-thumb">
-                        <a href="hotnews.html">
+                        <a href="https://fanwantv.com/">
                             <img src="Temp-images/hotnews.jpg" class="face"/>
                         </a>
                     </div>
 
                     <div class=" am-u-sm-8 am-list-main">
-                        <h3 class="am-list-item-hd"><a href="hotnews.html">今日热榜</a></h3>
+                        <h3 class="am-list-item-hd"><a href="https://fanwantv.com/">今日热剧</a></h3>
 
-                        <div class="am-list-item-text">聚集众多平台热榜热搜</div>
+                        <div class="am-list-item-text">聚集众多平台热剧热搜</div>
 
                     </div>
                 </li>
@@ -338,22 +341,18 @@
                 </li>
             </ul>
         </div>
-        <ul class="am-gallery am-avg-sm-1
-  am-avg-md-1 am-avg-lg-1 am-gallery-default" data-am-gallery="{ pureview: true }" >
+        <ul class="am-gallery am-avg-sm-1 am-avg-md-1 am-avg-lg-1 am-gallery-default"
+            data-am-gallery="{ pureview: true }">
             <li>
                 <div class="am-gallery-item">
                     <h3 class="am-gallery-title">
-
-                        <h2>&nbsp;&nbsp;&nbsp;<script type="text/javascript" src="https://api.vvhan.com/api/ian?type=js"></script><script>vhan()</script>
-                        </h2>
-
                     </h3>
                     <div class="am-gallery-desc">
-                        <div class="am-fr"><span id="busuanzi_container_site_uv">
-  本站累计访问量：<span id="busuanzi_value_site_uv"></span>
-</span></div>
+                        <div class="am-fr">
+<span id="busuanzi_container_site_uv">本站累计访问量：<span
+        id="busuanzi_value_site_uv">统计中...</span></span>
+                        </div>
                     </div>
-                    </a>
                 </div>
             </li>
         </ul>
@@ -374,6 +373,83 @@
         document.write(currentYear);
     </script> 浩天的个人站</a></h6>
 </footer>
+
+<!-- 延迟加载JS -->
+<script>
+    // 关键JS立即加载
+    const loadScript = (src, callback) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.async = true;
+        if (callback) script.onload = callback;
+        document.head.appendChild(script);
+    };
+
+    // 立即加载jQuery
+    loadScript('assets/js/jquery.min.js', () => {
+// jQuery加载完成后加载其他依赖
+        loadScript('assets/js/amazeui.min.js');
+        loadScript('js/public.js');
+    });
+
+    // 延迟加载非关键功能
+    window.addEventListener('load', () => {
+// 延迟加载今日诗词
+        setTimeout(() => {
+            loadScript('https://sdk.jinrishici.com/v2/browser/jinrishici.js', () => {
+                if (typeof jinrishici !== 'undefined') {
+                    jinrishici.load(function (result) {
+                        const sentence = document.querySelector("#poem_sentence");
+                        const info = document.querySelector("#poem_info");
+                        if (sentence && info && result && result.data) {
+                            sentence.innerHTML = result.data.content;
+                            info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》';
+                        }
+                    });
+                }
+            });
+        }, 1000);
+
+// 延迟加载每日一句API
+        setTimeout(() => {
+            loadScript('https://api.xygeng.cn/openapi/one/get/', () => {
+// 每日一句API加载完成
+            });
+        }, 1200);
+
+// 延迟加载时间API
+        setTimeout(() => {
+            loadScript('https://api.vvhan.com/api/ian?type=js', () => {
+                if (typeof vhan === 'function') {
+                    try {
+                        vhan();
+                    } catch (e) {
+                        document.getElementById('current-time').innerHTML = '&nbsp;&nbsp;&nbsp;' + new Date().toLocaleString();
+                    }
+                } else {
+                    document.getElementById('current-time').innerHTML = '&nbsp;&nbsp;&nbsp;' + new Date().toLocaleString();
+                }
+            });
+        }, 1500);
+
+// 延迟加载访问统计
+        setTimeout(() => {
+            loadScript('//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js');
+        }, 2000);
+    });
+
+    // 轮播图API图片替换为本地图片（避免外部API延迟）
+    document.addEventListener('DOMContentLoaded', () => {
+// 如果需要动态背景，可以在页面加载完成后再替换
+        setTimeout(() => {
+            const slides = document.querySelectorAll('.am-slides li');
+            if (slides.length > 0) {
+// 可以在这里添加动态背景替换逻辑
+// 但为了性能，建议使用本地图片
+            }
+        }, 3000);
+    });
+</script>
 </body>
 </html>
 
