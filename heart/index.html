@@ -61,7 +61,18 @@
 			width: 100%;
 			height: 100%;
 			pointer-events: none;
-			z-index: 1;
+			z-index: 998;
+		}
+
+		/* 文字飘落容器 - 最高层级 */
+		.floating-texts {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			pointer-events: none;
+			z-index: 999;
 		}
 
 		.floating-heart {
@@ -76,6 +87,38 @@
 			color: rgba(255, 182, 193, 0.6);
 			font-size: 16px;
 			animation: fall 10s linear infinite;
+		}
+
+		/* 文字飘落效果 */
+		.floating-text {
+			position: absolute;
+			color: rgba(213, 9, 60, 0.7);
+			font-size: 18px;
+			font-weight: 600;
+			font-family: 'Microsoft YaHei', '微软雅黑', serif;
+			text-shadow: 1px 1px 3px rgba(213, 9, 60, 0.3);
+			animation: textFall 12s linear infinite;
+			white-space: nowrap;
+		}
+
+		@keyframes textFall {
+			0% {
+				transform: translateY(-100px) rotate(0deg);
+				opacity: 0.8;
+			}
+
+			10% {
+				opacity: 1;
+			}
+
+			90% {
+				opacity: 0.8;
+			}
+
+			100% {
+				transform: translateY(100vh) rotate(720deg);
+				opacity: 0;
+			}
 		}
 
 		@keyframes float {
@@ -443,6 +486,21 @@
 		<div class="floating-petal" style="left: 75%; animation-delay: 3.5s;">🌹</div>
 		<div class="floating-petal" style="left: 85%; animation-delay: 2.5s;">🌸</div>
 		<div class="floating-petal" style="left: 95%; animation-delay: 4.5s;">🌺</div>
+
+	</div>
+
+	<!-- 文字飘落效果 - 最高层级，飘落在所有内容上方 -->
+	<div class="floating-texts">
+		<div class="floating-text" style="left: 8%; animation-delay: 0s;">刘浩天</div>
+		<div class="floating-text" style="left: 18%; animation-delay: 3s;">朱丽春</div>
+		<div class="floating-text" style="left: 28%; animation-delay: 6s;">刘浩天</div>
+		<div class="floating-text" style="left: 38%; animation-delay: 1.5s;">朱丽春</div>
+		<div class="floating-text" style="left: 48%; animation-delay: 4.5s;">刘浩天</div>
+		<div class="floating-text" style="left: 58%; animation-delay: 7.5s;">朱丽春</div>
+		<div class="floating-text" style="left: 68%; animation-delay: 2s;">刘浩天</div>
+		<div class="floating-text" style="left: 78%; animation-delay: 5s;">朱丽春</div>
+		<div class="floating-text" style="left: 88%; animation-delay: 8s;">刘浩天</div>
+		<div class="floating-text" style="left: 92%; animation-delay: 3.5s;">朱丽春</div>
 	</div>
 
 	<!-- 主要内容 -->
@@ -461,7 +519,7 @@
 
 		<!-- 正文 -->
 		<div class="two">
-			<h2>
+			<h2.5>
 				总是感觉不可思议，也不知什么原因遇见了你，也不知断断续续的聊了多少。初见你背着红蓝书包呆呆的站立在六中的走廊里面，好像自带强大的气场，让所有人无法接近你（高冷哇你）。俩个大人席地而坐，又好像多年的好友侃侃而谈，关于你的一切，从这里慢慢开始了。。。
 				<br><br>
 				其实之后我才知道，你和我并不愿意站到这个地方，让自己倍感煎熬，但是也正是这种阴差阳错才有了咱们以后的魔幻经历，所以说世事难料呀朱春春同学，哈哈。代码很复杂，你也很复杂，看懂复杂的代码需要一个礼拜，知晓我春的魅力却需要一辈子！
@@ -477,7 +535,7 @@
 				像童话故事里面的情节一样，我们也有属于我们的魔幻故事，我想情节的曲折性不亚于任何一本精彩小说，但精彩曲折的故事情节也只会让我们更加珍惜彼此，兜兜转转寻了半生的春天，看见你一笑，便是了呀，不需要多么艳丽的外表，简单，干净，温暖，如此甚好。
 				<br><br>
 				沿途的景色总是那么喜人，未来依旧充满着魔幻和期待，春是否愿意和我执手，共探佳境呢？最后想大声告诉我春:你是春日里吹来花信的风，是夏夜里倒悬的星河，星辰交替，季节更迭，唯我对你的欢喜不变！
-			</h2>
+			</h2.5>
 		</div>
 
 		<!-- 署名 -->
