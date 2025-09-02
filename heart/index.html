@@ -92,31 +92,32 @@
 		/* 文字飘落效果 */
 		.floating-text {
 			position: absolute;
-			color: rgba(213, 9, 60, 0.7);
-			font-size: 18px;
-			font-weight: 600;
+			color: rgba(213, 9, 60, 0.5);
+			font-size: 16px;
+			font-weight: 500;
 			font-family: 'Microsoft YaHei', '微软雅黑', serif;
-			text-shadow: 1px 1px 3px rgba(213, 9, 60, 0.3);
-			animation: textFall 12s linear infinite;
+			text-shadow: 1px 1px 3px rgba(213, 9, 60, 0.2);
+			animation: textFall 18s linear infinite;
 			white-space: nowrap;
+			letter-spacing: 2px;
 		}
 
 		@keyframes textFall {
 			0% {
 				transform: translateY(-100px) rotate(0deg);
-				opacity: 0.8;
+				opacity: 0;
 			}
 
-			10% {
-				opacity: 1;
+			20% {
+				opacity: 0.6;
 			}
 
-			90% {
-				opacity: 0.8;
+			80% {
+				opacity: 0.3;
 			}
 
 			100% {
-				transform: translateY(100vh) rotate(720deg);
+				transform: translateY(100vh) rotate(360deg);
 				opacity: 0;
 			}
 		}
@@ -228,9 +229,9 @@
 		}
 
 		.two h2 {
-			font-size: 3rem;
+			font-size: 1.3rem;
 			color: #B80734;
-			line-height: 2;
+			line-height: 2.2;
 			text-align: justify;
 			text-indent: 2em;
 			font-weight: 400;
@@ -351,8 +352,8 @@
 			}
 
 			.two h2 {
-				font-size: 1.1rem;
-				line-height: 1.8;
+				font-size: 1.2rem;
+				line-height: 2;
 				text-indent: 1.5em;
 			}
 
@@ -420,8 +421,8 @@
 			}
 
 			.two h2 {
-				font-size: 0.9rem;
-				line-height: 1.7;
+				font-size: 1.1rem;
+				line-height: 1.9;
 			}
 
 			.three h3 {
@@ -465,15 +466,11 @@
 	<!-- 浮动心形和花瓣装饰 -->
 	<div class="floating-hearts">
 		<!-- 心形装饰 -->
-		<div class="floating-heart" style="left: 10%; top: 30%; animation-delay: 0s;">♥</div>
-		<div class="floating-heart" style="left: 20%; top: 40%; animation-delay: 1s;">♥</div>
+		<div class="floating-heart" style="left: 15%; top: 30%; animation-delay: 0s;">♥</div>
 		<div class="floating-heart" style="left: 30%; top: 35%; animation-delay: 2s;">♥</div>
-		<div class="floating-heart" style="left: 40%; top: 45%; animation-delay: 3s;">♥</div>
 		<div class="floating-heart" style="left: 50%; top: 25%; animation-delay: 4s;">♥</div>
-		<div class="floating-heart" style="left: 60%; top: 50%; animation-delay: 5s;">♥</div>
 		<div class="floating-heart" style="left: 70%; top: 30%; animation-delay: 1.5s;">♥</div>
-		<div class="floating-heart" style="left: 80%; top: 40%; animation-delay: 2.5s;">♥</div>
-		<div class="floating-heart" style="left: 90%; top: 35%; animation-delay: 3.5s;">♥</div>
+		<div class="floating-heart" style="left: 85%; top: 35%; animation-delay: 3.5s;">♥</div>
 
 		<!-- 花瓣装饰 -->
 		<div class="floating-petal" style="left: 5%; animation-delay: 0s;">🌸</div>
@@ -491,16 +488,10 @@
 
 	<!-- 文字飘落效果 - 最高层级，飘落在所有内容上方 -->
 	<div class="floating-texts">
-		<div class="floating-text" style="left: 8%; animation-delay: 0s;">刘浩天</div>
-		<div class="floating-text" style="left: 18%; animation-delay: 3s;">朱丽春</div>
-		<div class="floating-text" style="left: 28%; animation-delay: 6s;">刘浩天</div>
-		<div class="floating-text" style="left: 38%; animation-delay: 1.5s;">朱丽春</div>
-		<div class="floating-text" style="left: 48%; animation-delay: 4.5s;">刘浩天</div>
-		<div class="floating-text" style="left: 58%; animation-delay: 7.5s;">朱丽春</div>
-		<div class="floating-text" style="left: 68%; animation-delay: 2s;">刘浩天</div>
-		<div class="floating-text" style="left: 78%; animation-delay: 5s;">朱丽春</div>
-		<div class="floating-text" style="left: 88%; animation-delay: 8s;">刘浩天</div>
-		<div class="floating-text" style="left: 92%; animation-delay: 3.5s;">朱丽春</div>
+		<div class="floating-text" style="left: 20%; animation-delay: 0s;">刘浩天</div>
+		<div class="floating-text" style="left: 40%; animation-delay: 5s;">朱丽春</div>
+		<div class="floating-text" style="left: 60%; animation-delay: 10s;">刘浩天</div>
+		<div class="floating-text" style="left: 80%; animation-delay: 2.5s;">朱丽春</div>
 	</div>
 
 	<!-- 主要内容 -->
@@ -546,7 +537,6 @@
 </body>
 
 </html>
-
 
 
 
