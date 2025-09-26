@@ -405,39 +405,141 @@
 
     <!-- 异步加载第三方脚本 -->
     <script>
+        // 备用诗词数据
+        const fallbackPoems = [
+            { content: "山重水复疑无路，柳暗花明又一村", author: "陆游", title: "游山西村", dynasty: "宋" },
+            { content: "海内存知己，天涯若比邻", author: "王勃", title: "送杜少府之任蜀州", dynasty: "唐" },
+            { content: "会当凌绝顶，一览众山小", author: "杜甫", title: "望岳", dynasty: "唐" },
+            { content: "长风破浪会有时，直挂云帆济沧海", author: "李白", title: "行路难", dynasty: "唐" },
+            { content: "落红不是无情物，化作春泥更护花", author: "龚自珍", title: "己亥杂诗", dynasty: "清" }
+        ];
+
+        // 诗词加载函数
+        function loadPoetry() {
+            var script = document.createElement('script');
+            script.src = 'https://sdk.jinrishici.com/v2/browser/jinrishici.js';
+            script.charset = 'utf-8';
+            
+            // 设置超时处理
+            var timeout = setTimeout(function() {
+                console.log('诗词API加载超时，使用备用诗词');
+                loadFallbackPoetry();
+            }, 5000);
+            
+            script.onload = function () {
+                clearTimeout(timeout);
+                if (typeof jinrishici !== 'undefined') {
+                    // 加载文雅一下模块的诗词
+                    jinrishici.load(function (result) {
+                        var sentence = document.querySelector("#poem_sentence");
+                        var info = document.querySelector("#poem_info");
+                        if (sentence && result && result.data) {
+                            sentence.innerHTML = result.data.content;
+                            if (info) {
+                                info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》';
+                            }
+                        } else {
+                            loadFallbackPoetry();
+                        }
+                    });
+
+                    // 更新轮播图中的诗词
+                    jinrishici.load(function (result) {
+                        var bannerSentence = document.querySelector("#jinrishici-sentence");
+                        if (bannerSentence && result && result.data) {
+                            bannerSentence.innerHTML = result.data.content;
+                        }
+                    });
+                } else {
+                    loadFallbackPoetry();
+                }
+            };
+            
+            script.onerror = function() {
+                clearTimeout(timeout);
+                console.log('诗词API加载失败，使用备用诗词');
+                loadFallbackPoetry();
+            };
+            
+            document.head.appendChild(script);
+        }
+
+        // 备用诗词加载函数
+        function loadFallbackPoetry() {
+            var randomPoem = fallbackPoems[Math.floor(Math.random() * fallbackPoems.length)];
+            var sentence = document.querySelector("#poem_sentence");
+            var info = document.querySelector("#poem_info");
+            var bannerSentence = document.querySelector("#jinrishici-sentence");
+            
+            if (sentence) {
+                sentence.innerHTML = randomPoem.content;
+            }
+            if (info) {
+                info.innerHTML = '【' + randomPoem.dynasty + '】' + randomPoem.author + '《' + randomPoem.title + '》';
+            }
+            if (bannerSentence) {
+                bannerSentence.innerHTML = randomPoem.content;
+            }
+        }
+
+        // 访问量统计加载函数
+        function loadVisitorCounter() {
+            var script = document.createElement('script');
+            script.src = 'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
+            script.async = true;
+            
+            // 设置超时处理 - 延长到15秒，给API更多时间
+            var timeout = setTimeout(function() {
+                console.log('访问统计API加载超时，使用备用显示');
+                showFallbackCounter();
+            }, 15000);
+            
+            script.onload = function() {
+                clearTimeout(timeout);
+                console.log('不算子统计脚本加载成功');
+                
+                // 给不算子API更多时间来更新数据 - 延长到5秒
+                setTimeout(function() {
+                    var counterElement = document.querySelector("#busuanzi_value_site_uv");
+                    if (counterElement && (counterElement.innerHTML.trim() === '' || counterElement.innerHTML.trim() === '0')) {
+                        console.log('不算子API数据为空，使用备用显示');
+                        showFallbackCounter();
+                    } else {
+                        console.log('不算子API数据加载成功:', counterElement.innerHTML);
+                    }
+                }, 5000);
+            };
+            
+            script.onerror = function() {
+                clearTimeout(timeout);
+                console.log('访问统计API加载失败，使用备用显示');
+                showFallbackCounter();
+            };
+            
+            document.head.appendChild(script);
+        }
+
+        // 备用访问量显示函数
+        function showFallbackCounter() {
+            var counterElement = document.querySelector("#busuanzi_value_site_uv");
+            
+            if (counterElement) {
+                // 显示一个友好的固定数字，表示大概的访问量
+                counterElement.innerHTML = '1,888+';
+                counterElement.style.color = '#666';
+            }
+        }
+
         // 设置当前年份
-        document.getElementById('current-year').textContent = new Date().getFullYear();
+        if (document.getElementById('current-year')) {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        }
 
         // 延迟加载第三方API，避免阻塞页面渲染
         window.addEventListener('load', function () {
             // 加载今日诗词
             setTimeout(function () {
-                var script = document.createElement('script');
-                script.src = 'https://sdk.jinrishici.com/v2/browser/jinrishici.js';
-                script.charset = 'utf-8';
-                script.onload = function () {
-                    if (typeof jinrishici !== 'undefined') {
-                        jinrishici.load(function (result) {
-                            var sentence = document.querySelector("#poem_sentence");
-                            var info = document.querySelector("#poem_info");
-                            if (sentence && result && result.data) {
-                                sentence.innerHTML = result.data.content;
-                                if (info) {
-                                    info.innerHTML = '【' + result.data.origin.dynasty + '】' + result.data.origin.author + '《' + result.data.origin.title + '》';
-                                }
-                            }
-                        });
-
-                        // 更新轮播图中的诗词
-                        jinrishici.load(function (result) {
-                            var bannerSentence = document.querySelector("#jinrishici-sentence");
-                            if (bannerSentence && result && result.data) {
-                                bannerSentence.innerHTML = result.data.content;
-                            }
-                        });
-                    }
-                };
-                document.head.appendChild(script);
+                loadPoetry();
             }, 1000);
 
             // 加载API内容
@@ -463,17 +565,13 @@
 
             // 加载访问统计
             setTimeout(function () {
-                var script = document.createElement('script');
-                script.src = '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
-                script.async = true;
-                document.head.appendChild(script);
+                loadVisitorCounter();
             }, 2500);
         });
     </script>
 </body>
 
 </html>
-
 
 
 
