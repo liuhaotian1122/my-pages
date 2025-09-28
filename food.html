@@ -246,6 +246,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            min-width: 300px;
+            min-height: 200px;
         }
 
         .viewer-image {
@@ -254,6 +256,12 @@
             object-fit: contain;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .viewer-image.loading {
+            opacity: 0;
         }
 
         /* 导航按钮 */
@@ -1327,8 +1335,20 @@
                 this.viewer.classList.add('active');
                 document.body.style.overflow = 'hidden';
 
+                // 预设容器尺寸以防止抖动
+                this.setViewerSize();
                 this.showImage(this.currentIndex);
                 this.createThumbnails();
+            }
+
+            setViewerSize() {
+                // 设置查看器容器的固定尺寸，防止图片切换时的抖动
+                const viewerContainer = this.viewer.querySelector('.viewer-container');
+                const maxWidth = Math.min(window.innerWidth * 0.9, 1200);
+                const maxHeight = Math.min(window.innerHeight * 0.9, 800);
+                
+                viewerContainer.style.width = maxWidth + 'px';
+                viewerContainer.style.height = maxHeight + 'px';
             }
 
             showImage(index) {
@@ -1337,34 +1357,48 @@
                 this.currentIndex = index;
                 const img = this.currentImages[index];
 
-                // 显示加载动画
-                this.loading.style.display = 'block';
-                this.viewerImage.style.display = 'none';
+                // 防止重复加载相同图片
+                if (this.viewerImage.src === img.src) {
+                    this.updateThumbnails();
+                    return;
+                }
 
-                // 加载图片
+                // 显示加载状态
+                this.loading.style.display = 'block';
+
+                // 预加载新图片
                 const newImg = new Image();
                 newImg.onload = () => {
-                    this.viewerImage.src = newImg.src;
-                    this.viewerImage.alt = img.alt;
+                    // 使用淡入淡出效果切换图片
+                    this.viewerImage.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        this.viewerImage.src = newImg.src;
+                        this.viewerImage.alt = img.alt;
+                        
+                        // 更新信息
+                        this.imageTitle.textContent = img.dataset.title || img.alt || '图片';
+                        this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
 
-                    // 更新信息
-                    this.imageTitle.textContent = img.dataset.title || img.alt || '图片';
-                    this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
+                        // 隐藏加载动画
+                        this.loading.style.display = 'none';
+                        
+                        // 淡入新图片
+                        this.viewerImage.style.opacity = '1';
 
-                    // 隐藏加载动画，显示图片
-                    this.loading.style.display = 'none';
-                    this.viewerImage.style.display = 'block';
-
-                    // 更新缩略图状态
-                    this.updateThumbnails();
+                        // 更新缩略图状态
+                        this.updateThumbnails();
+                    }, 150); // 等待淡出完成
                 };
 
                 newImg.onerror = () => {
                     this.loading.style.display = 'none';
                     this.imageTitle.textContent = '图片加载失败';
                     this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
+                    this.viewerImage.style.opacity = '1';
                 };
 
+                // 开始加载图片
                 newImg.src = img.src;
 
                 // 更新导航按钮状态
