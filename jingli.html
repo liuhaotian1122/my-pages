@@ -682,7 +682,7 @@
         const defaultExperienceData = [
             {
                 id: 1,
-                title: "经历工作-1",
+                title: "经历经历-1",
                 time: "2021.10.4",
                 location: "贺兰偶遇小景点，进去闲游",
                 images: ["images/jd1.jpg", "images/jd2.jpg", "images/jd3.jpg"],
@@ -690,7 +690,7 @@
             },
             {
                 id: 2,
-                title: "经历工作-2",
+                title: "经历经历-2",
                 time: "2021.10.20",
                 location: "记录小可爱王怡宁的日常成长.part1",
                 images: ["images/wyn0.jpg", "images/wyn1.jpg", "images/wyn2.jpg", "images/wyn3.jpg"],
@@ -698,7 +698,7 @@
             },
             {
                 id: 3,
-                title: "经历工作-3",
+                title: "经历经历-3",
                 time: "2021.12.31",
                 location: "记录小可爱王怡宁的日常成长.part2",
                 images: ["images/w4.jpg", "images/w3.jpg", "images/w2.jpg", "images/w1.jpg"],
@@ -706,7 +706,7 @@
             },
             {
                 id: 4,
-                title: "经历工作-4",
+                title: "经历经历-4",
                 time: "2022.1.30",
                 location: "记录小可爱王怡宁的日常成长.part3",
                 images: ["images/w7.jpg", "images/w9.jpg", "images/w8.jpg", "images/w10.jpg"],
@@ -714,12 +714,100 @@
             },
             {
                 id: 5,
-                title: "经历工作-5",
+                title: "经历经历-5",
                 time: "2023.1.14",
                 location: "记录小可爱王怡宁的日常成长.part4",
                 images: ["images/w11.jpg", "images/w12.jpg", "images/w13.jpg", "images/w14.jpg"],
                 content: "记录小可爱王怡宁的日常成长.part4"
-            }
+            },
+            {
+                id: 6,
+                title: "经历经历-6",
+                time: "2025.9.28",
+                location: "记录日常",
+                images: [
+                    "https://i.postimg.cc/t4b9pd3C/2021-07-26-233856.jpg",
+                    "https://i.postimg.cc/W1VsTmGM/2022-02-11-211444.jpg",
+                    "https://i.postimg.cc/9QBCM412/2022-08-30-232915.jpg",
+                    "https://i.postimg.cc/LsCStrrX/20230531202331002.jpg",
+                    "https://i.postimg.cc/nzXJ03xb/20230531211117700.jpg",
+                    "https://i.postimg.cc/vT9ddDDv/20230531211147479.jpg",
+                    "https://i.postimg.cc/nVQxmST9/20230601202056112.jpg",
+                    "https://i.postimg.cc/J4VL53dT/20230601202259312.jpg"
+                ],
+                content: "记录日常"
+            },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
         ];
 
         // 从localStorage加载数据，如果没有则使用默认数据
@@ -965,9 +1053,9 @@
             }
 
             reinitImageViewer() {
-                // 重新初始化图片查看器
+                // 重新绑定图片点击事件
                 if (window.imageViewer) {
-                    window.imageViewer.init();
+                    window.imageViewer.bindImageEvents();
                 }
             }
         }
@@ -978,6 +1066,8 @@
                 this.currentImages = [];
                 this.currentIndex = 0;
                 this.isOpen = false;
+                this.initialized = false;
+                this.imageClickHandler = null;
 
                 this.viewer = document.getElementById('imageViewer');
                 this.viewerImage = document.getElementById('viewerImage');
@@ -995,47 +1085,59 @@
             }
 
             init() {
-                // 为所有图片添加点击事件
-                document.querySelectorAll('.gallery-img').forEach((img, index) => {
-                    img.addEventListener('click', (e) => {
+                // 只初始化一次的事件监听器
+                if (!this.initialized) {
+                    // 导航按钮事件
+                    this.prevBtn.addEventListener('click', () => this.showPrevious());
+                    this.nextBtn.addEventListener('click', () => this.showNext());
+                    this.closeBtn.addEventListener('click', () => this.closeViewer());
+
+                    // 键盘事件
+                    document.addEventListener('keydown', (e) => {
+                        if (!this.isOpen) return;
+
+                        switch (e.key) {
+                            case 'ArrowLeft':
+                                this.showPrevious();
+                                break;
+                            case 'ArrowRight':
+                                this.showNext();
+                                break;
+                            case 'Escape':
+                                this.closeViewer();
+                                break;
+                        }
+                    });
+
+                    // 点击背景关闭
+                    this.viewer.addEventListener('click', (e) => {
+                        if (e.target === this.viewer) {
+                            this.closeViewer();
+                        }
+                    });
+
+                    // 触摸滑动支持
+                    this.addTouchSupport();
+
+                    this.initialized = true;
+                }
+
+                // 每次都需要重新绑定的图片点击事件
+                this.bindImageEvents();
+            }
+
+            bindImageEvents() {
+                // 使用事件委托，避免重复绑定
+                document.removeEventListener('click', this.imageClickHandler);
+                this.imageClickHandler = (e) => {
+                    if (e.target.classList.contains('gallery-img')) {
                         const gallery = e.target.closest('[data-gallery]');
                         const galleryImages = gallery.querySelectorAll('.gallery-img');
                         const imageIndex = Array.from(galleryImages).indexOf(e.target);
                         this.openViewer(galleryImages, imageIndex);
-                    });
-                });
-
-                // 导航按钮事件
-                this.prevBtn.addEventListener('click', () => this.showPrevious());
-                this.nextBtn.addEventListener('click', () => this.showNext());
-                this.closeBtn.addEventListener('click', () => this.closeViewer());
-
-                // 键盘事件
-                document.addEventListener('keydown', (e) => {
-                    if (!this.isOpen) return;
-
-                    switch (e.key) {
-                        case 'ArrowLeft':
-                            this.showPrevious();
-                            break;
-                        case 'ArrowRight':
-                            this.showNext();
-                            break;
-                        case 'Escape':
-                            this.closeViewer();
-                            break;
                     }
-                });
-
-                // 点击背景关闭
-                this.viewer.addEventListener('click', (e) => {
-                    if (e.target === this.viewer) {
-                        this.closeViewer();
-                    }
-                });
-
-                // 触摸滑动支持
-                this.addTouchSupport();
+                };
+                document.addEventListener('click', this.imageClickHandler);
             }
 
             openViewer(images, startIndex = 0) {
