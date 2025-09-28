@@ -652,7 +652,7 @@
 
     <footer>
         <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a
-                href="https://liuhaotian1122.github.io/my-pages/" target="_blank" title="2025 浩天的个人站">
+                href="index.html" target="_blank" title="2025 浩天的个人站">
                 <script>
                     let currentYear = new Date().getFullYear();
                     document.write(currentYear);
@@ -687,7 +687,67 @@
                 location: "记录美食",
                 images: ["https://i.postimg.cc/yJrMYkFG/IMG-20200819-205634.jpg", "https://i.postimg.cc/6qckQbhZ/2832080519158827362.jpg", "https://i.postimg.cc/2yNkWtvX/IMG-20220330-192234-305832992923123.jpg"],
                 content: "记录美食"
+            },
+                        {
+                id: 2,
+                title: "经历美食-2",
+                time: "2025.9.28",
+                location: "记录美食",
+                images: [
+                    "https://i.postimg.cc/KcVzSgpQ/IMG-20250131-185642256.jpg",
+                    "https://i.postimg.cc/fT9bwT6M/IMG-20250131-185656792-HDR.jpg",
+                    "https://i.postimg.cc/W1c1tcv1/IMG-20250224-213823341-HDR.jpg",
+                    "https://i.postimg.cc/3xjJvf8b/IMG-20250225-112158610.jpg",
+                    "https://i.postimg.cc/JhPrTyBG/IMG-20250225-205926230-HDR.jpg",
+                    "https://i.postimg.cc/26yzgzQR/IMG-20250226-220028149-HDR.jpg"
+                ],
+                content: "记录美食"
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ];
 
         // 从localStorage加载数据，如果没有则使用默认数据
@@ -931,9 +991,9 @@
             }
 
             reinitImageViewer() {
-                // 重新初始化图片查看器
+                // 重新绑定图片点击事件
                 if (window.imageViewer) {
-                    window.imageViewer.init();
+                    window.imageViewer.bindImageEvents();
                 }
             }
         }
@@ -944,6 +1004,8 @@
                 this.currentImages = [];
                 this.currentIndex = 0;
                 this.isOpen = false;
+                this.initialized = false;
+                this.imageClickHandler = null;
 
                 this.viewer = document.getElementById('imageViewer');
                 this.viewerImage = document.getElementById('viewerImage');
@@ -961,47 +1023,59 @@
             }
 
             init() {
-                // 为所有图片添加点击事件
-                document.querySelectorAll('.gallery-img').forEach((img, index) => {
-                    img.addEventListener('click', (e) => {
+                // 只初始化一次的事件监听器
+                if (!this.initialized) {
+                    // 导航按钮事件
+                    this.prevBtn.addEventListener('click', () => this.showPrevious());
+                    this.nextBtn.addEventListener('click', () => this.showNext());
+                    this.closeBtn.addEventListener('click', () => this.closeViewer());
+
+                    // 键盘事件
+                    document.addEventListener('keydown', (e) => {
+                        if (!this.isOpen) return;
+
+                        switch (e.key) {
+                            case 'ArrowLeft':
+                                this.showPrevious();
+                                break;
+                            case 'ArrowRight':
+                                this.showNext();
+                                break;
+                            case 'Escape':
+                                this.closeViewer();
+                                break;
+                        }
+                    });
+
+                    // 点击背景关闭
+                    this.viewer.addEventListener('click', (e) => {
+                        if (e.target === this.viewer) {
+                            this.closeViewer();
+                        }
+                    });
+
+                    // 触摸滑动支持
+                    this.addTouchSupport();
+
+                    this.initialized = true;
+                }
+
+                // 每次都需要重新绑定的图片点击事件
+                this.bindImageEvents();
+            }
+
+            bindImageEvents() {
+                // 使用事件委托，避免重复绑定
+                document.removeEventListener('click', this.imageClickHandler);
+                this.imageClickHandler = (e) => {
+                    if (e.target.classList.contains('gallery-img')) {
                         const gallery = e.target.closest('[data-gallery]');
                         const galleryImages = gallery.querySelectorAll('.gallery-img');
                         const imageIndex = Array.from(galleryImages).indexOf(e.target);
                         this.openViewer(galleryImages, imageIndex);
-                    });
-                });
-
-                // 导航按钮事件
-                this.prevBtn.addEventListener('click', () => this.showPrevious());
-                this.nextBtn.addEventListener('click', () => this.showNext());
-                this.closeBtn.addEventListener('click', () => this.closeViewer());
-
-                // 键盘事件
-                document.addEventListener('keydown', (e) => {
-                    if (!this.isOpen) return;
-
-                    switch (e.key) {
-                        case 'ArrowLeft':
-                            this.showPrevious();
-                            break;
-                        case 'ArrowRight':
-                            this.showNext();
-                            break;
-                        case 'Escape':
-                            this.closeViewer();
-                            break;
                     }
-                });
-
-                // 点击背景关闭
-                this.viewer.addEventListener('click', (e) => {
-                    if (e.target === this.viewer) {
-                        this.closeViewer();
-                    }
-                });
-
-                // 触摸滑动支持
-                this.addTouchSupport();
+                };
+                document.addEventListener('click', this.imageClickHandler);
             }
 
             openViewer(images, startIndex = 0) {
