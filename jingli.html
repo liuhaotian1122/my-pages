@@ -56,28 +56,20 @@
             will-change: transform;
         }
 
-        /* 图片容器 - 使用固定尺寸避免任何计算 */
+        /* 图片容器 - 使用固定像素高度 */
         .gallery-img-container {
             position: relative;
             overflow: hidden;
             border-radius: 12px;
-            background: #f5f5f5;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            /* 固定正方形尺寸 */
+            background: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* 固定尺寸 - 避免任何动态计算 */
             width: 100%;
-            aspect-ratio: 1 / 1;
-            /* 防止任何尺寸变化 */
-            min-width: 0;
-            min-height: 0;
-            max-width: none;
-            max-height: none;
-            /* 布局优化 */
-            contain: layout style paint;
-            /* 防止内容溢出影响布局 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 200px; /* 固定高度 */
+            /* 防止布局shift */
+            flex-shrink: 0;
+            contain: strict;
         }
 
         /* 简化的hover效果 */
@@ -100,16 +92,10 @@
             height: 100%;
             object-fit: cover;
             cursor: pointer;
-            transition: transform 0.3s ease, opacity 0.5s ease;
             border-radius: 12px;
-            z-index: 1;
-            /* 默认隐藏，加载完成后显示 */
+            transition: opacity 0.3s ease;
+            /* 图片默认透明，加载完成后显示 */
             opacity: 0;
-            visibility: hidden;
-        }
-
-        .gallery-img:hover {
-            transform: scale(1.1);
         }
 
         /* 图片加载完成状态 */
@@ -117,22 +103,40 @@
             opacity: 1;
         }
 
-        /* 图片加载状态 - 简化版本 */
+        /* 简化的hover效果 */
+        .gallery-img-container.loaded:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .gallery-img-container.loaded:hover .gallery-img {
+            transform: scale(1.05);
+        }
+
+        /* 图片加载完成状态 */
+        .gallery-img-container.loaded .gallery-img {
+            opacity: 1;
+        }
+
+        /* 骨架屏加载效果 */
         .gallery-img-container.loading {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 50%, #f0f0f0 75%);
             background-size: 200% 100%;
-            animation: loading-shimmer 1.5s infinite;
+            animation: skeleton-loading 2s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .gallery-img-container.loading::after {
-            content: '📷';
-            font-size: 24px;
-            color: #999;
-            z-index: 2;
-            pointer-events: none;
+        .gallery-img-container.loading::before {
+            content: '';
+            width: 40px;
+            height: 40px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23999"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>') center/contain no-repeat;
+            opacity: 0.5;
         }
 
-        @keyframes loading-shimmer {
+        @keyframes skeleton-loading {
             0% {
                 background-position: -200% 0;
             }
@@ -144,16 +148,17 @@
         /* 图片错误状态 */
         .gallery-img-container.error {
             background: #ffebee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: #e57373;
             font-size: 12px;
         }
 
-        .gallery-img-container.error::after {
+        .gallery-img-container.error::before {
             content: '❌\A加载失败';
             white-space: pre-line;
             text-align: center;
-            z-index: 2;
-            pointer-events: none;
         }
 
 
@@ -600,8 +605,8 @@
             }
 
             .gallery-img-container {
-                /* 移动端优化 */
-                aspect-ratio: 1 / 1;
+                /* 移动端使用较小的固定高度 */
+                height: 150px;
             }
 
             .gallery-img-container:hover {
@@ -710,8 +715,8 @@
 
             .gallery-img-container {
                 border-radius: 8px;
-                /* 超小屏幕优化 */
-                aspect-ratio: 1 / 1;
+                /* 超小屏幕使用更小的固定高度 */
+                height: 120px;
             }
 
             .gallery-img {
@@ -760,8 +765,8 @@
             }
 
             .gallery-img-container {
-                /* 大屏幕优化 */
-                aspect-ratio: 1 / 1;
+                /* 大屏幕使用较大的固定高度 */
+                height: 250px;
             }
 
             .gallery-img-container:hover {
@@ -1362,10 +1367,9 @@
                         </div>
                         <div class="image-gallery" data-gallery="work${exp.id}">
                             ${exp.images.map((img, index) => `
-                                <div class="gallery-img-container loading" data-index="${index + 1}">
-                                    <img src="${img}" class="gallery-img" alt="照片${index + 1}"
-                                         data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}"
-                                         onload="handleImageLoad(this)" onerror="handleImageError(this)">
+                                <div class="gallery-img-container loading" data-index="${index + 1}" data-src="${img}">
+                                    <img class="gallery-img" alt="照片${index + 1}"
+                                         data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}">
                                     <div class="image-index">${index + 1}</div>
                                     <div class="zoom-icon">🔍</div>
                                     <div class="image-tooltip">${exp.title} - 照片${index + 1}</div>
@@ -1479,16 +1483,13 @@
             }
 
             checkImageLoading() {
-                // 检查已完成加载的图片
+                // 启动图片预加载
                 const containers = document.querySelectorAll('.gallery-img-container.loading');
                 containers.forEach(container => {
                     const img = container.querySelector('.gallery-img');
-                    if (img && img.complete) {
-                        if (img.naturalWidth > 0) {
-                            handleImageLoad(img);
-                        } else {
-                            handleImageError(img);
-                        }
+                    const src = container.dataset.src;
+                    if (img && src && !img.src) {
+                        preloadAndShowImage(img, src);
                     }
                 });
             }
@@ -1708,16 +1709,37 @@
             }
         }
 
-        // 图片加载处理函数
+        // 图片预加载和显示函数
+        function preloadAndShowImage(imgElement, src) {
+            const container = imgElement.closest('.gallery-img-container');
+            if (!container) return;
+
+            // 创建预加载图片
+            const preloader = new Image();
+            
+            preloader.onload = function() {
+                // 图片加载成功
+                imgElement.src = src;
+                container.classList.remove('loading');
+                container.classList.add('loaded');
+            };
+            
+            preloader.onerror = function() {
+                // 图片加载失败
+                container.classList.remove('loading');
+                container.classList.add('error');
+            };
+            
+            // 开始预加载
+            preloader.src = src;
+        }
+
+        // 简化的图片加载处理函数
         function handleImageLoad(img) {
             const container = img.closest('.gallery-img-container');
             if (container && img.complete && img.naturalWidth > 0) {
                 container.classList.remove('loading');
                 container.classList.add('loaded');
-                
-                // 平滑显示图片
-                img.style.visibility = 'visible';
-                img.style.opacity = '1';
             }
         }
 
@@ -1786,22 +1808,18 @@
             }
         });
         
-        // 页面完全加载后再次检查图片加载状态
+        // 页面完全加载后启动预加载
         window.addEventListener('load', () => {
-            // 延迟执行以确保所有资源加载完成
             setTimeout(() => {
-                const images = document.querySelectorAll('.gallery-img');
-                images.forEach(img => {
-                    const container = img.closest('.gallery-img-container');
-                    if (container?.classList.contains('loading')) {
-                        if (img.complete && img.naturalWidth > 0) {
-                            handleImageLoad(img);
-                        } else if (img.complete && img.naturalWidth === 0) {
-                            handleImageError(img);
-                        }
+                const containers = document.querySelectorAll('.gallery-img-container.loading');
+                containers.forEach(container => {
+                    const img = container.querySelector('.gallery-img');
+                    const src = container.dataset.src;
+                    if (img && src && !img.src) {
+                        preloadAndShowImage(img, src);
                     }
                 });
-            }, 300);
+            }, 100);
         });
 
     </script>
