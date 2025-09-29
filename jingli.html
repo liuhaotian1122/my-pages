@@ -56,44 +56,34 @@
             will-change: transform;
         }
 
-        /* 图片容器 */
+        /* 图片容器 - 使用固定尺寸避免任何计算 */
         .gallery-img-container {
             position: relative;
             overflow: hidden;
             border-radius: 12px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: #f5f5f5;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            /* 使用padding-bottom技术创建固定宽高比 */
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            /* 固定正方形尺寸 */
             width: 100%;
-            height: 0 !important; /* 强制高度为0 */
-            padding-bottom: 100% !important; /* 强制1:1比例 */
-            /* 防止内容影响容器高度 */
-            box-sizing: border-box;
-            /* 防止layout shift */
-            contain: layout;
-            /* 确保尺寸稳定 */
+            aspect-ratio: 1 / 1;
+            /* 防止任何尺寸变化 */
+            min-width: 0;
             min-height: 0;
+            max-width: none;
             max-height: none;
+            /* 布局优化 */
+            contain: layout style paint;
+            /* 防止内容溢出影响布局 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* 不用loading状态的容器的hover效果 */
-        .gallery-img-container:not(.loading):not(.error)::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .gallery-img-container:not(.loading):not(.error):hover::before {
-            opacity: 1;
+        /* 简化的hover效果 */
+        .gallery-img-container.loaded:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
         .gallery-img-container:hover {
@@ -110,11 +100,12 @@
             height: 100%;
             object-fit: cover;
             cursor: pointer;
-            transition: transform 0.4s ease, opacity 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.5s ease;
             border-radius: 12px;
-            z-index: 0;
-            /* 防止图片加载跳动 */
+            z-index: 1;
+            /* 默认隐藏，加载完成后显示 */
             opacity: 0;
+            visibility: hidden;
         }
 
         .gallery-img:hover {
@@ -126,36 +117,19 @@
             opacity: 1;
         }
 
-        /* 图片加载状态 - 使用绝对定位的覆盖层 */
-        .gallery-img-container.loading::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+        /* 图片加载状态 - 简化版本 */
+        .gallery-img-container.loading {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: loading-shimmer 1.5s infinite;
-            z-index: 3;
         }
 
         .gallery-img-container.loading::after {
             content: '📷';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             font-size: 24px;
             color: #999;
-            z-index: 4;
+            z-index: 2;
             pointer-events: none;
-        }
-
-        /* 确保加载中的图片完全隐藏但不影响布局 */
-        .gallery-img-container.loading .gallery-img {
-            opacity: 0;
-            visibility: hidden;
         }
 
         @keyframes loading-shimmer {
@@ -169,24 +143,15 @@
 
         /* 图片错误状态 */
         .gallery-img-container.error {
-            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            background: #ffebee;
             color: #e57373;
             font-size: 12px;
-            text-align: center;
-        }
-
-        .gallery-img-container.error .gallery-img {
-            opacity: 0;
-            visibility: hidden;
         }
 
         .gallery-img-container.error::after {
-            content: '❌\A图片加载失败';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            content: '❌\A加载失败';
             white-space: pre-line;
+            text-align: center;
             z-index: 2;
             pointer-events: none;
         }
@@ -635,9 +600,8 @@
             }
 
             .gallery-img-container {
-                /* 移动端保持稳定的尺寸，移除可能的冲突 */
-                height: 0 !important;
-                padding-bottom: 100% !important;
+                /* 移动端优化 */
+                aspect-ratio: 1 / 1;
             }
 
             .gallery-img-container:hover {
@@ -746,9 +710,8 @@
 
             .gallery-img-container {
                 border-radius: 8px;
-                /* 超小屏幕保持稳定的尺寸，强制覆盖 */
-                height: 0 !important;
-                padding-bottom: 100% !important;
+                /* 超小屏幕优化 */
+                aspect-ratio: 1 / 1;
             }
 
             .gallery-img {
@@ -797,9 +760,8 @@
             }
 
             .gallery-img-container {
-                /* 大屏幕保持稳定的尺寸，强制覆盖 */
-                height: 0 !important;
-                padding-bottom: 100% !important;
+                /* 大屏幕优化 */
+                aspect-ratio: 1 / 1;
             }
 
             .gallery-img-container:hover {
@@ -1400,11 +1362,10 @@
                         </div>
                         <div class="image-gallery" data-gallery="work${exp.id}">
                             ${exp.images.map((img, index) => `
-                                <div class="gallery-img-container loading" data-index="${index + 1}" style="height: 0; padding-bottom: 100%;">
+                                <div class="gallery-img-container loading" data-index="${index + 1}">
                                     <img src="${img}" class="gallery-img" alt="照片${index + 1}"
                                          data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}"
-                                         onload="handleImageLoad(this)" onerror="handleImageError(this)"
-                                         style="opacity: 0; visibility: hidden;">
+                                         onload="handleImageLoad(this)" onerror="handleImageError(this)">
                                     <div class="image-index">${index + 1}</div>
                                     <div class="zoom-icon">🔍</div>
                                     <div class="image-tooltip">${exp.title} - 照片${index + 1}</div>
@@ -1518,20 +1479,18 @@
             }
 
             checkImageLoading() {
-                // 延迟检查图片加载状态，确保图片正确显示
-                setTimeout(() => {
-                    const containers = document.querySelectorAll('.gallery-img-container.loading');
-                    containers.forEach(container => {
-                        const img = container.querySelector('.gallery-img');
-                        if (img) {
-                            if (img.complete && img.naturalWidth > 0) {
-                                handleImageLoad(img);
-                            } else if (img.complete && img.naturalWidth === 0) {
-                                handleImageError(img);
-                            }
+                // 检查已完成加载的图片
+                const containers = document.querySelectorAll('.gallery-img-container.loading');
+                containers.forEach(container => {
+                    const img = container.querySelector('.gallery-img');
+                    if (img && img.complete) {
+                        if (img.naturalWidth > 0) {
+                            handleImageLoad(img);
+                        } else {
+                            handleImageError(img);
                         }
-                    });
-                }, 200);
+                    }
+                });
             }
         }
 
@@ -1752,19 +1711,13 @@
         // 图片加载处理函数
         function handleImageLoad(img) {
             const container = img.closest('.gallery-img-container');
-            if (container) {
-                // 强制设置容器尺寸，防止跳动
-                container.style.height = '0';
-                container.style.paddingBottom = '100%';
-                
+            if (container && img.complete && img.naturalWidth > 0) {
                 container.classList.remove('loading');
                 container.classList.add('loaded');
                 
-                // 确保图片可见性，使用延迟确保DOM更新
-                requestAnimationFrame(() => {
-                    img.style.visibility = 'visible';
-                    img.style.opacity = '1';
-                });
+                // 平滑显示图片
+                img.style.visibility = 'visible';
+                img.style.opacity = '1';
             }
         }
 
@@ -1772,13 +1725,8 @@
         function handleImageError(img) {
             const container = img.closest('.gallery-img-container');
             if (container) {
-                // 强制设置容器尺寸，防止跳动
-                container.style.height = '0';
-                container.style.paddingBottom = '100%';
-                
                 container.classList.remove('loading');
                 container.classList.add('error');
-                // 保持容器结构，仅通过CSS显示错误状态
             }
         }
 
