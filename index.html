@@ -63,25 +63,89 @@
             position: relative;
             overflow: hidden;
             height: auto;
+            border-radius: 8px; /* 添加圆角效果 */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
         }
         
-        /* 设置轮播图固定高度 */
+
+        
+        /* 响应式轮播图高度设置 */
         .am-slider-c1 .am-viewport {
-            height: 300px !important;
+            height: 450px !important; /* 大屏默认高度增加到450px */
         }
         
         .am-slider-c1 .am-slides > li {
-            height: 300px !important;
+            height: 450px !important;
         }
         
         .am-slider-c1 .am-slides img {
             width: 100%;
-            height: 300px !important;
+            height: 450px !important;
             object-fit: cover;
         }
         
-        /* 移动端响应式优化 */
-        @media (max-width: 768px) {
+        /* 超大屏优化 (1920px及以上) */
+        @media (min-width: 1920px) {
+            .am-slider-c1 .am-viewport {
+                height: 550px !important;
+            }
+            
+            .am-slider-c1 .am-slides > li {
+                height: 550px !important;
+            }
+            
+            .am-slider-c1 .am-slides img {
+                height: 550px !important;
+            }
+        }
+        
+        /* 大屏优化 (1200px-1919px) */
+        @media (min-width: 1200px) and (max-width: 1919px) {
+            .am-slider-c1 .am-viewport {
+                height: 450px !important;
+            }
+            
+            .am-slider-c1 .am-slides > li {
+                height: 450px !important;
+            }
+            
+            .am-slider-c1 .am-slides img {
+                height: 450px !important;
+            }
+        }
+        
+        /* 中等屏幕优化 (992px-1199px) */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .am-slider-c1 .am-viewport {
+                height: 380px !important;
+            }
+            
+            .am-slider-c1 .am-slides > li {
+                height: 380px !important;
+            }
+            
+            .am-slider-c1 .am-slides img {
+                height: 380px !important;
+            }
+        }
+        
+        /* 平板端优化 (769px-991px) */
+        @media (min-width: 769px) and (max-width: 991px) {
+            .am-slider-c1 .am-viewport {
+                height: 320px !important;
+            }
+            
+            .am-slider-c1 .am-slides > li {
+                height: 320px !important;
+            }
+            
+            .am-slider-c1 .am-slides img {
+                height: 320px !important;
+            }
+        }
+        
+        /* 移动端优化 (481px-768px) */
+        @media (min-width: 481px) and (max-width: 768px) {
             .am-slider-c1 .am-viewport {
                 height: 250px !important;
             }
@@ -95,6 +159,7 @@
             }
         }
         
+        /* 小屏手机优化 (最大480px) */
         @media (max-width: 480px) {
             .am-slider-c1 .am-viewport {
                 height: 200px !important;
