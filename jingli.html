@@ -51,6 +51,9 @@
             padding: 24px;
             max-width: 100%;
             margin: 0 auto;
+            /* 防止布局重新计算导致的跳动 */
+            contain: layout style;
+            will-change: transform;
         }
 
         /* 图片容器 */
@@ -61,14 +64,21 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            aspect-ratio: 1;
-            /* 确保容器尺寸稳定 */
+            /* 使用padding-bottom技术创建固定宽高比 */
             width: 100%;
-            height: 0;
-            padding-bottom: 100%; /* 1:1 aspect ratio */
+            height: 0 !important; /* 强制高度为0 */
+            padding-bottom: 100% !important; /* 强制1:1比例 */
+            /* 防止内容影响容器高度 */
+            box-sizing: border-box;
+            /* 防止layout shift */
+            contain: layout;
+            /* 确保尺寸稳定 */
+            min-height: 0;
+            max-height: none;
         }
 
-        .gallery-img-container::before {
+        /* 不用loading状态的容器的hover效果 */
+        .gallery-img-container:not(.loading):not(.error)::before {
             content: '';
             position: absolute;
             top: 0;
@@ -82,7 +92,7 @@
             pointer-events: none;
         }
 
-        .gallery-img-container:hover::before {
+        .gallery-img-container:not(.loading):not(.error):hover::before {
             opacity: 1;
         }
 
@@ -116,11 +126,18 @@
             opacity: 1;
         }
 
-        /* 图片加载状态 */
-        .gallery-img-container.loading {
+        /* 图片加载状态 - 使用绝对定位的覆盖层 */
+        .gallery-img-container.loading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: loading-shimmer 1.5s infinite;
+            z-index: 3;
         }
 
         .gallery-img-container.loading::after {
@@ -130,12 +147,12 @@
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 24px;
-            color: #ccc;
-            z-index: 2;
+            color: #999;
+            z-index: 4;
             pointer-events: none;
         }
 
-        /* 防止加载状态切换时的跳动 */
+        /* 确保加载中的图片完全隐藏但不影响布局 */
         .gallery-img-container.loading .gallery-img {
             opacity: 0;
             visibility: hidden;
@@ -618,8 +635,9 @@
             }
 
             .gallery-img-container {
-                /* 移动端保持稳定的尺寸 */
-                padding-bottom: 100%;
+                /* 移动端保持稳定的尺寸，移除可能的冲突 */
+                height: 0 !important;
+                padding-bottom: 100% !important;
             }
 
             .gallery-img-container:hover {
@@ -728,8 +746,9 @@
 
             .gallery-img-container {
                 border-radius: 8px;
-                /* 超小屏幕保持稳定的尺寸 */
-                padding-bottom: 100%;
+                /* 超小屏幕保持稳定的尺寸，强制覆盖 */
+                height: 0 !important;
+                padding-bottom: 100% !important;
             }
 
             .gallery-img {
@@ -778,8 +797,9 @@
             }
 
             .gallery-img-container {
-                /* 大屏幕保持稳定的尺寸 */
-                padding-bottom: 100%;
+                /* 大屏幕保持稳定的尺寸，强制覆盖 */
+                height: 0 !important;
+                padding-bottom: 100% !important;
             }
 
             .gallery-img-container:hover {
@@ -1380,10 +1400,11 @@
                         </div>
                         <div class="image-gallery" data-gallery="work${exp.id}">
                             ${exp.images.map((img, index) => `
-                                <div class="gallery-img-container loading" data-index="${index + 1}">
+                                <div class="gallery-img-container loading" data-index="${index + 1}" style="height: 0; padding-bottom: 100%;">
                                     <img src="${img}" class="gallery-img" alt="照片${index + 1}"
                                          data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}"
-                                         onload="handleImageLoad(this)" onerror="handleImageError(this)">
+                                         onload="handleImageLoad(this)" onerror="handleImageError(this)"
+                                         style="opacity: 0; visibility: hidden;">
                                     <div class="image-index">${index + 1}</div>
                                     <div class="zoom-icon">🔍</div>
                                     <div class="image-tooltip">${exp.title} - 照片${index + 1}</div>
@@ -1732,14 +1753,16 @@
         function handleImageLoad(img) {
             const container = img.closest('.gallery-img-container');
             if (container) {
+                // 强制设置容器尺寸，防止跳动
+                container.style.height = '0';
+                container.style.paddingBottom = '100%';
+                
                 container.classList.remove('loading');
                 container.classList.add('loaded');
                 
-                // 确保图片可见性
-                img.style.visibility = 'visible';
-                
-                // 平滑的淡入效果将通过CSS类控制
+                // 确保图片可见性，使用延迟确保DOM更新
                 requestAnimationFrame(() => {
+                    img.style.visibility = 'visible';
                     img.style.opacity = '1';
                 });
             }
@@ -1749,6 +1772,10 @@
         function handleImageError(img) {
             const container = img.closest('.gallery-img-container');
             if (container) {
+                // 强制设置容器尺寸，防止跳动
+                container.style.height = '0';
+                container.style.paddingBottom = '100%';
+                
                 container.classList.remove('loading');
                 container.classList.add('error');
                 // 保持容器结构，仅通过CSS显示错误状态
