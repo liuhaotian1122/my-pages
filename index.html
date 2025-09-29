@@ -56,35 +56,56 @@
             height: auto;
             display: block;
             object-fit: cover;
-            aspect-ratio: 2/1; /* 强制 2:1 宽高比 */
         }
         
-        /* 确保轮播图容器有固定的宽高比 */
+        /* 确保轮播图容器有固定的高度，避免白边 */
         .am-slider-c1 {
             position: relative;
-            width: 100%;
-            aspect-ratio: 2/1;
             overflow: hidden;
+            height: auto;
+        }
+        
+        /* 设置轮播图固定高度 */
+        .am-slider-c1 .am-viewport {
+            height: 300px !important;
+        }
+        
+        .am-slider-c1 .am-slides > li {
+            height: 300px !important;
+        }
+        
+        .am-slider-c1 .am-slides img {
+            width: 100%;
+            height: 300px !important;
+            object-fit: cover;
         }
         
         /* 移动端响应式优化 */
         @media (max-width: 768px) {
-            .am-slider-c1 {
-                aspect-ratio: 16/9; /* 移动端使用 16:9 比例 */
+            .am-slider-c1 .am-viewport {
+                height: 250px !important;
+            }
+            
+            .am-slider-c1 .am-slides > li {
+                height: 250px !important;
             }
             
             .am-slider-c1 .am-slides img {
-                aspect-ratio: 16/9;
+                height: 250px !important;
             }
         }
         
         @media (max-width: 480px) {
-            .am-slider-c1 {
-                aspect-ratio: 4/3; /* 小屏幕使用 4:3 比例 */
+            .am-slider-c1 .am-viewport {
+                height: 200px !important;
+            }
+            
+            .am-slider-c1 .am-slides > li {
+                height: 200px !important;
             }
             
             .am-slider-c1 .am-slides img {
-                aspect-ratio: 4/3;
+                height: 200px !important;
             }
         }
     </style>
