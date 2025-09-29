@@ -955,7 +955,7 @@
                 id: 1,
                 title: "记录工作-1",
                 time: "2021.8.17",
-                location: "帮助社区做一些辅导作业、课程讲解一类的工作",
+                location: "银川",
                 images: ["images/sq0.jpg", "images/sq1.jpg", "images/sq2.jpg"],
                 content: "帮助社区做一些辅导作业、课程讲解一类的工作"
             },
@@ -963,7 +963,7 @@
                 id: 2,
                 title: "记录工作-2",
                 time: "2022.2.2",
-                location: "记录新年，喜上眉梢",
+                location: "银川",
                 images: ["images/n1.jpg", "images/n2.jpg", "images/n3.jpg", "images/n4.jpg"],
                 content: "记录新年，喜上眉梢"
             },
@@ -973,7 +973,7 @@
                 id: 3,
                 title: "经历工作-3",
                 time: "2025.9.28",
-                location: "记录简历照片，随取随用",
+                location: "银川",
                 images: [
                     "https://i.postimg.cc/hvkRH2hL/664102092533196752.jpg",
                     "https://i.postimg.cc/7Pd4GZXM/image.jpg",
@@ -1167,6 +1167,7 @@
                         <div class="work-info">
                             <h2>时间：${exp.time}</h2>
                             <h2>地点：${exp.location}</h2>
+                            ${exp.content ? `<h2>内容：${exp.content}</h2>` : ''}
                         </div>
                         <div class="image-gallery" data-gallery="work${exp.id}">
                             ${exp.images.map((img, index) => `
@@ -1613,4 +1614,5 @@
 </body>
 
 </html>
+
 
