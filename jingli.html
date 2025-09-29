@@ -60,8 +60,12 @@
             border-radius: 12px;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             aspect-ratio: 1;
+            /* 确保容器尺寸稳定 */
+            width: 100%;
+            height: 0;
+            padding-bottom: 100%; /* 1:1 aspect ratio */
         }
 
         .gallery-img-container::before {
@@ -89,18 +93,27 @@
 
         /* 图片样式 */
         .gallery-img {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: transform 0.4s ease, opacity 0.3s ease;
             border-radius: 12px;
-            position: relative;
             z-index: 0;
+            /* 防止图片加载跳动 */
+            opacity: 0;
         }
 
         .gallery-img:hover {
             transform: scale(1.1);
+        }
+
+        /* 图片加载完成状态 */
+        .gallery-img-container.loaded .gallery-img {
+            opacity: 1;
         }
 
         /* 图片加载状态 */
@@ -122,6 +135,12 @@
             pointer-events: none;
         }
 
+        /* 防止加载状态切换时的跳动 */
+        .gallery-img-container.loading .gallery-img {
+            opacity: 0;
+            visibility: hidden;
+        }
+
         @keyframes loading-shimmer {
             0% {
                 background-position: -200% 0;
@@ -134,21 +153,28 @@
         /* 图片错误状态 */
         .gallery-img-container.error {
             background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
             color: #e57373;
             font-size: 12px;
             text-align: center;
-            padding: 8px;
         }
 
-        .gallery-img-container.error::before {
-            content: '❌';
-            font-size: 20px;
-            margin-bottom: 4px;
+        .gallery-img-container.error .gallery-img {
+            opacity: 0;
+            visibility: hidden;
         }
+
+        .gallery-img-container.error::after {
+            content: '❌\A图片加载失败';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: pre-line;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+
 
         /* 图片序号标签 */
         .image-index {
@@ -591,6 +617,11 @@
                 padding: 16px;
             }
 
+            .gallery-img-container {
+                /* 移动端保持稳定的尺寸 */
+                padding-bottom: 100%;
+            }
+
             .gallery-img-container:hover {
                 transform: translateY(-4px) scale(1.01);
             }
@@ -697,6 +728,8 @@
 
             .gallery-img-container {
                 border-radius: 8px;
+                /* 超小屏幕保持稳定的尺寸 */
+                padding-bottom: 100%;
             }
 
             .gallery-img {
@@ -742,6 +775,11 @@
                 grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
                 gap: 20px;
                 padding: 32px;
+            }
+
+            .gallery-img-container {
+                /* 大屏幕保持稳定的尺寸 */
+                padding-bottom: 100%;
             }
 
             .gallery-img-container:hover {
@@ -1464,11 +1502,15 @@
                     const containers = document.querySelectorAll('.gallery-img-container.loading');
                     containers.forEach(container => {
                         const img = container.querySelector('.gallery-img');
-                        if (img && img.complete) {
-                            handleImageLoad(img);
+                        if (img) {
+                            if (img.complete && img.naturalWidth > 0) {
+                                handleImageLoad(img);
+                            } else if (img.complete && img.naturalWidth === 0) {
+                                handleImageError(img);
+                            }
                         }
                     });
-                }, 100);
+                }, 200);
             }
         }
 
@@ -1693,12 +1735,13 @@
                 container.classList.remove('loading');
                 container.classList.add('loaded');
                 
-                // 添加淡入动画
-                img.style.opacity = '0';
-                setTimeout(() => {
-                    img.style.transition = 'opacity 0.5s ease';
+                // 确保图片可见性
+                img.style.visibility = 'visible';
+                
+                // 平滑的淡入效果将通过CSS类控制
+                requestAnimationFrame(() => {
                     img.style.opacity = '1';
-                }, 50);
+                });
             }
         }
 
@@ -1708,7 +1751,7 @@
             if (container) {
                 container.classList.remove('loading');
                 container.classList.add('error');
-                container.innerHTML = '<div>图片加载失败</div>';
+                // 保持容器结构，仅通过CSS显示错误状态
             }
         }
 
@@ -1774,18 +1817,22 @@
             setTimeout(() => {
                 const images = document.querySelectorAll('.gallery-img');
                 images.forEach(img => {
-                    if (img.complete && img.closest('.gallery-img-container')?.classList.contains('loading')) {
-                        handleImageLoad(img);
+                    const container = img.closest('.gallery-img-container');
+                    if (container?.classList.contains('loading')) {
+                        if (img.complete && img.naturalWidth > 0) {
+                            handleImageLoad(img);
+                        } else if (img.complete && img.naturalWidth === 0) {
+                            handleImageError(img);
+                        }
                     }
                 });
-            }, 500);
+            }, 300);
         });
 
     </script>
 </body>
 
 </html>
-
 
 
 
