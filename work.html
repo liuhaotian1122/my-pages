@@ -62,9 +62,6 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             aspect-ratio: 1;
-            width: 100%;
-            height: 0;
-            padding-bottom: 100%; /* 确保正方形比例 */
         }
 
         .gallery-img-container::before {
@@ -92,53 +89,138 @@
 
         /* 图片样式 */
         .gallery-img {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             cursor: pointer;
             transition: all 0.4s ease;
             border-radius: 12px;
+            position: relative;
             z-index: 0;
-            opacity: 0;
         }
 
         .gallery-img:hover {
             transform: scale(1.1);
         }
 
-        /* 图片加载状态 */
+        /* 骨架屏加载状态 */
         .gallery-img-container.loading {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading-shimmer 1.5s infinite;
+            background: #f6f7f8;
+            position: relative;
+            overflow: hidden;
         }
 
+        /* 骨架屏闪烁效果 */
+        .gallery-img-container.loading::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 100%
+            );
+            animation: skeleton-shimmer 1.8s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        /* 骨架屏内容层 */
         .gallery-img-container.loading::after {
-            content: '📷';
+            content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 24px;
-            color: #ccc;
-            z-index: 2;
-            pointer-events: none;
+            width: 60%;
+            height: 60%;
+            background: 
+                radial-gradient(circle at center, #e2e5e7 40%, transparent 40%),
+                linear-gradient(#e2e5e7 60%, transparent 60%);
+            background-size: 
+                30px 30px,
+                100% 8px;
+            background-position: 
+                center 40%,
+                center 70%;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            opacity: 0.6;
+            z-index: 0;
         }
 
-        /* 图片加载完成状态 */
+        /* 加载中的图片隐藏 */
+        .gallery-img-container.loading .gallery-img {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* 加载完成的图片显示动画 */
         .gallery-img-container.loaded .gallery-img {
             opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease-in-out;
         }
 
-        @keyframes loading-shimmer {
+        /* 骨架屏动画关键帧 */
+        @keyframes skeleton-shimmer {
             0% {
-                background-position: -200% 0;
+                transform: translateX(-100%);
             }
             100% {
-                background-position: 200% 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* 脉冲动画作为备选 */
+        .gallery-img-container.loading.pulse::before {
+            animation: skeleton-pulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes skeleton-pulse {
+            0% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* 增强骨架屏效果 - 添加一些细节元素 */
+        .gallery-img-container.loading.detailed::after {
+            background: 
+                /* 图片图标 */
+                radial-gradient(circle at center, #e2e5e7 35%, transparent 35%),
+                /* 文本行 */
+                linear-gradient(#e2e5e7 60%, transparent 60%),
+                /* 额外的文本行 */
+                linear-gradient(#d1d5db 80%, transparent 80%);
+            background-size: 
+                25px 25px,
+                80% 6px,
+                60% 4px;
+            background-position: 
+                center 30%,
+                center 65%,
+                center 80%;
+        }
+
+        /* 骨架屏淡入效果 */
+        .gallery-img-container.loading {
+            animation: skeleton-fade-in 0.3s ease-out;
+        }
+
+        @keyframes skeleton-fade-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
             }
         }
 
@@ -606,6 +688,18 @@
                 transform: translateY(-4px) scale(1.01);
             }
 
+            /* 移动端骨架屏优化 */
+            .gallery-img-container.loading::after {
+                width: 70%;
+                height: 70%;
+                background-size: 
+                    20px 20px,
+                    100% 6px;
+                background-position: 
+                    center 35%,
+                    center 75%;
+            }
+
             .image-index {
                 font-size: 10px;
                 padding: 3px 6px;
@@ -708,6 +802,18 @@
 
             .gallery-img-container {
                 border-radius: 8px;
+            }
+
+            /* 超小屏幕骨架屏优化 */
+            .gallery-img-container.loading::after {
+                width: 80%;
+                height: 80%;
+                background-size: 
+                    16px 16px,
+                    100% 4px;
+                background-position: 
+                    center 30%,
+                    center 80%;
             }
 
             .gallery-img {
@@ -881,7 +987,7 @@
     <!-- 无结果提示 -->
     <div class="no-results" id="noResults">
         <div class="icon">🔍</div>
-        <h3>没有找到相关工作经历</h3>
+        <h3>没有找到相关工作记录</h3>
         <p>请尝试其他关键词</p>
     </div>
 
@@ -933,7 +1039,7 @@
     </div>
 
     <footer>
-        <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a
+        <h6 class="right copy-right"><a href=" ">Copyright</a> &copy; <a
                 href="index.html" target="_blank" title="2025 浩天的个人站">
                 <script>
                     let currentYear = new Date().getFullYear();
@@ -1035,6 +1141,106 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
 
 
         ];
@@ -1178,15 +1384,14 @@
                         <div class="work-info">
                             <h2>时间：${exp.time}</h2>
                             <h2>地点：${exp.location}</h2>
-                            ${exp.content ? `<h2>内容：${exp.content}</h2>` : ''}
+                    ${exp.content ? `<h2>内容：${exp.content}</h2>` : ''}
                         </div>
                         <div class="image-gallery" data-gallery="work${exp.id}">
                             ${exp.images.map((img, index) => `
                                 <div class="gallery-img-container loading" data-index="${index + 1}">
                                     <img src="${img}" class="gallery-img" alt="照片${index + 1}"
                                          data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}"
-                                         onload="handleImageLoad(this)" onerror="handleImageError(this)"
-                                         loading="lazy">
+                                         onload="handleImageLoad(this)" onerror="handleImageError(this)">
                                     <div class="image-index">${index + 1}</div>
                                     <div class="zoom-icon">🔍</div>
                                     <div class="image-tooltip">${exp.title} - 照片${index + 1}</div>
@@ -1210,6 +1415,9 @@
                 
                 // 强制触发图片加载检查
                 this.checkImageLoading();
+                
+                // 确保所有新生成的图片都有正确的加载状态
+                this.initializeImageLoading();
             }
 
             renderPagination() {
@@ -1305,17 +1513,29 @@
                     const containers = document.querySelectorAll('.gallery-img-container.loading');
                     containers.forEach(container => {
                         const img = container.querySelector('.gallery-img');
-                        if (img) {
-                            if (img.complete && img.naturalWidth > 0) {
-                                handleImageLoad(img);
-                            } else {
-                                // 强制重新检查图片加载状态
-                                img.onload = () => handleImageLoad(img);
-                                img.onerror = () => handleImageError(img);
-                            }
+                        if (img && img.complete) {
+                            handleImageLoad(img);
                         }
                     });
                 }, 100);
+            }
+
+            initializeImageLoading() {
+                // 为所有新生成的图片设置加载事件监听器
+                const images = this.experienceContainer.querySelectorAll('.gallery-img');
+                images.forEach(img => {
+                    // 确保容器处于loading状态
+                    const container = img.closest('.gallery-img-container');
+                    if (container) {
+                        container.classList.add('loading');
+                        container.classList.remove('loaded', 'error');
+                    }
+                    
+                    // 如果图片已经加载完成，立即触发处理
+                    if (img.complete && img.naturalWidth > 0) {
+                        setTimeout(() => handleImageLoad(img), 100);
+                    }
+                });
             }
         }
 
@@ -1537,17 +1757,14 @@
         function handleImageLoad(img) {
             const container = img.closest('.gallery-img-container');
             if (container) {
-                // 避免重复处理
-                if (container.classList.contains('loaded')) {
-                    return;
-                }
-                
-                container.classList.remove('loading');
-                container.classList.add('loaded');
-                
-                // 平滑淡入动画
-                img.style.transition = 'opacity 0.3s ease-in-out';
-                img.style.opacity = '1';
+                // 添加一个小延迟确保骨架屏效果被看到
+                setTimeout(() => {
+                    container.classList.remove('loading');
+                    container.classList.add('loaded');
+                    
+                    // 图片淡入效果已经在CSS中定义了，这里不需要额外处理
+                    // CSS中的 .gallery-img-container.loaded .gallery-img 已经处理了过渡效果
+                }, 150);
             }
         }
 
@@ -1555,10 +1772,25 @@
         function handleImageError(img) {
             const container = img.closest('.gallery-img-container');
             if (container) {
-                container.classList.remove('loading');
-                container.classList.add('error');
-                container.innerHTML = '<div>图片加载失败</div>';
+                setTimeout(() => {
+                    container.classList.remove('loading');
+                    container.classList.add('error');
+                    // 保留原有的图片元素，只是隐藏它
+                    if (img) {
+                        img.style.display = 'none';
+                    }
+                }, 150);
             }
+        }
+
+        // 预加载图片的函数
+        function preloadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
         }
 
         // 页面加载完成后初始化
@@ -1634,4 +1866,6 @@
 </body>
 
 </html>
+
+
 
