@@ -257,6 +257,98 @@
             font-style: italic;
         }
 
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .code-container {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .code-container pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
         @media (max-width: 768px) {
             .tab-nav {
                 flex-wrap: wrap;
@@ -278,6 +370,23 @@
 
             .btn {
                 flex: none;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+
+            .modal-header {
+                padding: 15px 20px;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .modal-actions {
+                flex-direction: column;
             }
         }
     </style>
@@ -322,7 +431,7 @@
                         <div class="form-group"><label>时间</label><input type="text" id="workTime"
                                 placeholder="例如：2021.8.17" required></div>
                         <div class="form-group"><label>地点/描述</label><input type="text" id="workLocation"
-                                placeholder="工作地点或描述"></div>
+                                placeholder="宁夏-银川"></div>
                     </div>
                     <div class="form-group"><label>详细内容</label><textarea id="workContent" rows="3"
                             placeholder="详细描述工作内容"></textarea></div>
@@ -331,6 +440,7 @@
                     </div>
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加工作记录</button>
+                        <button type="button" class="btn btn-success" onclick="generateCode('work')">生成代码</button>
                         <button type="button" class="btn btn-info" onclick="insertDataToPage('work')">插入到页面</button>
                         <button type="button" class="btn btn-danger" onclick="clearData('work')">清空数据</button>
                     </div>
@@ -345,7 +455,7 @@
                         <div class="form-group"><label>时间</label><input type="text" id="experienceTime"
                                 placeholder="例如：2021.10.4" required></div>
                         <div class="form-group"><label>地点/描述</label><input type="text" id="experienceLocation"
-                                placeholder="经历地点或描述"></div>
+                                placeholder="宁夏-银川"></div>
                     </div>
                     <div class="form-group"><label>详细内容</label><textarea id="experienceContent" rows="3"
                             placeholder="详细描述这次经历"></textarea></div>
@@ -354,6 +464,7 @@
                     </div>
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加经历记录</button>
+                        <button type="button" class="btn btn-success" onclick="generateCode('experience')">生成代码</button>
                         <button type="button" class="btn btn-info"
                             onclick="insertDataToPage('experience')">插入到页面</button>
                         <button type="button" class="btn btn-danger" onclick="clearData('experience')">清空数据</button>
@@ -369,7 +480,7 @@
                         <div class="form-group"><label>时间</label><input type="text" id="foodTime"
                                 placeholder="例如：2022.4.29" required></div>
                         <div class="form-group"><label>地点/描述</label><input type="text" id="foodLocation"
-                                placeholder="餐厅地点或描述"></div>
+                                placeholder="宁夏-银川"></div>
                     </div>
                     <div class="form-group"><label>详细内容</label><textarea id="foodContent" rows="3"
                             placeholder="详细描述美食体验"></textarea></div>
@@ -378,6 +489,7 @@
                     </div>
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加美食记录</button>
+                        <button type="button" class="btn btn-success" onclick="generateCode('food')">生成代码</button>
                         <button type="button" class="btn btn-info" onclick="insertDataToPage('food')">插入到页面</button>
                         <button type="button" class="btn btn-danger" onclick="clearData('food')">清空数据</button>
                     </div>
@@ -400,11 +512,31 @@
                             placeholder="B站嵌入代码URL"></div>
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加琐碎记录</button>
+                        <button type="button" class="btn btn-success" onclick="generateCode('suosui')">生成代码</button>
                         <button type="button" class="btn btn-info" onclick="insertDataToPage('suosui')">插入到页面</button>
                         <button type="button" class="btn btn-danger" onclick="clearData('suosui')">清空数据</button>
                     </div>
                 </form>
                 <div class="data-list" id="suosuiList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 代码生成弹窗 -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>生成的JSON代码</h2>
+                <span class="close" onclick="closeCodeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="code-container">
+                    <pre id="generatedCode"></pre>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="copyCode()">复制代码</button>
+                    <button class="btn btn-info" onclick="closeCodeModal()">关闭</button>
+                </div>
             </div>
         </div>
     </div>
@@ -458,14 +590,17 @@
                 case 'work':
                     document.getElementById('workTitle').value = '工作记录-';
                     document.getElementById('workTime').value = currentTime;
+                    document.getElementById('workLocation').value = '宁夏-银川';
                     break;
                 case 'experience':
                     document.getElementById('experienceTitle').value = '经历记录-';
                     document.getElementById('experienceTime').value = currentTime;
+                    document.getElementById('experienceLocation').value = '宁夏-银川';
                     break;
                 case 'food':
                     document.getElementById('foodTitle').value = '美食记录-';
                     document.getElementById('foodTime').value = currentTime;
+                    document.getElementById('foodLocation').value = '宁夏-银川';
                     break;
                 case 'suosui':
                     document.getElementById('suosuiTitle').value = '琐碎记录-';
@@ -878,6 +1013,183 @@
             this.reset();
             showNotification('琐碎记录添加成功！');
         });
+
+        // 生成代码功能
+        function generateCode(type) {
+            if (data[type].length === 0) {
+                showNotification('没有数据可以生成代码！', 'error');
+                return;
+            }
+
+            // 处理数据，按照指定格式生成JSON
+            const processedData = data[type].map(item => {
+                // 从标题中提取数字作为id
+                const numberMatch = item.title.match(/(\d+)/);
+                const id = numberMatch ? parseInt(numberMatch[1]) : Math.floor(Math.random() * 1000) + 1;
+                
+                if (type === 'suosui') {
+                    // 琐碎记录的特殊格式
+                    return {
+                        id: id,
+                        title: item.title,
+                        subtitle: item.subtitle || "程宝vlog",
+                        description: item.description || "程宝vlog.part2",
+                        videoUrl: item.videoUrl || "//player.bilibili.com/player.html?isOutside=true&aid=336426195&bvid=BV1SR4y1j7i2&cid=218963994&page=1",
+                        tags: generateRandomTags(),
+                        date: item.date
+                    };
+                } else {
+                    // 其他类型记录的格式
+                    return {
+                        id: id,
+                        title: item.title,
+                        time: item.time,
+                        location: item.location || item.content || "记录简历照片，随取随用",
+                        images: item.images || [],
+                        content: item.content || item.location || "记录简历照片，随取随用"
+                    };
+                }
+            });
+
+            // 手动生成格式化的JSON字符串，确保格式完全一致
+            const jsonCode = formatJsonCustom(processedData, type);
+            
+            // 显示在弹窗中
+            document.getElementById('generatedCode').textContent = jsonCode;
+            document.getElementById('codeModal').style.display = 'block';
+            
+            showNotification(`已生成${data[type].length}条${getTypeName(type)}记录的JSON代码！`, 'success');
+        }
+
+        // 自定义JSON格式化函数，严格按照图片格式
+        function formatJsonCustom(data, type) {
+            let result = '';
+            
+            data.forEach((item, index) => {
+                result += '{\n';
+                result += `    id: ${item.id},\n`;
+                result += `    title: "${item.title}",\n`;
+                
+                if (type === 'suosui') {
+                    // 琐碎记录的特殊格式
+                    result += `    subtitle: "${item.subtitle}",\n`;
+                    result += `    description: "${item.description}",\n`;
+                    result += `    videoUrl: "${item.videoUrl}",\n`;
+                    
+                    // 格式化tags数组
+                    if (item.tags && item.tags.length > 0) {
+                        result += '    tags: [';
+                        item.tags.forEach((tag, tagIndex) => {
+                            const comma = tagIndex < item.tags.length - 1 ? ', ' : '';
+                            result += `"${tag}"${comma}`;
+                        });
+                        result += '],\n';
+                    } else {
+                        const randomTags = generateRandomTags();
+                        result += `    tags: ["${randomTags.join('", "')}"],\n`;
+                    }
+                    
+                    result += `    date: "${item.date}"\n`;
+                } else {
+                    // 其他类型记录的格式
+                    result += `    time: "${item.time}",\n`;
+                    result += `    location: "${item.location}",\n`;
+                    
+                    // 格式化images数组
+                    if (item.images && item.images.length > 0) {
+                        result += '    images: [\n';
+                        item.images.forEach((img, imgIndex) => {
+                            const comma = imgIndex < item.images.length - 1 ? ',' : '';
+                            result += `        "${img}"${comma}\n`;
+                        });
+                        result += '    ],\n';
+                    } else {
+                        result += '    images: [],\n';
+                    }
+                    
+                    result += `    content: "${item.content}"\n`;
+                }
+                
+                result += '},\n';
+                
+                // 如果不是最后一个元素，添加换行
+                if (index < data.length - 1) {
+                    result += '\n';
+                }
+            });
+            
+            return result;
+        }
+
+        // 生成随机标签函数
+        function generateRandomTags() {
+            const allTags = [
+                "回忆", "美好", "生活", "感悟", 
+                "时光", "温暖", "快乐", "成长",
+                "梦想", "希望", "友情", "爱情",
+                "家庭", "旅行", "美食", "音乐",
+                "电影", "读书", "运动", "学习",
+                "工作", "思考", "感恩", "珍惜",
+                "青春", "回味", "岁月", "故事",
+                "心情", "日常", "记录", "分享"
+            ];
+            
+            // 随机选择2个不同的标签
+            const shuffled = [...allTags].sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, 2);
+        }
+
+        // 获取类型中文名称
+        function getTypeName(type) {
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
+            return typeNames[type] || type;
+        }
+
+        // 复制代码到剪贴板
+        function copyCode() {
+            const codeElement = document.getElementById('generatedCode');
+            const text = codeElement.textContent;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showNotification('代码已复制到剪贴板！', 'success');
+                }).catch(() => {
+                    fallbackCopyText(text);
+                });
+            } else {
+                fallbackCopyText(text);
+            }
+        }
+
+        // 备用复制方法
+        function fallbackCopyText(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showNotification('代码已复制到剪贴板！', 'success');
+            } catch (err) {
+                showNotification('复制失败，请手动复制代码！', 'error');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // 关闭代码弹窗
+        function closeCodeModal() {
+            document.getElementById('codeModal').style.display = 'none';
+        }
+
+        // 点击弹窗背景关闭弹窗
+        window.onclick = function(event) {
+            const modal = document.getElementById('codeModal');
+            if (event.target === modal) {
+                closeCodeModal();
+            }
+        }
 
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function () {
