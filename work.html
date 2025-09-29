@@ -9,16 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>工作</title>
 
-    <!-- 缓存控制 - 防止移动端图片缓存问题 -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    
-    <!-- 移动端优化 -->
-    <meta name="format-detection" content="telephone=no">
-    <meta name="x5-orientation" content="portrait">
-    <meta name="screen-orientation" content="portrait">
-
     <!--360 browser -->
     <meta name="renderer" content="webkit">
     <meta name="author" content="wos">
@@ -129,6 +119,7 @@
             font-size: 24px;
             color: #ccc;
             z-index: 2;
+            pointer-events: none;
         }
 
         @keyframes loading-shimmer {
@@ -1140,24 +1131,16 @@
                             <h2>地点：${exp.location}</h2>
                         </div>
                         <div class="image-gallery" data-gallery="work${exp.id}">
-                            ${exp.images.map((img, index) => {
-                                // 为移动端添加时间戳防止缓存问题
-                                const timestamp = new Date().getTime();
-                                const separator = img.includes('?') ? '&' : '?';
-                                const imgSrc = `${img}${separator}v=${timestamp}&mobile=1`;
-                                
-                                return `
-                                <div class="gallery-img-container loading" data-index="${index + 1}" data-original-src="${img}">
-                                    <img src="${imgSrc}" class="gallery-img" alt="照片${index + 1}" loading="lazy"
+                            ${exp.images.map((img, index) => `
+                                <div class="gallery-img-container loading" data-index="${index + 1}">
+                                    <img src="${img}" class="gallery-img" alt="照片${index + 1}"
                                          data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}"
-                                         data-original-src="${img}"
-                                         onload="handleImageLoad(this)" onerror="handleImageError(this)"
-                                         crossorigin="anonymous">
+                                         onload="handleImageLoad(this)" onerror="handleImageError(this)">
                                     <div class="image-index">${index + 1}</div>
                                     <div class="zoom-icon">🔍</div>
                                     <div class="image-tooltip">${exp.title} - 照片${index + 1}</div>
                                 </div>
-                            `}).join('')}
+                            `).join('')}
                         </div>
                     </div>
                 `).join('');
@@ -1173,6 +1156,9 @@
                         }, index * 100);
                     });
                 }, 50);
+                
+                // 强制触发图片加载检查
+                this.checkImageLoading();
             }
 
             renderPagination() {
@@ -1260,6 +1246,19 @@
                 if (window.imageViewer) {
                     window.imageViewer.bindImageEvents();
                 }
+            }
+
+            checkImageLoading() {
+                // 延迟检查图片加载状态，确保图片正确显示
+                setTimeout(() => {
+                    const containers = document.querySelectorAll('.gallery-img-container.loading');
+                    containers.forEach(container => {
+                        const img = container.querySelector('.gallery-img');
+                        if (img && img.complete) {
+                            handleImageLoad(img);
+                        }
+                    });
+                }, 100);
             }
         }
 
@@ -1493,215 +1492,29 @@
             }
         }
 
-        // 图片错误处理函数 - 增强版
+        // 图片错误处理函数
         function handleImageError(img) {
             const container = img.closest('.gallery-img-container');
             if (container) {
                 container.classList.remove('loading');
                 container.classList.add('error');
-                
-                // 尝试重新加载图片
-                const originalSrc = img.src;
-                const retryCount = img.dataset.retryCount ? parseInt(img.dataset.retryCount) : 0;
-                
-                if (retryCount < 3) {
-                    // 添加时间戳防止缓存
-                    const timestamp = new Date().getTime();
-                    const separator = originalSrc.includes('?') ? '&' : '?';
-                    const newSrc = `${originalSrc}${separator}t=${timestamp}`;
-                    
-                    img.dataset.retryCount = retryCount + 1;
-                    
-                    setTimeout(() => {
-                        img.src = newSrc;
-                        container.classList.add('loading');
-                        container.classList.remove('error');
-                    }, 1000 * (retryCount + 1)); // 递增延迟重试
-                } else {
-                    // 重试失败，显示错误信息
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 10px;">
-                            <div style="font-size: 20px; margin-bottom: 5px;">📷</div>
-                            <div style="font-size: 10px;">图片加载失败</div>
-                            <button onclick="retryLoadImage(this)" style="margin-top: 5px; padding: 2px 6px; font-size: 9px; border: 1px solid #ccc; background: white; border-radius: 3px; cursor: pointer;">重试</button>
-                        </div>
-                    `;
-                }
-            }
-        }
-
-        // 手动重试加载图片
-        function retryLoadImage(button) {
-            const container = button.closest('.gallery-img-container');
-            const galleryContainer = container.closest('.image-gallery');
-            const index = Array.from(container.parentNode.children).indexOf(container);
-            const gallery = galleryContainer.closest('[data-gallery]');
-            
-            // 重新创建图片元素
-            const originalImg = container.querySelector('img') || container.dataset.originalImg;
-            if (originalImg) {
-                const newImg = document.createElement('img');
-                newImg.src = originalImg.src || originalImg;
-                newImg.className = 'gallery-img';
-                newImg.alt = originalImg.alt || `照片${index + 1}`;
-                newImg.loading = 'lazy';
-                newImg.dataset.title = originalImg.dataset?.title || `照片${index + 1}`;
-                newImg.dataset.date = originalImg.dataset?.date || '';
-                newImg.onload = () => handleImageLoad(newImg);
-                newImg.onerror = () => handleImageError(newImg);
-                
-                // 重置容器
-                container.className = 'gallery-img-container loading';
-                container.innerHTML = '';
-                container.appendChild(newImg);
-                
-                // 重新添加其他元素
-                container.innerHTML += `
-                    <div class="image-index">${index + 1}</div>
-                    <div class="zoom-icon">🔍</div>
-                    <div class="image-tooltip">${newImg.dataset.title}</div>
-                `;
-                container.insertBefore(newImg, container.firstChild);
-            }
-        }
-
-        // 图片预加载函数
-        function preloadImages(imageUrls) {
-            imageUrls.forEach(url => {
-                const img = new Image();
-                img.src = url;
-            });
-        }
-
-        // 检测网络状态
-        function checkNetworkStatus() {
-            if ('navigator' in window && 'onLine' in navigator) {
-                return navigator.onLine;
-            }
-            return true; // 默认假设在线
-        }
-
-        // 网络状态变化处理
-        function handleNetworkChange() {
-            if (checkNetworkStatus()) {
-                // 网络恢复，重新加载失败的图片
-                const errorContainers = document.querySelectorAll('.gallery-img-container.error');
-                errorContainers.forEach(container => {
-                    const retryButton = container.querySelector('button');
-                    if (retryButton) {
-                        retryButton.click();
-                    }
-                });
-            }
-        }
-
-        // 监听网络状态变化
-        if ('navigator' in window && 'onLine' in navigator) {
-            window.addEventListener('online', handleNetworkChange);
-            window.addEventListener('offline', () => {
-                console.log('网络连接已断开');
-            });
-        }
-
-        // 移动端图片加载管理器
-        class MobileImageManager {
-            constructor() {
-                this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                this.isSlowConnection = this.checkSlowConnection();
-                this.retryQueue = new Set();
-                
-                this.init();
-            }
-
-            checkSlowConnection() {
-                if ('connection' in navigator) {
-                    const connection = navigator.connection;
-                    return connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g';
-                }
-                return false;
-            }
-
-            init() {
-                if (this.isMobile) {
-                    // 移动端特殊处理
-                    this.optimizeForMobile();
-                }
-
-                // 监听页面可见性变化
-                document.addEventListener('visibilitychange', () => {
-                    if (!document.hidden && this.retryQueue.size > 0) {
-                        this.retryFailedImages();
-                    }
-                });
-
-                // 监听网络状态变化
-                if ('connection' in navigator) {
-                    navigator.connection.addEventListener('change', () => {
-                        this.handleConnectionChange();
-                    });
-                }
-            }
-
-            optimizeForMobile() {
-                // 禁用图片的右键菜单（防止长按保存导致的问题）
-                document.addEventListener('contextmenu', (e) => {
-                    if (e.target.tagName === 'IMG') {
-                        e.preventDefault();
-                    }
-                });
-
-                // 添加触摸优化
-                document.addEventListener('touchstart', () => {}, { passive: true });
-            }
-
-            addToRetryQueue(img) {
-                this.retryQueue.add(img);
-            }
-
-            removeFromRetryQueue(img) {
-                this.retryQueue.delete(img);
-            }
-
-            retryFailedImages() {
-                this.retryQueue.forEach(img => {
-                    if (img && img.parentNode) {
-                        const container = img.closest('.gallery-img-container');
-                        if (container && container.classList.contains('error')) {
-                            const retryButton = container.querySelector('button');
-                            if (retryButton) {
-                                retryButton.click();
-                            }
-                        }
-                    }
-                });
-            }
-
-            handleConnectionChange() {
-                const wasSlowConnection = this.isSlowConnection;
-                this.isSlowConnection = this.checkSlowConnection();
-
-                // 如果网络从慢速变为快速，重试失败的图片
-                if (wasSlowConnection && !this.isSlowConnection) {
-                    setTimeout(() => {
-                        this.retryFailedImages();
-                    }, 1000);
-                }
+                container.innerHTML = '<div>图片加载失败</div>';
             }
         }
 
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', () => {
-            // 初始化移动端图片管理器
-            window.mobileImageManager = new MobileImageManager();
-
             // 初始化分页功能
             window.experiencePagination = new ExperiencePagination();
 
             // 初始化图片查看器
             window.imageViewer = new ImageViewer();
 
-            // 添加图片懒加载观察器
-            if ('IntersectionObserver' in window) {
+            // 检测是否为移动设备
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // 添加图片懒加载观察器（仅在非移动设备上使用）
+            if (!isMobile && 'IntersectionObserver' in window) {
                 const imageObserver = new IntersectionObserver((entries, observer) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
@@ -1710,39 +1523,54 @@
                                 img.src = img.dataset.src;
                                 img.removeAttribute('data-src');
                                 observer.unobserve(img);
+                            } else if (img.src) {
+                                // 图片已经设置了src，直接触发加载检查
+                                if (img.complete) {
+                                    handleImageLoad(img);
+                                } else {
+                                    img.onload = () => handleImageLoad(img);
+                                    img.onerror = () => handleImageError(img);
+                                }
                             }
                         }
                     });
-                }, {
-                    rootMargin: '50px' // 提前50px开始加载
                 });
 
-                // 观察所有懒加载图片
-                document.querySelectorAll('img[data-src]').forEach(img => {
+                // 观察所有图片容器
+                document.querySelectorAll('.gallery-img').forEach(img => {
                     imageObserver.observe(img);
                 });
-            }
-
-            // 预加载首屏图片
-            setTimeout(() => {
-                const firstScreenImages = document.querySelectorAll('.image-gallery img');
-                const imageUrls = Array.from(firstScreenImages).slice(0, 6).map(img => img.src);
-                preloadImages(imageUrls);
-            }, 1000);
-        });
-
-        // 页面刷新时清除图片缓存（移动端专用）
-        window.addEventListener('beforeunload', () => {
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                // 移动端清除图片缓存
-                const images = document.querySelectorAll('img');
+            } else {
+                // 移动端或不支持IntersectionObserver的浏览器，直接加载所有图片
+                const images = document.querySelectorAll('.gallery-img');
                 images.forEach(img => {
+                    // 移动端直接加载图片
                     if (img.src) {
-                        img.src = '';
+                        // 触发加载检查
+                        if (img.complete) {
+                            handleImageLoad(img);
+                        } else {
+                            img.onload = () => handleImageLoad(img);
+                            img.onerror = () => handleImageError(img);
+                        }
                     }
                 });
             }
         });
+        
+        // 页面完全加载后再次检查图片加载状态
+        window.addEventListener('load', () => {
+            // 延迟执行以确保所有资源加载完成
+            setTimeout(() => {
+                const images = document.querySelectorAll('.gallery-img');
+                images.forEach(img => {
+                    if (img.complete && img.closest('.gallery-img-container')?.classList.contains('loading')) {
+                        handleImageLoad(img);
+                    }
+                });
+            }, 500);
+        });
+
     </script>
 </body>
 
