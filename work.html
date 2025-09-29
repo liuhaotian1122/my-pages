@@ -62,6 +62,9 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             aspect-ratio: 1;
+            width: 100%;
+            height: 0;
+            padding-bottom: 100%; /* 确保正方形比例 */
         }
 
         .gallery-img-container::before {
@@ -89,14 +92,17 @@
 
         /* 图片样式 */
         .gallery-img {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             cursor: pointer;
             transition: all 0.4s ease;
             border-radius: 12px;
-            position: relative;
             z-index: 0;
+            opacity: 0;
         }
 
         .gallery-img:hover {
@@ -120,6 +126,11 @@
             color: #ccc;
             z-index: 2;
             pointer-events: none;
+        }
+
+        /* 图片加载完成状态 */
+        .gallery-img-container.loaded .gallery-img {
+            opacity: 1;
         }
 
         @keyframes loading-shimmer {
@@ -1174,7 +1185,8 @@
                                 <div class="gallery-img-container loading" data-index="${index + 1}">
                                     <img src="${img}" class="gallery-img" alt="照片${index + 1}"
                                          data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}"
-                                         onload="handleImageLoad(this)" onerror="handleImageError(this)">
+                                         onload="handleImageLoad(this)" onerror="handleImageError(this)"
+                                         loading="lazy">
                                     <div class="image-index">${index + 1}</div>
                                     <div class="zoom-icon">🔍</div>
                                     <div class="image-tooltip">${exp.title} - 照片${index + 1}</div>
@@ -1293,8 +1305,14 @@
                     const containers = document.querySelectorAll('.gallery-img-container.loading');
                     containers.forEach(container => {
                         const img = container.querySelector('.gallery-img');
-                        if (img && img.complete) {
-                            handleImageLoad(img);
+                        if (img) {
+                            if (img.complete && img.naturalWidth > 0) {
+                                handleImageLoad(img);
+                            } else {
+                                // 强制重新检查图片加载状态
+                                img.onload = () => handleImageLoad(img);
+                                img.onerror = () => handleImageError(img);
+                            }
                         }
                     });
                 }, 100);
@@ -1519,15 +1537,17 @@
         function handleImageLoad(img) {
             const container = img.closest('.gallery-img-container');
             if (container) {
+                // 避免重复处理
+                if (container.classList.contains('loaded')) {
+                    return;
+                }
+                
                 container.classList.remove('loading');
                 container.classList.add('loaded');
                 
-                // 添加淡入动画
-                img.style.opacity = '0';
-                setTimeout(() => {
-                    img.style.transition = 'opacity 0.5s ease';
-                    img.style.opacity = '1';
-                }, 50);
+                // 平滑淡入动画
+                img.style.transition = 'opacity 0.3s ease-in-out';
+                img.style.opacity = '1';
             }
         }
 
@@ -1614,5 +1634,4 @@
 </body>
 
 </html>
-
 
