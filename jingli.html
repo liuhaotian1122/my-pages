@@ -51,31 +51,35 @@
             padding: 24px;
             max-width: 100%;
             margin: 0 auto;
-            /* 防止布局重新计算导致的跳动 */
-            contain: layout style;
-            will-change: transform;
         }
 
-        /* 图片容器 - 使用固定像素高度 */
+        /* 图片容器 */
         .gallery-img-container {
             position: relative;
             overflow: hidden;
             border-radius: 12px;
-            background: #f8f9fa;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            /* 固定尺寸 - 避免任何动态计算 */
-            width: 100%;
-            height: 200px; /* 固定高度 */
-            /* 防止布局shift */
-            flex-shrink: 0;
-            contain: strict;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            aspect-ratio: 1;
         }
 
-        /* 简化的hover效果 */
-        .gallery-img-container.loaded:hover {
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        .gallery-img-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .gallery-img-container:hover::before {
+            opacity: 1;
         }
 
         .gallery-img-container:hover {
@@ -85,83 +89,159 @@
 
         /* 图片样式 */
         .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border-radius: 12px;
+            position: relative;
+            z-index: 0;
+        }
+
+        .gallery-img:hover {
+            transform: scale(1.1);
+        }
+
+        /* 骨架屏加载状态 */
+        .gallery-img-container.loading {
+            background: #f6f7f8;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 骨架屏闪烁效果 */
+        .gallery-img-container.loading::before {
+            content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            cursor: pointer;
-            border-radius: 12px;
-            transition: opacity 0.3s ease;
-            /* 图片默认透明，加载完成后显示 */
-            opacity: 0;
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 255, 255, 0.4) 50%,
+                transparent 100%
+            );
+            animation: skeleton-shimmer 1.8s ease-in-out infinite;
+            z-index: 1;
         }
 
-        /* 图片加载完成状态 */
-        .gallery-img-container.loaded .gallery-img {
-            opacity: 1;
-        }
-
-        /* 简化的hover效果 */
-        .gallery-img-container.loaded:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .gallery-img-container.loaded:hover .gallery-img {
-            transform: scale(1.05);
-        }
-
-        /* 图片加载完成状态 */
-        .gallery-img-container.loaded .gallery-img {
-            opacity: 1;
-        }
-
-        /* 骨架屏加载效果 */
-        .gallery-img-container.loading {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: skeleton-loading 2s ease-in-out infinite;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .gallery-img-container.loading::before {
+        /* 骨架屏内容层 */
+        .gallery-img-container.loading::after {
             content: '';
-            width: 40px;
-            height: 40px;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23999"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>') center/contain no-repeat;
-            opacity: 0.5;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            background: 
+                radial-gradient(circle at center, #e2e5e7 40%, transparent 40%),
+                linear-gradient(#e2e5e7 60%, transparent 60%);
+            background-size: 
+                30px 30px,
+                100% 8px;
+            background-position: 
+                center 40%,
+                center 70%;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            opacity: 0.6;
+            z-index: 0;
         }
 
-        @keyframes skeleton-loading {
+        /* 加载中的图片隐藏 */
+        .gallery-img-container.loading .gallery-img {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* 加载完成的图片显示动画 */
+        .gallery-img-container.loaded .gallery-img {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        /* 骨架屏动画关键帧 */
+        @keyframes skeleton-shimmer {
             0% {
-                background-position: -200% 0;
+                transform: translateX(-100%);
             }
             100% {
-                background-position: 200% 0;
+                transform: translateX(100%);
+            }
+        }
+
+        /* 脉冲动画作为备选 */
+        .gallery-img-container.loading.pulse::before {
+            animation: skeleton-pulse 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes skeleton-pulse {
+            0% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* 增强骨架屏效果 - 添加一些细节元素 */
+        .gallery-img-container.loading.detailed::after {
+            background: 
+                /* 图片图标 */
+                radial-gradient(circle at center, #e2e5e7 35%, transparent 35%),
+                /* 文本行 */
+                linear-gradient(#e2e5e7 60%, transparent 60%),
+                /* 额外的文本行 */
+                linear-gradient(#d1d5db 80%, transparent 80%);
+            background-size: 
+                25px 25px,
+                80% 6px,
+                60% 4px;
+            background-position: 
+                center 30%,
+                center 65%,
+                center 80%;
+        }
+
+        /* 骨架屏淡入效果 */
+        .gallery-img-container.loading {
+            animation: skeleton-fade-in 0.3s ease-out;
+        }
+
+        @keyframes skeleton-fade-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
             }
         }
 
         /* 图片错误状态 */
         .gallery-img-container.error {
-            background: #ffebee;
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
             color: #e57373;
             font-size: 12px;
+            text-align: center;
+            padding: 8px;
         }
 
         .gallery-img-container.error::before {
-            content: '❌\A加载失败';
-            white-space: pre-line;
-            text-align: center;
+            content: '❌';
+            font-size: 20px;
+            margin-bottom: 4px;
         }
-
-
 
         /* 图片序号标签 */
         .image-index {
@@ -604,13 +684,20 @@
                 padding: 16px;
             }
 
-            .gallery-img-container {
-                /* 移动端使用较小的固定高度 */
-                height: 150px;
-            }
-
             .gallery-img-container:hover {
                 transform: translateY(-4px) scale(1.01);
+            }
+
+            /* 移动端骨架屏优化 */
+            .gallery-img-container.loading::after {
+                width: 70%;
+                height: 70%;
+                background-size: 
+                    20px 20px,
+                    100% 6px;
+                background-position: 
+                    center 35%,
+                    center 75%;
             }
 
             .image-index {
@@ -715,8 +802,18 @@
 
             .gallery-img-container {
                 border-radius: 8px;
-                /* 超小屏幕使用更小的固定高度 */
-                height: 120px;
+            }
+
+            /* 超小屏幕骨架屏优化 */
+            .gallery-img-container.loading::after {
+                width: 80%;
+                height: 80%;
+                background-size: 
+                    16px 16px,
+                    100% 4px;
+                background-position: 
+                    center 30%,
+                    center 80%;
             }
 
             .gallery-img {
@@ -762,11 +859,6 @@
                 grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
                 gap: 20px;
                 padding: 32px;
-            }
-
-            .gallery-img-container {
-                /* 大屏幕使用较大的固定高度 */
-                height: 250px;
             }
 
             .gallery-img-container:hover {
@@ -1367,9 +1459,10 @@
                         </div>
                         <div class="image-gallery" data-gallery="work${exp.id}">
                             ${exp.images.map((img, index) => `
-                                <div class="gallery-img-container loading" data-index="${index + 1}" data-src="${img}">
-                                    <img class="gallery-img" alt="照片${index + 1}"
-                                         data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}">
+                                <div class="gallery-img-container loading" data-index="${index + 1}">
+                                    <img src="${img}" class="gallery-img" alt="照片${index + 1}"
+                                         data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}"
+                                         onload="handleImageLoad(this)" onerror="handleImageError(this)">
                                     <div class="image-index">${index + 1}</div>
                                     <div class="zoom-icon">🔍</div>
                                     <div class="image-tooltip">${exp.title} - 照片${index + 1}</div>
@@ -1393,6 +1486,9 @@
                 
                 // 强制触发图片加载检查
                 this.checkImageLoading();
+                
+                // 确保所有新生成的图片都有正确的加载状态
+                this.initializeImageLoading();
             }
 
             renderPagination() {
@@ -1483,13 +1579,32 @@
             }
 
             checkImageLoading() {
-                // 启动图片预加载
-                const containers = document.querySelectorAll('.gallery-img-container.loading');
-                containers.forEach(container => {
-                    const img = container.querySelector('.gallery-img');
-                    const src = container.dataset.src;
-                    if (img && src && !img.src) {
-                        preloadAndShowImage(img, src);
+                // 延迟检查图片加载状态，确保图片正确显示
+                setTimeout(() => {
+                    const containers = document.querySelectorAll('.gallery-img-container.loading');
+                    containers.forEach(container => {
+                        const img = container.querySelector('.gallery-img');
+                        if (img && img.complete) {
+                            handleImageLoad(img);
+                        }
+                    });
+                }, 100);
+            }
+
+            initializeImageLoading() {
+                // 为所有新生成的图片设置加载事件监听器
+                const images = this.experienceContainer.querySelectorAll('.gallery-img');
+                images.forEach(img => {
+                    // 确保容器处于loading状态
+                    const container = img.closest('.gallery-img-container');
+                    if (container) {
+                        container.classList.add('loading');
+                        container.classList.remove('loaded', 'error');
+                    }
+                    
+                    // 如果图片已经加载完成，立即触发处理
+                    if (img.complete && img.naturalWidth > 0) {
+                        setTimeout(() => handleImageLoad(img), 100);
                     }
                 });
             }
@@ -1709,37 +1824,18 @@
             }
         }
 
-        // 图片预加载和显示函数
-        function preloadAndShowImage(imgElement, src) {
-            const container = imgElement.closest('.gallery-img-container');
-            if (!container) return;
-
-            // 创建预加载图片
-            const preloader = new Image();
-            
-            preloader.onload = function() {
-                // 图片加载成功
-                imgElement.src = src;
-                container.classList.remove('loading');
-                container.classList.add('loaded');
-            };
-            
-            preloader.onerror = function() {
-                // 图片加载失败
-                container.classList.remove('loading');
-                container.classList.add('error');
-            };
-            
-            // 开始预加载
-            preloader.src = src;
-        }
-
-        // 简化的图片加载处理函数
+        // 图片加载处理函数
         function handleImageLoad(img) {
             const container = img.closest('.gallery-img-container');
-            if (container && img.complete && img.naturalWidth > 0) {
-                container.classList.remove('loading');
-                container.classList.add('loaded');
+            if (container) {
+                // 添加一个小延迟确保骨架屏效果被看到
+                setTimeout(() => {
+                    container.classList.remove('loading');
+                    container.classList.add('loaded');
+                    
+                    // 图片淡入效果已经在CSS中定义了，这里不需要额外处理
+                    // CSS中的 .gallery-img-container.loaded .gallery-img 已经处理了过渡效果
+                }, 150);
             }
         }
 
@@ -1747,9 +1843,25 @@
         function handleImageError(img) {
             const container = img.closest('.gallery-img-container');
             if (container) {
-                container.classList.remove('loading');
-                container.classList.add('error');
+                setTimeout(() => {
+                    container.classList.remove('loading');
+                    container.classList.add('error');
+                    // 保留原有的图片元素，只是隐藏它
+                    if (img) {
+                        img.style.display = 'none';
+                    }
+                }, 150);
             }
+        }
+
+        // 预加载图片的函数
+        function preloadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
         }
 
         // 页面加载完成后初始化
@@ -1808,18 +1920,17 @@
             }
         });
         
-        // 页面完全加载后启动预加载
+        // 页面完全加载后再次检查图片加载状态
         window.addEventListener('load', () => {
+            // 延迟执行以确保所有资源加载完成
             setTimeout(() => {
-                const containers = document.querySelectorAll('.gallery-img-container.loading');
-                containers.forEach(container => {
-                    const img = container.querySelector('.gallery-img');
-                    const src = container.dataset.src;
-                    if (img && src && !img.src) {
-                        preloadAndShowImage(img, src);
+                const images = document.querySelectorAll('.gallery-img');
+                images.forEach(img => {
+                    if (img.complete && img.closest('.gallery-img-container')?.classList.contains('loading')) {
+                        handleImageLoad(img);
                     }
                 });
-            }, 100);
+            }, 500);
         });
 
     </script>
