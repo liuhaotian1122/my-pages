@@ -119,6 +119,7 @@
             font-size: 24px;
             color: #ccc;
             z-index: 2;
+            pointer-events: none;
         }
 
         @keyframes loading-shimmer {
@@ -241,27 +242,20 @@
 
         .viewer-container {
             position: relative;
-            max-width: 90%;
-            max-height: 90%;
+            width: 95vw;
+            height: 95vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 300px;
-            min-height: 200px;
         }
 
         .viewer-image {
-            max-width: 100%;
-            max-height: 100%;
+            max-width: 95vw;
+            max-height: 95vh;
             object-fit: contain;
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            transition: opacity 0.3s ease;
-            opacity: 1;
-        }
-
-        .viewer-image.loading {
-            opacity: 0;
+            z-index: 10;
         }
 
         /* 导航按钮 */
@@ -278,7 +272,7 @@
             font-size: 20px;
             color: #333;
             transition: all 0.3s ease;
-            z-index: 10001;
+            z-index: 100;
         }
 
         .nav-btn:hover {
@@ -312,7 +306,7 @@
             font-size: 18px;
             color: #333;
             transition: all 0.3s ease;
-            z-index: 10001;
+            z-index: 100;
         }
 
         .close-btn:hover {
@@ -330,7 +324,7 @@
             padding: 8px 15px;
             border-radius: 15px;
             font-size: 13px;
-            z-index: 10001;
+            z-index: 100;
             backdrop-filter: blur(5px);
             max-width: 300px;
         }
@@ -347,7 +341,7 @@
             border-radius: 20px;
             max-width: 400px;
             overflow-x: auto;
-            z-index: 10001;
+            z-index: 100;
             backdrop-filter: blur(5px);
         }
 
@@ -379,6 +373,7 @@
             transform: translate(-50%, -50%);
             color: white;
             font-size: 18px;
+            z-index: 50;
         }
 
         .spinner {
@@ -678,6 +673,18 @@
             .experience-search {
                 margin: 15px;
             }
+
+            /* 图片查看器优化 */
+            .viewer-container {
+                width: 95vw;
+                height: 95vh;
+            }
+
+            .viewer-image {
+                max-width: 95vw;
+                max-height: 95vh;
+                z-index: 10;
+            }
         }
 
         /* 超小屏幕优化 */
@@ -715,6 +722,18 @@
                 font-size: 9px;
                 padding: 12px 6px 6px;
             }
+
+            /* 图片查看器优化 */
+            .viewer-container {
+                width: 90vw;
+                height: 90vh;
+            }
+
+            .viewer-image {
+                max-width: 90vw;
+                max-height: 90vh;
+                z-index: 10;
+            }
         }
 
         /* 大屏幕优化 */
@@ -727,6 +746,18 @@
 
             .gallery-img-container:hover {
                 transform: translateY(-12px) scale(1.03);
+            }
+
+            /* 图片查看器优化 */
+            .viewer-container {
+                width: 98vw;
+                height: 98vh;
+            }
+
+            .viewer-image {
+                max-width: 98vw;
+                max-height: 98vh;
+                z-index: 10;
             }
         }
 
@@ -839,7 +870,7 @@
     <!-- 无结果提示 -->
     <div class="no-results" id="noResults">
         <div class="icon">🔍</div>
-        <h3>没有找到相关经历</h3>
+        <h3>没有找到相关美食</h3>
         <p>请尝试其他关键词</p>
     </div>
 
@@ -891,7 +922,7 @@
     </div>
 
     <footer>
-        <h6 class="right copy-right"><a href="https://www.happynewyear.life/?k=2ii2kl">Copyright</a> &copy; <a
+        <h6 class="right copy-right"><a href=" ">Copyright</a> &copy; <a
                 href="index.html" target="_blank" title="2025 浩天的个人站">
                 <script>
                     let currentYear = new Date().getFullYear();
@@ -915,8 +946,6 @@
             loadScript('assets/js/amazeui.min.js');
             loadScript('js/public.js');
         });
-
-
 
 
         // 默认经历数据
@@ -943,8 +972,7 @@
                     "https://i.postimg.cc/26yzgzQR/IMG-20250226-220028149-HDR.jpg"
                 ],
                 content: "记录美食"
-            }
-
+            },
 
 
 
@@ -1130,7 +1158,7 @@
                         <div class="image-gallery" data-gallery="work${exp.id}">
                             ${exp.images.map((img, index) => `
                                 <div class="gallery-img-container loading" data-index="${index + 1}">
-                                    <img src="${img}" class="gallery-img" alt="照片${index + 1}" loading="lazy"
+                                    <img src="${img}" class="gallery-img" alt="照片${index + 1}"
                                          data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}"
                                          onload="handleImageLoad(this)" onerror="handleImageError(this)">
                                     <div class="image-index">${index + 1}</div>
@@ -1153,6 +1181,9 @@
                         }, index * 100);
                     });
                 }, 50);
+                
+                // 强制触发图片加载检查
+                this.checkImageLoading();
             }
 
             renderPagination() {
@@ -1240,6 +1271,19 @@
                 if (window.imageViewer) {
                     window.imageViewer.bindImageEvents();
                 }
+            }
+
+            checkImageLoading() {
+                // 延迟检查图片加载状态，确保图片正确显示
+                setTimeout(() => {
+                    const containers = document.querySelectorAll('.gallery-img-container.loading');
+                    containers.forEach(container => {
+                        const img = container.querySelector('.gallery-img');
+                        if (img && img.complete) {
+                            handleImageLoad(img);
+                        }
+                    });
+                }, 100);
             }
         }
 
@@ -1335,20 +1379,8 @@
                 this.viewer.classList.add('active');
                 document.body.style.overflow = 'hidden';
 
-                // 预设容器尺寸以防止抖动
-                this.setViewerSize();
                 this.showImage(this.currentIndex);
                 this.createThumbnails();
-            }
-
-            setViewerSize() {
-                // 设置查看器容器的固定尺寸，防止图片切换时的抖动
-                const viewerContainer = this.viewer.querySelector('.viewer-container');
-                const maxWidth = Math.min(window.innerWidth * 0.9, 1200);
-                const maxHeight = Math.min(window.innerHeight * 0.9, 800);
-                
-                viewerContainer.style.width = maxWidth + 'px';
-                viewerContainer.style.height = maxHeight + 'px';
             }
 
             showImage(index) {
@@ -1357,48 +1389,34 @@
                 this.currentIndex = index;
                 const img = this.currentImages[index];
 
-                // 防止重复加载相同图片
-                if (this.viewerImage.src === img.src) {
-                    this.updateThumbnails();
-                    return;
-                }
-
-                // 显示加载状态
+                // 显示加载动画
                 this.loading.style.display = 'block';
+                this.viewerImage.style.display = 'none';
 
-                // 预加载新图片
+                // 加载图片
                 const newImg = new Image();
                 newImg.onload = () => {
-                    // 使用淡入淡出效果切换图片
-                    this.viewerImage.style.opacity = '0';
-                    
-                    setTimeout(() => {
-                        this.viewerImage.src = newImg.src;
-                        this.viewerImage.alt = img.alt;
-                        
-                        // 更新信息
-                        this.imageTitle.textContent = img.dataset.title || img.alt || '图片';
-                        this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
+                    this.viewerImage.src = newImg.src;
+                    this.viewerImage.alt = img.alt;
 
-                        // 隐藏加载动画
-                        this.loading.style.display = 'none';
-                        
-                        // 淡入新图片
-                        this.viewerImage.style.opacity = '1';
+                    // 更新信息
+                    this.imageTitle.textContent = img.dataset.title || img.alt || '图片';
+                    this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
 
-                        // 更新缩略图状态
-                        this.updateThumbnails();
-                    }, 150); // 等待淡出完成
+                    // 隐藏加载动画，显示图片
+                    this.loading.style.display = 'none';
+                    this.viewerImage.style.display = 'block';
+
+                    // 更新缩略图状态
+                    this.updateThumbnails();
                 };
 
                 newImg.onerror = () => {
                     this.loading.style.display = 'none';
                     this.imageTitle.textContent = '图片加载失败';
                     this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
-                    this.viewerImage.style.opacity = '1';
                 };
 
-                // 开始加载图片
                 newImg.src = img.src;
 
                 // 更新导航按钮状态
@@ -1517,8 +1535,11 @@
             // 初始化图片查看器
             window.imageViewer = new ImageViewer();
 
-            // 添加图片懒加载观察器
-            if ('IntersectionObserver' in window) {
+            // 检测是否为移动设备
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // 添加图片懒加载观察器（仅在非移动设备上使用）
+            if (!isMobile && 'IntersectionObserver' in window) {
                 const imageObserver = new IntersectionObserver((entries, observer) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
@@ -1527,17 +1548,54 @@
                                 img.src = img.dataset.src;
                                 img.removeAttribute('data-src');
                                 observer.unobserve(img);
+                            } else if (img.src) {
+                                // 图片已经设置了src，直接触发加载检查
+                                if (img.complete) {
+                                    handleImageLoad(img);
+                                } else {
+                                    img.onload = () => handleImageLoad(img);
+                                    img.onerror = () => handleImageError(img);
+                                }
                             }
                         }
                     });
                 });
 
-                // 观察所有懒加载图片
-                document.querySelectorAll('img[data-src]').forEach(img => {
+                // 观察所有图片容器
+                document.querySelectorAll('.gallery-img').forEach(img => {
                     imageObserver.observe(img);
+                });
+            } else {
+                // 移动端或不支持IntersectionObserver的浏览器，直接加载所有图片
+                const images = document.querySelectorAll('.gallery-img');
+                images.forEach(img => {
+                    // 移动端直接加载图片
+                    if (img.src) {
+                        // 触发加载检查
+                        if (img.complete) {
+                            handleImageLoad(img);
+                        } else {
+                            img.onload = () => handleImageLoad(img);
+                            img.onerror = () => handleImageError(img);
+                        }
+                    }
                 });
             }
         });
+        
+        // 页面完全加载后再次检查图片加载状态
+        window.addEventListener('load', () => {
+            // 延迟执行以确保所有资源加载完成
+            setTimeout(() => {
+                const images = document.querySelectorAll('.gallery-img');
+                images.forEach(img => {
+                    if (img.complete && img.closest('.gallery-img-container')?.classList.contains('loading')) {
+                        handleImageLoad(img);
+                    }
+                });
+            }, 500);
+        });
+
     </script>
 </body>
 
