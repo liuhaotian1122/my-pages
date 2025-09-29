@@ -37,6 +37,57 @@
     <link rel="preconnect" href="https://sdk.jinrishici.com">
     <link rel="preconnect" href="https://busuanzi.ibruce.info">
     <link rel="preconnect" href="https://api.xygeng.cn">
+    
+    <!-- 轮播图样式修复 -->
+    <style>
+        /* 修复轮播图白边问题 */
+        .am-slider-c1 .am-viewport {
+            max-height: none !important;
+            height: auto !important;
+        }
+        
+        .am-slider-c1 .am-slides > li {
+            height: auto;
+            overflow: hidden;
+        }
+        
+        .am-slider-c1 .am-slides img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            aspect-ratio: 2/1; /* 强制 2:1 宽高比 */
+        }
+        
+        /* 确保轮播图容器有固定的宽高比 */
+        .am-slider-c1 {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2/1;
+            overflow: hidden;
+        }
+        
+        /* 移动端响应式优化 */
+        @media (max-width: 768px) {
+            .am-slider-c1 {
+                aspect-ratio: 16/9; /* 移动端使用 16:9 比例 */
+            }
+            
+            .am-slider-c1 .am-slides img {
+                aspect-ratio: 16/9;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .am-slider-c1 {
+                aspect-ratio: 4/3; /* 小屏幕使用 4:3 比例 */
+            }
+            
+            .am-slider-c1 .am-slides img {
+                aspect-ratio: 4/3;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -132,6 +183,38 @@
                         <li>
                             <a href="boke.html"><img src="Temp-images/bb6.jpg" loading="lazy"></a>
                             <div class="am-slider-desc">十年饮冰 难凉热血</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&h=700&fit=crop&crop=center" loading="lazy"></a>
+                            <div class="am-slider-desc">山川异域，风月同天</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1400&h=700&fit=crop&crop=center" loading="lazy"></a>
+                            <div class="am-slider-desc">落霞与孤鹜齐飞，秋水共长天一色</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1400&h=700&fit=crop&crop=center" loading="lazy"></a>
+                            <div class="am-slider-desc">林深时见鹿，海蓝时见鲸</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=1400&h=700&fit=crop&crop=center" loading="lazy"></a>
+                            <div class="am-slider-desc">云在青天水在瓶</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://images.unsplash.com/photo-1440066935861-ba9cfee38fb3?w=1400&h=700&fit=crop&crop=center" loading="lazy"></a>
+                            <div class="am-slider-desc">星辰大海，皆是征途</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=1400&h=700&fit=crop&crop=center" loading="lazy"></a>
+                            <div class="am-slider-desc">半山腰太挤了，我们山顶见</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=1400&h=700&fit=crop&crop=center" loading="lazy"></a>
+                            <div class="am-slider-desc">愿你眼中总有光芒，活成你想要的模样</div>
+                        </li>
+                        <li>
+                            <a href="boke.html"><img src="https://images.unsplash.com/photo-1475776408506-9a5371e7a068?w=1400&h=700&fit=crop&crop=center" loading="lazy"></a>
+                            <div class="am-slider-desc">梦想还是要有的，万一实现了呢</div>
                         </li>
                     </ul>
                 </div>
@@ -535,8 +618,78 @@
             document.getElementById('current-year').textContent = new Date().getFullYear();
         }
 
+        // 轮播图随机化函数
+        function randomizeCarousel() {
+            var carousel = document.querySelector('.am-slides');
+            if (carousel) {
+                var slides = Array.from(carousel.children);
+                // 保留第一个slide（包含诗词），其他随机排序
+                var firstSlide = slides.shift();
+                
+                // Fisher-Yates洗牌算法
+                for (let i = slides.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [slides[i], slides[j]] = [slides[j], slides[i]];
+                }
+                
+                // 重新插入DOM
+                carousel.innerHTML = '';
+                carousel.appendChild(firstSlide);
+                slides.forEach(slide => carousel.appendChild(slide));
+                
+                // 为新的图片添加错误处理
+                slides.forEach(slide => {
+                    var img = slide.querySelector('img');
+                    if (img && img.src.includes('unsplash.com')) {
+                        img.onerror = function() {
+                            // 如果外部图片加载失败，使用备用图片
+                            this.src = 'Temp-images/bb1.jpg';
+                            console.log('轮播图片加载失败，已切换到备用图片');
+                        };
+                    }
+                });
+                
+                console.log('轮播图已随机化，共', slides.length + 1, '张图片');
+            }
+        }
+
+        // 图片预加载函数
+        function preloadCarouselImages() {
+            var images = document.querySelectorAll('.am-slides img');
+            var loadedCount = 0;
+            var totalImages = images.length;
+            
+            images.forEach(function(img) {
+                // 为所有图片添加错误处理
+                if (img.src.includes('unsplash.com')) {
+                    img.onerror = function() {
+                        this.src = 'Temp-images/bb1.jpg';
+                        console.log('轮播图片加载失败，已切换到备用图片:', this.alt || this.src);
+                    };
+                }
+                
+                if (img.complete) {
+                    loadedCount++;
+                } else {
+                    img.onload = function() {
+                        loadedCount++;
+                        if (loadedCount === totalImages) {
+                            console.log('所有轮播图片已预加载完成');
+                        }
+                    };
+                }
+            });
+        }
+
         // 延迟加载第三方API，避免阻塞页面渲染
         window.addEventListener('load', function () {
+            // 随机化轮播图顺序
+            setTimeout(function () {
+                randomizeCarousel();
+                // 预加载图片
+                preloadCarouselImages();
+            }, 500);
+            
             // 加载今日诗词
             setTimeout(function () {
                 loadPoetry();
