@@ -1154,6 +1154,7 @@
                         <div class="work-info">
                             <h2>时间：${exp.time}</h2>
                             <h2>地点：${exp.location}</h2>
+            ${exp.content ? `<h2>内容：${exp.content}</h2>` : ''}
                         </div>
                         <div class="image-gallery" data-gallery="work${exp.id}">
                             ${exp.images.map((img, index) => `
@@ -1600,3 +1601,4 @@
 </body>
 
 </html>
+
