@@ -103,53 +103,43 @@
             transform: scale(1.1);
         }
 
-        /* 骨架屏加载状态 */
+        /* 加载状态 */
         .gallery-img-container.loading {
-            background: #f6f7f8;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             position: relative;
             overflow: hidden;
         }
 
-        /* 骨架屏闪烁效果 */
+        /* Loading Cat 动画容器 */
         .gallery-img-container.loading::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent 0%,
-                rgba(255, 255, 255, 0.4) 50%,
-                transparent 100%
-            );
-            animation: skeleton-shimmer 1.8s ease-in-out infinite;
-            z-index: 1;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            animation: 2.74s linear infinite loading-cat;
+            z-index: 2;
+            background-image: radial-gradient(transparent 0%, transparent 35%, #383c4b 35%, #383c4b 39%, #eda65d 39%, #eda65d 46%, #f2c089 46%, #f2c089 60%, #eda65d 60%, #eda65d 67%, #383c4b 67%, #383c4b 100%);
+            border-radius: 50%;
         }
 
-        /* 骨架屏内容层 */
+        /* Loading Cat 头部 */
         .gallery-img-container.loading::after {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 60%;
-            height: 60%;
-            background: 
-                radial-gradient(circle at center, #e2e5e7 40%, transparent 40%),
-                linear-gradient(#e2e5e7 60%, transparent 60%);
-            background-size: 
-                30px 30px,
-                100% 8px;
-            background-position: 
-                center 40%,
-                center 70%;
-            background-repeat: no-repeat;
-            border-radius: 4px;
-            opacity: 0.6;
-            z-index: 0;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-image: radial-gradient(transparent 0%, transparent 35%, #383c4b 35%, #383c4b 39%, #eda65d 39%, #eda65d 67%, #383c4b 67%, #383c4b 100%);
+            clip-path: polygon(100% 20%, 50% 50%, 70% -10%);
+            -webkit-clip-path: polygon(100% 20%, 50% 50%, 70% -10%);
+            z-index: 3;
+            animation: 2.74s linear infinite loading-cat;
         }
 
         /* 加载中的图片隐藏 */
@@ -165,55 +155,40 @@
             transition: opacity 0.5s ease-in-out;
         }
 
-        /* 骨架屏动画关键帧 */
-        @keyframes skeleton-shimmer {
+        /* Loading Cat 动画关键帧 */
+        @keyframes loading-cat {
             0% {
-                transform: translateX(-100%);
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            10% {
+                transform: translate(-50%, -50%) rotate(-80deg);
+            }
+            20% {
+                transform: translate(-50%, -50%) rotate(-180deg);
+            }
+            40% {
+                transform: translate(-50%, -50%) rotate(-245deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotate(-250deg);
+            }
+            68% {
+                transform: translate(-50%, -50%) rotate(-300deg);
+            }
+            90% {
+                transform: translate(-50%, -50%) rotate(-560deg);
             }
             100% {
-                transform: translateX(100%);
+                transform: translate(-50%, -50%) rotate(-720deg);
             }
         }
 
-        /* 脉冲动画作为备选 */
-        .gallery-img-container.loading.pulse::before {
-            animation: skeleton-pulse 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes skeleton-pulse {
-            0% {
-                opacity: 0.6;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        /* 增强骨架屏效果 - 添加一些细节元素 */
-        .gallery-img-container.loading.detailed::after {
-            background: 
-                /* 图片图标 */
-                radial-gradient(circle at center, #e2e5e7 35%, transparent 35%),
-                /* 文本行 */
-                linear-gradient(#e2e5e7 60%, transparent 60%),
-                /* 额外的文本行 */
-                linear-gradient(#d1d5db 80%, transparent 80%);
-            background-size: 
-                25px 25px,
-                80% 6px,
-                60% 4px;
-            background-position: 
-                center 30%,
-                center 65%,
-                center 80%;
-        }
-
-        /* 骨架屏淡入效果 */
+        /* 加载容器淡入效果 */
         .gallery-img-container.loading {
-            animation: skeleton-fade-in 0.3s ease-out;
+            animation: loading-fade-in 0.3s ease-out;
         }
 
-        @keyframes skeleton-fade-in {
+        @keyframes loading-fade-in {
             0% {
                 opacity: 0;
                 transform: scale(0.95);
@@ -688,16 +663,11 @@
                 transform: translateY(-4px) scale(1.01);
             }
 
-            /* 移动端骨架屏优化 */
+            /* 移动端加载动画优化 */
+            .gallery-img-container.loading::before,
             .gallery-img-container.loading::after {
-                width: 70%;
-                height: 70%;
-                background-size: 
-                    20px 20px,
-                    100% 6px;
-                background-position: 
-                    center 35%,
-                    center 75%;
+                width: 60px;
+                height: 60px;
             }
 
             .image-index {
@@ -804,16 +774,11 @@
                 border-radius: 8px;
             }
 
-            /* 超小屏幕骨架屏优化 */
+            /* 超小屏幕加载动画优化 */
+            .gallery-img-container.loading::before,
             .gallery-img-container.loading::after {
-                width: 80%;
-                height: 80%;
-                background-size: 
-                    16px 16px,
-                    100% 4px;
-                background-position: 
-                    center 30%,
-                    center 80%;
+                width: 50px;
+                height: 50px;
             }
 
             .gallery-img {
