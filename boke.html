@@ -35,13 +35,281 @@
         html,body{margin:0 auto;width:100%;overflow-x:hidden;}
         .am-topbar{background:#333;}
         
+        /* 顶部横幅优化 - 高级效果 */
+        .am-container > .am-img-responsive {
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 横幅光泽扫过效果 */
+        .am-container > .am-img-responsive::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255,255,255,0.3) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg);
+            animation: banner-shine 3s ease-in-out infinite;
+        }
+        
+        @keyframes banner-shine {
+            0%, 100% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            50% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+        
+        .am-container > .am-img-responsive:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+        }
+        
+        /* 标题区域优化 */
+        .star {
+            margin: 35px auto 25px;
+            position: relative;
+        }
+        
+        .star span {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 600;
+            padding: 12px 0;
+        }
+        
+        .star img {
+            width: 28px;
+            height: 28px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        /* 博客卡片优化 - 高级效果 */
+        .am-gallery-item {
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            background: #fff;
+            position: relative;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+        
+        /* 卡片悬停高级效果 */
+        .am-gallery-item:hover {
+            transform: translateY(-12px) rotateX(2deg);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.12),
+                0 8px 16px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(0, 0, 0, 0.02);
+        }
+        
+        /* 卡片光泽效果 */
+        .am-gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transition: left 0.6s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .am-gallery-item:hover::before {
+            left: 100%;
+        }
+        
+        /* 卡片内容容器 */
+        .am-gallery-item > a {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .am-gallery-item .efe {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.6;
+            padding: 15px 20px 10px;
+            margin: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 标题下划线动画 */
+        .am-gallery-item .efe::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 20px;
+            width: 0;
+            height: 2px;
+            background: rgba(0, 0, 0, 0.15);
+            transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .am-gallery-item:hover .efe {
+            transform: translateX(8px);
+            letter-spacing: 0.5px;
+        }
+        
+        .am-gallery-item:hover .efe::after {
+            width: calc(100% - 40px);
+        }
+        
+        /* 图标旋转效果 */
+        .am-gallery-item .efe i {
+            display: inline-block;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .am-gallery-item:hover .efe i {
+            transform: rotate(15deg) scale(1.1);
+        }
+        
+        .am-gallery-item p {
+            padding: 0 20px;
+            line-height: 1.8;
+            font-size: 14px;
+            margin: 10px 0;
+            opacity: 0.75;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        
+        /* 描述文字悬停效果 */
+        .am-gallery-item:hover p {
+            opacity: 1;
+            transform: translateX(3px);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .am-gallery-desc {
+            padding: 15px 20px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            margin-top: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        /* 底部信息悬停效果 */
+        .am-gallery-item:hover .am-gallery-desc {
+            background: rgba(0, 0, 0, 0.01);
+        }
+        
+        /* 底部图标动画 */
+        .am-gallery-desc i {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .am-gallery-item:hover .am-gallery-desc .am-fl i {
+            transform: translateX(-2px);
+        }
+        
+        .am-gallery-item:hover .am-gallery-desc .am-fr i {
+            transform: rotate(360deg);
+        }
+        
+        /* 博客列表间距优化 */
+        #blogList > li {
+            margin-bottom: 25px;
+        }
+        
+        /* 标签样式 - 高级效果 */
+        .blog-tags {
+            padding: 0 20px 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+        
+        .am-gallery-item:hover .blog-tags {
+            opacity: 1;
+            transform: translateX(3px);
+        }
+        
+        .blog-tag {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.04);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+        
+        /* 标签光泽效果 */
+        .blog-tag::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transition: left 0.5s ease;
+        }
+        
+        .blog-tag:hover {
+            background: rgba(0, 0, 0, 0.08);
+            transform: translateY(-3px) scale(1.08);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+        
+        .blog-tag:hover::before {
+            left: 100%;
+        }
+        
+        /* 标签图标动画 */
+        .blog-tag i {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .blog-tag:hover i {
+            transform: rotate(180deg);
+        }
+        
         /* 分页样式 */
         .pagination-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 30px 0;
-            gap: 10px;
+            margin: 40px 0;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
         .pagination {
@@ -49,7 +317,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            gap: 5px;
+            gap: 8px;
         }
         
         .pagination li {
@@ -57,39 +325,48 @@
         }
         
         .pagination a, .pagination span {
-            display: block;
-            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
             text-decoration: none;
-            border: 1px solid #ddd;
+            border: 2px solid #ddd;
             color: #333;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            min-width: 40px;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            min-width: 45px;
             text-align: center;
+            font-weight: 500;
         }
         
         .pagination a:hover {
             background-color: #e1652f;
             color: white;
             border-color: #e1652f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(225, 101, 47, 0.25);
         }
         
         .pagination .current {
             background-color: #e1652f;
             color: white;
             border-color: #e1652f;
+            box-shadow: 0 4px 12px rgba(225, 101, 47, 0.2);
         }
         
         .pagination .disabled {
             color: #ccc;
             cursor: not-allowed;
             background-color: #f5f5f5;
+            opacity: 0.6;
         }
         
         .pagination .disabled:hover {
             background-color: #f5f5f5;
             color: #ccc;
             border-color: #ddd;
+            transform: none;
+            box-shadow: none;
         }
         
         /* 页面信息 */
@@ -97,69 +374,122 @@
             color: #666;
             font-size: 14px;
             margin: 0 15px;
+            padding: 8px 16px;
+            background: rgba(0,0,0,0.03);
+            border-radius: 20px;
+            font-weight: 500;
         }
         
         /* 每页显示数量选择器 */
         .page-size-selector {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin: 20px 0;
+            gap: 12px;
+            margin: 25px 0;
             justify-content: center;
         }
         
-        .page-size-selector select {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: white;
+        .page-size-selector span {
+            font-size: 14px;
+            opacity: 0.8;
         }
         
-        /* 搜索框 */
+        .page-size-selector select {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        
+        .page-size-selector select:hover {
+            border-color: #e1652f;
+        }
+        
+        .page-size-selector select:focus {
+            border-color: #e1652f;
+            box-shadow: 0 0 0 3px rgba(225, 101, 47, 0.1);
+        }
+        
+        /* 搜索框 - 高级效果 */
         .blog-search {
-            max-width: 400px;
+            max-width: 500px;
             margin: 20px auto;
             position: relative;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.05));
+        }
+        
+        .blog-search::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 30px;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.5), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .blog-search:hover::before {
+            opacity: 1;
         }
         
         .blog-search input {
             width: 100%;
-            padding: 10px 40px 10px 15px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 14px;
+            padding: 12px 45px 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 15px;
             outline: none;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
         
         .blog-search input:focus {
             border-color: #e1652f;
+            box-shadow: 0 4px 15px rgba(225, 101, 47, 0.15);
+            transform: translateY(-2px);
         }
         
         .blog-search button {
             position: absolute;
-            right: 5px;
+            right: 6px;
             top: 50%;
             transform: translateY(-50%);
             background: #e1652f;
             border: none;
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             cursor: pointer;
             font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .blog-search button:hover {
             background: #d55a2a;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .blog-search button:active {
+            transform: translateY(-50%) scale(0.95);
         }
         
         /* 博客项目动画 */
         .blog-item {
             opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
+            transform: translateY(30px);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         
         .blog-item.show {
@@ -167,21 +497,101 @@
             transform: translateY(0);
         }
         
+        /* 页面加载淡入动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .blog-search,
+        .page-size-selector {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        /* 平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 滚动视差效果准备 */
+        .blog-item {
+            will-change: transform, opacity;
+        }
+        
+        /* 加载骨架屏效果 */
+        @keyframes skeleton-loading {
+            0% {
+                background-position: -200px 0;
+            }
+            100% {
+                background-position: calc(200px + 100%) 0;
+            }
+        }
+        
+        /* 页面元素淡入交错动画 */
+        .star {
+            animation: fadeInUp 0.8s ease-out 0.1s backwards;
+        }
+        
+        .blog-search {
+            animation: fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+        
+        .page-size-selector {
+            animation: fadeInUp 0.8s ease-out 0.3s backwards;
+        }
+        
+        /* 分页按钮波动效果 */
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        /* 回到顶部按钮增强 */
+        .am-gotop {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .am-gotop:hover {
+            transform: translateY(-5px) scale(1.1);
+        }
+        
+        .am-gotop:active {
+            transform: translateY(-2px) scale(1.05);
+        }
+        
         /* 加载动画 */
         .loading-spinner {
             display: none;
             text-align: center;
-            padding: 40px;
+            padding: 60px 40px;
+        }
+        
+        .loading-spinner p {
+            margin-top: 20px;
+            font-size: 15px;
+            opacity: 0.7;
+            font-weight: 500;
         }
         
         .spinner {
             display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #e1652f;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(0,0,0,0.1);
+            border-top: 5px solid #e1652f;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
         }
         
         @keyframes spin {
@@ -192,15 +602,174 @@
         /* 无结果提示 */
         .no-results {
             text-align: center;
-            padding: 40px;
+            padding: 60px 40px;
             color: #666;
             display: none;
         }
         
         .no-results i {
-            font-size: 48px;
+            font-size: 64px;
             color: #ddd;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .no-results h3 {
+            font-size: 20px;
+            margin: 15px 0 10px;
+            font-weight: 600;
+        }
+        
+        .no-results p {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        /* 好文链接优化 - 高级3D效果 */
+        .recommend-card {
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            position: relative;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+        }
+        
+        /* 卡片3D悬停效果 */
+        .recommend-card:hover {
+            transform: translateY(-10px) rotateX(5deg) scale(1.02);
+            box-shadow: 
+                0 20px 35px rgba(0,0,0,0.15),
+                0 10px 20px rgba(0,0,0,0.1),
+                0 0 0 1px rgba(0,0,0,0.03);
+        }
+        
+        /* 卡片光晕效果 */
+        .recommend-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle,
+                rgba(255,255,255,0.3) 0%,
+                transparent 70%
+            );
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .recommend-card:hover::before {
+            opacity: 1;
+            transform: translate(10%, 10%);
+        }
+        
+        .recommend-card p {
+            padding: 15px;
+            margin: 0;
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .events-btn {
+            padding: 0 15px 15px;
+        }
+        
+        .events-btn button {
+            width: 100%;
+            border-radius: 10px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* 按钮波纹效果 */
+        .events-btn button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+        
+        .events-btn button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .events-btn button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        
+        .events-btn button:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+        
+        /* 按钮图标动画 */
+        .events-btn button i {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .events-btn button:hover i {
+            transform: translateX(3px);
+        }
+        
+        /* 大屏优化 */
+        @media (min-width: 1200px) {
+            .am-container {
+                max-width: 1200px;
+            }
+            
+            #blogList {
+                gap: 30px;
+            }
+            
+            .am-gallery-item .efe {
+                font-size: 20px;
+            }
+            
+            .am-gallery-item p {
+                font-size: 15px;
+            }
+        }
+        
+        /* 超大屏优化 */
+        @media (min-width: 1600px) {
+            .am-container {
+                max-width: 1400px;
+            }
+            
+            #blogList {
+                gap: 35px;
+            }
+        }
+        
+        /* 平板优化 */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .am-gallery-item .efe {
+                font-size: 16px;
+            }
+            
+            .am-gallery-item p {
+                font-size: 13px;
+            }
         }
         
         /* 响应式设计 */
@@ -222,6 +791,85 @@
             
             .blog-search {
                 margin: 15px;
+            }
+            
+            .am-gallery-item .efe {
+                font-size: 16px;
+                padding: 12px 15px 8px;
+            }
+            
+            .am-gallery-item p {
+                font-size: 13px;
+                padding: 0 15px;
+            }
+            
+            .am-gallery-desc {
+                padding: 12px 15px;
+            }
+            
+            #blogList > li {
+                margin-bottom: 20px;
+            }
+            
+            .blog-tags {
+                padding: 0 15px 8px;
+            }
+            
+            .blog-tag {
+                padding: 3px 10px;
+                font-size: 11px;
+            }
+            
+            .star span {
+                font-size: 20px;
+            }
+            
+            .star img {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .recommend-card p {
+                font-size: 14px;
+                padding: 12px;
+                min-height: 50px;
+            }
+            
+            .page-info {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+        }
+        
+        /* 超小屏优化 */
+        @media (max-width: 480px) {
+            .star span {
+                font-size: 18px;
+            }
+            
+            .star img {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .blog-search {
+                margin: 15px 10px;
+            }
+            
+            .blog-search input {
+                padding: 10px 40px 10px 16px;
+                font-size: 14px;
+            }
+            
+            .blog-search button {
+                width: 32px;
+                height: 32px;
+            }
+            
+            .pagination a, .pagination span {
+                padding: 8px 12px;
+                min-width: 38px;
+                font-size: 13px;
             }
         }
         
@@ -338,26 +986,31 @@
 
 <div class="star am-container mcenter"><span><img src="images/star.png" loading="lazy">好文链接</span></div>
 <div class="am-container">
-    <ul data-am-widget="gallery" class="am-gallery am-avg-sm-2 am-avg-md-3 am-avg-lg-3 am-gallery-default" data-am-gallery="{ pureview: true }">
+    <ul data-am-widget="gallery" class="am-gallery am-avg-sm-1 am-avg-md-2 am-avg-lg-3 am-gallery-default" data-am-gallery="{ pureview: true }">
         <li>
-            <div class="am-gallery-item">
-                <a href="http://s.amazeui.org/media/i/demos/bing-1.jpg" class="">
-                    <p>禅学中的十个智慧故事</p>
-                    <div class="events-btn">
-                        <a href="https://www.vvhan.com/Zen10Story.html"><button type="button" class="am-btn am-btn-primary">点击查看</button></a>
-                    </div>
-                </a>
+            <div class="am-gallery-item recommend-card">
+                <p><i class="fa fa-book" style="margin-right: 8px;"></i>禅学中的十个智慧故事</p>
+                <div class="events-btn">
+                    <a href="https://www.vvhan.com/Zen10Story.html"><button type="button" class="am-btn am-btn-primary"><i class="fa fa-external-link" style="margin-right: 5px;"></i>点击查看</button></a>
+                </div>
             </div>
         </li>
         
         <li>
-            <div class="am-gallery-item">
-                <a href="http://s.amazeui.org/media/i/demos/bing-1.jpg" class="">
-                    <p>正义联盟导演剪辑版 在线观看，在线下载</p>
-                    <div class="events-btn">
-                        <a href="https://www.vvhan.com/zhengyilianmeng-video.html"><button type="button" class="am-btn am-btn-primary">点击查看</button></a>
-                    </div>
-                </a>
+            <div class="am-gallery-item recommend-card">
+                <p><i class="fa fa-film" style="margin-right: 8px;"></i>正义联盟导演剪辑版</p>
+                <div class="events-btn">
+                    <a href="https://www.vvhan.com/zhengyilianmeng-video.html"><button type="button" class="am-btn am-btn-primary"><i class="fa fa-external-link" style="margin-right: 5px;"></i>点击查看</button></a>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="am-gallery-item recommend-card">
+                <p><i class="fa fa-lightbulb-o" style="margin-right: 8px;"></i>更多精彩内容敬请期待</p>
+                <div class="events-btn">
+                    <button type="button" class="am-btn am-btn-secondary" disabled style="opacity: 0.6;"><i class="fa fa-clock-o" style="margin-right: 5px;"></i>即将上线</button>
+                </div>
             </div>
         </li>
     </ul>
@@ -622,17 +1275,26 @@ class BlogPagination {
         const blogHTML = currentPageData.map(blog => `
             <li class="blog-item">
                 <div class="am-gallery-item">
-                    <a href="http://s.amazeui.org/media/i/demos/bing-2.jpg" class="">
-                        <i class="fa fa-heartbeat" style="font-size:20px;color:red">${blog.id}</i>
-                        <a href="${blog.url}">
-                            <div class="efe">${blog.title}</div>
-                            <p>${blog.description}</p>
-                        </a>
-                        <div class="am-gallery-desc fee">
-                            <div class="am-fl">${blog.location}</div>
-                            <div class="am-fr">${blog.date}</div>
+                    <a href="${blog.url}">
+                        <div class="efe">
+                            <i class="fa fa-bookmark-o" style="margin-right: 10px; opacity: 0.8; font-size: 0.9em;"></i>
+                            ${blog.title}
                         </div>
+                        <p>${blog.description}</p>
                     </a>
+                    <div class="blog-tags">
+                        ${blog.tags.map(tag => `<span class="blog-tag"><i class="fa fa-tag" style="font-size: 10px; margin-right: 4px;"></i>${tag}</span>`).join('')}
+                    </div>
+                    <div class="am-gallery-desc fee">
+                        <div class="am-fl">
+                            <i class="fa fa-map-marker" style="margin-right: 5px; opacity: 0.7;"></i>
+                            ${blog.location}
+                        </div>
+                        <div class="am-fr">
+                            <i class="fa fa-calendar" style="margin-right: 5px; opacity: 0.7;"></i>
+                            ${blog.date}
+                        </div>
+                    </div>
                 </div>
             </li>
         `).join('');
@@ -728,13 +1390,154 @@ class BlogPagination {
         }
         
         this.pageInfo.textContent = `显示 ${startItem}-${endItem} 条，共 ${this.totalItems} 条 (第 ${this.currentPage}/${totalPages} 页)`;
+        
+        // 重新初始化高级效果
+        this.reinitAdvancedEffects();
+    }
+    
+    // 重新初始化高级效果（分页后）
+    reinitAdvancedEffects() {
+        setTimeout(() => {
+            // 为新渲染的卡片添加鼠标跟随效果
+            const blogItems = document.querySelectorAll('.am-gallery-item');
+            blogItems.forEach(item => {
+                // 移除旧的监听器（如果有）
+                const newItem = item.cloneNode(true);
+                item.parentNode.replaceChild(newItem, item);
+                
+                // 添加新的监听器
+                newItem.addEventListener('mousemove', (e) => {
+                    const rect = newItem.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = ((y - centerY) / centerY) * 3;
+                    const rotateY = ((centerX - x) / centerX) * 3;
+                    
+                    newItem.style.transform = `translateY(-12px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+                
+                newItem.addEventListener('mouseleave', () => {
+                    newItem.style.transform = '';
+                });
+            });
+            
+            // 重新绑定分页按钮动画
+            const paginationLinks = document.querySelectorAll('.pagination a');
+            paginationLinks.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    link.style.animation = 'pulse 0.6s ease-in-out';
+                });
+                
+                link.addEventListener('animationend', () => {
+                    link.style.animation = '';
+                });
+            });
+        }, 100);
     }
 }
 
 // 页面加载完成后初始化分页
 document.addEventListener('DOMContentLoaded', () => {
     new BlogPagination();
+    
+    // 初始化高级效果
+    initAdvancedEffects();
 });
+
+// 高级效果初始化
+function initAdvancedEffects() {
+    // 1. 博客卡片鼠标跟随倾斜效果
+    const blogItems = document.querySelectorAll('.am-gallery-item');
+    blogItems.forEach(item => {
+        item.addEventListener('mousemove', (e) => {
+            const rect = item.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * 3;
+            const rotateY = ((centerX - x) / centerX) * 3;
+            
+            item.style.transform = `translateY(-12px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        
+        item.addEventListener('mouseleave', () => {
+            item.style.transform = '';
+        });
+    });
+    
+    // 2. 滚动视差效果
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                handleScrollParallax();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+    
+    function handleScrollParallax() {
+        const scrolled = window.pageYOffset;
+        const banner = document.querySelector('.am-img-responsive');
+        if (banner) {
+            banner.style.transform = `translateY(${scrolled * 0.3}px)`;
+        }
+    }
+    
+    // 3. 页面元素进入视口动画
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // 观察所有博客项目
+    document.querySelectorAll('.blog-item').forEach(item => {
+        observer.observe(item);
+    });
+    
+    // 4. 搜索框输入时的微动画
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('focus', () => {
+            searchInput.style.transform = 'scale(1.02)';
+        });
+        
+        searchInput.addEventListener('blur', () => {
+            searchInput.style.transform = '';
+        });
+    }
+    
+    // 5. 分页按钮悬停增强
+    setTimeout(() => {
+        const paginationLinks = document.querySelectorAll('.pagination a');
+        paginationLinks.forEach(link => {
+            link.addEventListener('mouseenter', () => {
+                link.style.animation = 'pulse 0.6s ease-in-out';
+            });
+            
+            link.addEventListener('animationend', () => {
+                link.style.animation = '';
+            });
+        });
+    }, 1000);
+}
 </script>
 </body>
 </html>
