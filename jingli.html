@@ -557,6 +557,7 @@
             gap: 10px;
             margin: 20px 0;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .page-size-selector select {
@@ -564,6 +565,35 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             background: white;
+        }
+
+        /* 排序按钮样式 */
+        .sort-btn {
+            padding: 6px 15px;
+            border: 1px solid #e1652f;
+            border-radius: 20px;
+            background: white;
+            color: #e1652f;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .sort-btn:hover {
+            background: #e1652f;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(225, 101, 47, 0.3);
+        }
+
+        .sort-btn:active {
+            transform: translateY(0);
+        }
+
+        .sort-btn.active {
+            background: #e1652f;
+            color: white;
         }
 
         /* 搜索框 */
@@ -976,6 +1006,8 @@
             <option value="6">6条</option>
             <option value="7">7条</option>
         </select>
+        <button id="sortLatestBtn" class="sort-btn">📅 查看最新</button>
+        <button id="sortDefaultBtn" class="sort-btn" style="display: none;">🔄 默认排序</button>
     </div>
 
     <!-- 加载动画 -->
@@ -1342,6 +1374,7 @@
                 this.totalItems = 0;
                 this.filteredData = [...experienceData];
                 this.searchTerm = '';
+                this.sortOrder = 'latest'; // 'default' 或 'latest' - 默认显示最新
 
                 this.experienceContainer = document.getElementById('experienceContainer');
                 this.pagination = document.getElementById('pagination');
@@ -1351,6 +1384,8 @@
                 this.pageSizeSelect = document.getElementById('pageSizeSelect');
                 this.loadingSpinner = document.getElementById('loadingSpinner');
                 this.noResults = document.getElementById('noResults');
+                this.sortLatestBtn = document.getElementById('sortLatestBtn');
+                this.sortDefaultBtn = document.getElementById('sortDefaultBtn');
 
                 this.init();
             }
@@ -1359,6 +1394,7 @@
                 this.bindEvents();
                 this.updateData();
                 this.render();
+                this.updateSortButtons();
             }
 
             bindEvents() {
@@ -1376,6 +1412,23 @@
                     this.currentPage = 1;
                     this.updateData();
                     this.render();
+                });
+
+                // 排序按钮事件
+                this.sortLatestBtn.addEventListener('click', () => {
+                    this.sortOrder = 'latest';
+                    this.currentPage = 1;
+                    this.updateData();
+                    this.render();
+                    this.updateSortButtons();
+                });
+
+                this.sortDefaultBtn.addEventListener('click', () => {
+                    this.sortOrder = 'default';
+                    this.currentPage = 1;
+                    this.updateData();
+                    this.render();
+                    this.updateSortButtons();
                 });
 
                 // 实时搜索（可选）
@@ -1407,7 +1460,28 @@
                     this.filteredData = [...experienceData];
                 }
 
+                // 应用排序
+                if (this.sortOrder === 'latest') {
+                    this.filteredData.sort((a, b) => b.id - a.id); // ID降序排列，最大的在前
+                } else {
+                    this.filteredData.sort((a, b) => a.id - b.id); // ID升序排列，默认顺序
+                }
+
                 this.totalItems = this.filteredData.length;
+            }
+
+            updateSortButtons() {
+                if (this.sortOrder === 'latest') {
+                    this.sortLatestBtn.style.display = 'none';
+                    this.sortLatestBtn.classList.remove('active');
+                    this.sortDefaultBtn.style.display = 'inline-block';
+                    this.sortDefaultBtn.classList.add('active');
+                } else {
+                    this.sortLatestBtn.style.display = 'inline-block';
+                    this.sortLatestBtn.classList.remove('active');
+                    this.sortDefaultBtn.style.display = 'none';
+                    this.sortDefaultBtn.classList.remove('active');
+                }
             }
 
             render() {
