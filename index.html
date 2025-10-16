@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="keywords" content="" />
     <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>浩天的个人站</title>
     <!--360 browser -->
     <meta name="renderer" content="webkit">
@@ -425,7 +425,7 @@
         /* AI客服样式 */
         .ai-chat-button-wrapper {
             position: fixed;
-            bottom: 30px;
+            bottom: 60px;
             right: 30px;
             z-index: 9999;
             display: flex;
@@ -695,7 +695,7 @@
             border-radius: 18px;
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             box-shadow: 0 2px 8px rgba(255, 154, 86, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
-            font-size: 14px;
+            font-size: 15px;
             line-height: 1.6;
             border: 1px solid rgba(255, 154, 86, 0.05);
         }
@@ -721,7 +721,7 @@
             border: 2px solid #e9ecef;
             border-radius: 25px;
             padding: 10px 18px;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
             transition: all 0.3s ease;
             background: white;
@@ -797,34 +797,21 @@
         }
         
         /* 响应式设计 */
-        /* 平板设备 */
-        @media (min-width: 481px) and (max-width: 768px) {
+        @media (max-width: 768px) {
             .ai-chat-window {
-                width: 400px;
-                height: 550px;
-                right: 20px;
-                bottom: 95px;
-                left: auto;
-            }
-        }
-        
-        /* 手机设备 */
-        @media (max-width: 480px) {
-            .ai-chat-window {
-                width: 92%;
-                max-width: 360px;
-                height: 72vh;
-                max-height: 520px;
-                left: 4%;
-                right: 4%;
-                bottom: calc(85px + env(safe-area-inset-bottom, 0px));
+                width: 90%;
+                max-width: 340px;
+                height: 480px;
+                right: 5%;
+                left: 5%;
                 margin: 0 auto;
+                bottom: 110px;
                 border-radius: 16px;
             }
             
             .ai-chat-button-wrapper {
-                bottom: calc(15px + env(safe-area-inset-bottom, 0px));
-                right: calc(15px + env(safe-area-inset-right, 0px));
+                bottom: 40px;
+                right: 20px;
             }
             
             .ai-chat-button {
@@ -871,25 +858,19 @@
             }
             
             .ai-chat-messages {
-                padding: 14px 12px;
-                max-height: calc(72vh - 150px);
+                padding: 12px;
             }
             
             .message-avatar {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
             }
             
             .message-content {
-                max-width: 72%;
-                font-size: 13.5px;
-                padding: 10px 13px;
-                line-height: 1.5;
-            }
-            
-            .ai-message {
-                margin-bottom: 12px;
+                max-width: 75%;
+                font-size: 14px;
+                padding: 10px 12px;
             }
             
             .ai-chat-input-area {
@@ -897,7 +878,7 @@
             }
             
             .ai-chat-input {
-                font-size: 14px;
+                font-size: 15px;
                 padding: 8px 14px;
             }
             
@@ -913,7 +894,7 @@
             
             .quick-reply-btn {
                 padding: 6px 12px;
-                font-size: 12px;
+                font-size: 13px;
             }
             
             .typing-dot {
@@ -925,60 +906,11 @@
         /* 超小屏幕 (最大375px) 进一步缩小 */
         @media (max-width: 375px) {
             .ai-chat-window {
-                width: 94%;
-                left: 3%;
-                right: 3%;
-                height: 68vh;
-                max-height: 450px;
-                bottom: calc(80px + env(safe-area-inset-bottom, 0px));
-            }
-            
-            .ai-chat-button-wrapper {
-                bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-                right: calc(12px + env(safe-area-inset-right, 0px));
-            }
-            
-            .ai-chat-header {
-                padding: 12px 14px;
-            }
-            
-            .ai-chat-header h3 {
-                font-size: 14px;
-            }
-            
-            .ai-chat-header p {
-                font-size: 11px;
-            }
-            
-            .ai-chat-messages {
-                padding: 12px 10px;
-            }
-            
-            .message-avatar {
-                width: 30px;
-                height: 30px;
-                font-size: 13px;
-            }
-            
-            .message-content {
-                font-size: 13px;
-                max-width: 68%;
-                padding: 9px 12px;
-                line-height: 1.45;
-            }
-            
-            .ai-message {
-                margin-bottom: 10px;
-            }
-            
-            .ai-chat-input {
-                font-size: 13px;
-                padding: 8px 12px;
-            }
-            
-            .quick-reply-btn {
-                padding: 6px 10px;
-                font-size: 11px;
+                width: 92%;
+                max-width: 300px;
+                height: 420px;
+                right: 4%;
+                left: 4%;
             }
         }
         
@@ -996,7 +928,7 @@
             border: 2px solid #ff9a56;
             color: #ff9a56;
             border-radius: 20px;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(255, 154, 86, 0.1);
