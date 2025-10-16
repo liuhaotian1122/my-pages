@@ -421,6 +421,525 @@
                 transform: scale(1.02) rotate(0.5deg);
             }
         }
+        
+        /* AI客服样式 */
+        .ai-chat-button-wrapper {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .ai-chat-button {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff9a56 0%, #ff5722 100%);
+            border-radius: 50%;
+            box-shadow: 0 4px 20px rgba(255, 154, 86, 0.4), 0 2px 10px rgba(255, 87, 34, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-chat-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .ai-chat-label {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff5722 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(255, 154, 86, 0.3), 0 1px 5px rgba(255, 87, 34, 0.2);
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-chat-label::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .ai-chat-button-wrapper:hover .ai-chat-label::before {
+            left: 100%;
+        }
+        
+        .ai-chat-button-wrapper:hover .ai-chat-button {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(255, 154, 86, 0.6);
+        }
+        
+        .ai-chat-button-wrapper:hover .ai-chat-label {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 154, 86, 0.4);
+        }
+        
+        .ai-chat-button svg {
+            width: 35px;
+            height: 35px;
+        }
+        
+        .ai-chat-button:hover svg {
+            transform: scale(1.05);
+            transition: transform 0.3s ease;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 4px 20px rgba(255, 154, 86, 0.4);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(255, 154, 86, 0.7);
+            }
+        }
+        
+        .ai-chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 380px;
+            height: 550px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(255, 154, 86, 0.2), 0 2px 10px rgba(255, 87, 34, 0.1);
+            z-index: 9998;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+            border: 1px solid rgba(255, 154, 86, 0.1);
+        }
+        
+        .ai-chat-window.active {
+            display: flex;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .ai-chat-header {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff5722 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ai-chat-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            pointer-events: none;
+        }
+        
+        .ai-chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .ai-chat-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .ai-chat-info h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .ai-chat-info p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .ai-chat-close {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-chat-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+        
+        .ai-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+            position: relative;
+        }
+        
+        .ai-chat-messages::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(180deg, rgba(255, 154, 86, 0.03) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        
+        .ai-message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .ai-message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff9a56 0%, #ff5722 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .ai-message.user .message-avatar {
+            background: linear-gradient(135deg, #ffb74d 0%, #ff9800 100%);
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            box-shadow: 0 2px 8px rgba(255, 154, 86, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid rgba(255, 154, 86, 0.05);
+        }
+        
+        .ai-message.user .message-content {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff5722 100%);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 2px 8px rgba(255, 154, 86, 0.3), 0 4px 12px rgba(255, 87, 34, 0.2);
+        }
+        
+        .ai-chat-input-area {
+            padding: 15px 20px;
+            background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%);
+            border-top: 1px solid rgba(255, 154, 86, 0.1);
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 -2px 10px rgba(255, 154, 86, 0.03);
+        }
+        
+        .ai-chat-input {
+            flex: 1;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            padding: 10px 18px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .ai-chat-input:focus {
+            border-color: #ff9a56;
+            box-shadow: 0 0 0 3px rgba(255, 154, 86, 0.1), 0 2px 8px rgba(255, 87, 34, 0.08);
+            background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
+        }
+        
+        .ai-chat-send {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #ff9a56 0%, #ff5722 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(255, 154, 86, 0.3), 0 4px 12px rgba(255, 87, 34, 0.2);
+        }
+        
+        .ai-chat-send:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(255, 154, 86, 0.5), 0 6px 20px rgba(255, 87, 34, 0.3);
+            background: linear-gradient(135deg, #ffad70 0%, #ff6f3d 100%);
+        }
+        
+        .ai-chat-send:active {
+            transform: scale(0.95);
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            padding: 12px 16px;
+        }
+        
+        .typing-indicator.active {
+            display: flex;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, #ff9a56 0%, #ff5722 100%);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+            box-shadow: 0 1px 3px rgba(255, 154, 86, 0.3);
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .ai-chat-window {
+                width: 320px;
+                height: 480px;
+                right: 15px;
+                bottom: 110px;
+                border-radius: 16px;
+            }
+            
+            .ai-chat-button-wrapper {
+                bottom: 15px;
+                right: 15px;
+            }
+            
+            .ai-chat-button {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .ai-chat-button svg {
+                width: 26px;
+                height: 26px;
+            }
+            
+            .ai-chat-label {
+                font-size: 11px;
+                padding: 5px 10px;
+            }
+            
+            .ai-chat-header {
+                padding: 14px 16px;
+            }
+            
+            .ai-chat-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+            
+            .ai-chat-info h3 {
+                font-size: 14px;
+            }
+            
+            .ai-chat-info p {
+                font-size: 11px;
+            }
+            
+            .ai-chat-close {
+                width: 26px;
+                height: 26px;
+            }
+            
+            .ai-chat-close svg {
+                width: 16px;
+                height: 16px;
+            }
+            
+            .ai-chat-messages {
+                padding: 12px;
+            }
+            
+            .message-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
+            }
+            
+            .message-content {
+                max-width: 75%;
+                font-size: 13px;
+                padding: 10px 12px;
+            }
+            
+            .ai-chat-input-area {
+                padding: 10px 12px;
+            }
+            
+            .ai-chat-input {
+                font-size: 14px;
+                padding: 8px 14px;
+            }
+            
+            .ai-chat-send {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .ai-chat-send svg {
+                width: 18px;
+                height: 18px;
+            }
+            
+            .quick-reply-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .typing-dot {
+                width: 6px;
+                height: 6px;
+            }
+        }
+        
+        /* 超小屏幕 (最大375px) 进一步缩小 */
+        @media (max-width: 375px) {
+            .ai-chat-window {
+                width: 280px;
+                height: 420px;
+            }
+        }
+        
+        /* 快捷回复按钮 */
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .quick-reply-btn {
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border: 2px solid #ff9a56;
+            color: #ff9a56;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(255, 154, 86, 0.1);
+            font-weight: 500;
+        }
+        
+        .quick-reply-btn:hover {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff5722 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 154, 86, 0.3), 0 2px 6px rgba(255, 87, 34, 0.2);
+            border-color: transparent;
+        }
+        
+        .quick-reply-btn:active {
+            transform: translateY(0px);
+        }
     </style>
 </head>
 
@@ -906,12 +1425,12 @@
         </div>
     </div>
 
-    <div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
+    <!-- <div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
         <a href="#top" title="回到顶部">
             <span class="am-gotop-title">回到顶部</span>
             <i class="am-gotop-icon am-icon-hand-o-up"></i>
         </a>
-    </div>
+    </div> -->
 
     <footer>
         <h6 class="right copy-right"><a href=" ">Copyright</a> &copy; <a href="index.html" target="_blank" title="  "><script>
@@ -919,6 +1438,76 @@
             document.write(currentYear);
         </script> 浩天的个人站</a></h6>
     </footer>
+
+    <!-- AI客服系统 -->
+    <div class="ai-chat-button-wrapper">
+        <div class="ai-chat-button" id="aiChatButton" title="AI智能客服">
+            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 48 48" fill="none">
+                <!-- 机器人头部 -->
+                <rect x="10" y="14" width="28" height="24" rx="4" fill="white" stroke="white" stroke-width="1.5"/>
+                
+                <!-- 天线 -->
+                <line x1="24" y1="8" x2="24" y2="14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="24" cy="6" r="2" fill="white"/>
+                
+                <!-- 眼睛 -->
+                <rect x="16" y="22" width="6" height="8" rx="3" fill="#ff9a56"/>
+                <rect x="26" y="22" width="6" height="8" rx="3" fill="#ff9a56"/>
+                
+                <!-- 嘴巴 -->
+                <path d="M18 34 L30 34" stroke="#ff9a56" stroke-width="2" stroke-linecap="round"/>
+                
+                <!-- 耳朵装饰 -->
+                <rect x="8" y="20" width="3" height="8" rx="1.5" fill="white"/>
+                <rect x="37" y="20" width="3" height="8" rx="1.5" fill="white"/>
+            </svg>
+        </div>
+        <div class="ai-chat-label">智能服务</div>
+    </div>
+
+    <div class="ai-chat-window" id="aiChatWindow">
+        <div class="ai-chat-header">
+            <div class="ai-chat-header-left">
+                <div class="ai-chat-avatar">🤖</div>
+                <div class="ai-chat-info">
+                    <h3>智能客服</h3>
+                    <p>在线为您服务</p>
+                </div>
+            </div>
+            <div class="ai-chat-close" id="aiChatClose">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </div>
+        </div>
+
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-message">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    您好！我是浩天的AI智能助手 😊<br>
+                    我可以帮您了解网站内容、推荐功能、解答问题！
+                    <div class="quick-replies">
+                        <button class="quick-reply-btn" onclick="sendQuickReply('网站有哪些功能？')">网站功能</button>
+                        <button class="quick-reply-btn" onclick="sendQuickReply('推荐一些内容')">内容推荐</button>
+                        <button class="quick-reply-btn" onclick="sendQuickReply('如何联系站长？')">联系方式</button>
+                    </div>
+                    <small style="color:#999;display:block;margin-top:8px">💡 试试随便聊点什么吧～</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-chat-input-area">
+            <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="输入您的问题..." />
+            <button class="ai-chat-send" id="aiChatSend">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </div>
+    </div>
 
     <!-- JavaScript 移到页面底部，提升加载性能 -->
     <!--[if (gte IE 9)|!(IE)]><!-->
@@ -1167,6 +1756,404 @@
                 loadVisitorCounter();
             }, 2500);
         });
+
+        // ============================================
+        // AI客服配置 - 免费大模型接入
+        // ============================================
+        const AI_CONFIG = {
+            // 是否启用AI大模型（false则只使用智能回复）
+            enableAI: true,
+            
+            // DeepSeek API配置（中国免费AI）
+            // 注册地址: https://platform.deepseek.com/
+            deepseek: {
+                enabled: true, // 设置为true并填入apiKey后启用
+                apiKey: 'sk-72f1c49c267940f0850f0b00b01', // 填入您的API密钥
+                apiUrl: 'https://api.x-aio.com/v1/chat/completions',
+                model: 'Qwen3-Coder-30B-A3B-Instruct'
+            },
+            
+            // 智谱AI配置（GLM-4-Flash免费版）
+            // 注册地址: https://open.bigmodel.cn/
+            glm: {
+                enabled: false, // 设置为true并填入apiKey后启用
+                apiKey: '', // 填入您的API密钥
+                apiUrl: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
+                model: 'glm-4-flash'
+            },
+            
+            // 对话设置
+            maxTokens: 400,
+            temperature: 0.7,
+            maxHistory: 6 // 保留最近几轮对话
+        };
+        
+        // AI客服功能
+        (function() {
+            const chatButtonWrapper = document.querySelector('.ai-chat-button-wrapper');
+            const chatButton = document.getElementById('aiChatButton');
+            const chatWindow = document.getElementById('aiChatWindow');
+            const chatClose = document.getElementById('aiChatClose');
+            const chatInput = document.getElementById('aiChatInput');
+            const chatSend = document.getElementById('aiChatSend');
+            const chatMessages = document.getElementById('aiChatMessages');
+
+            // 打开/关闭聊天窗口
+            chatButtonWrapper.addEventListener('click', function() {
+                chatWindow.classList.toggle('active');
+                if (chatWindow.classList.contains('active')) {
+                    chatInput.focus();
+                }
+            });
+
+            chatClose.addEventListener('click', function() {
+                chatWindow.classList.remove('active');
+            });
+
+            // 发送消息函数
+            async function sendMessage() {
+                const message = chatInput.value.trim();
+                if (message === '') return;
+
+                // 添加用户消息
+                addMessage(message, 'user');
+                chatInput.value = '';
+
+                // 显示输入中状态
+                showTypingIndicator();
+
+                // 调用AI获取回复
+                try {
+                    const aiResponse = await getAIResponse(message);
+                    
+                    // 模拟思考延迟，让体验更自然
+                    const thinkingTime = Math.min(500 + message.length * 50, 2000);
+                    await new Promise(resolve => setTimeout(resolve, thinkingTime));
+                    
+                    hideTypingIndicator();
+                    addMessage(aiResponse, 'ai');
+                } catch (error) {
+                    console.error('消息发送失败:', error);
+                    hideTypingIndicator();
+                    addMessage('抱歉，我遇到了一些问题 😅<br>请稍后再试，或者<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">访问论坛</a>获取帮助！', 'ai');
+                }
+            }
+
+            // 添加消息到聊天窗口
+            function addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'ai-message' + (sender === 'user' ? ' user' : '');
+
+                const avatar = document.createElement('div');
+                avatar.className = 'message-avatar';
+                avatar.textContent = sender === 'user' ? '👤' : '🤖';
+
+                const content = document.createElement('div');
+                content.className = 'message-content';
+                content.innerHTML = text;
+
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(content);
+                chatMessages.appendChild(messageDiv);
+
+                // 滚动到底部
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // 显示输入中状态
+            function showTypingIndicator() {
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'ai-message typing-message';
+                typingDiv.innerHTML = `
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content typing-indicator active">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                    </div>
+                `;
+                chatMessages.appendChild(typingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // 隐藏输入中状态
+            function hideTypingIndicator() {
+                const typingMessage = chatMessages.querySelector('.typing-message');
+                if (typingMessage) {
+                    typingMessage.remove();
+                }
+            }
+
+            // 对话历史记录
+            let conversationHistory = [];
+            
+            // AI回复逻辑 - 接入免费大模型
+            async function getAIResponse(message) {
+                const lowerMessage = message.toLowerCase();
+                
+                // 添加到对话历史
+                conversationHistory.push({
+                    role: 'user',
+                    content: message
+                });
+
+                // 优先检查网站相关的关键词
+                const websiteKeywords = {
+                    '你好': '您好！我是浩天的AI助手，很高兴为您服务！有什么可以帮助您的吗？😊',
+                    '功能': '本站主要功能包括：<br>📝 博客文章<br>🎮 小游戏<br>🎵 音乐VIP<br>📺 热剧推荐<br>🙏 电子木鱼<br>还有更多精彩内容等您探索！',
+                    '联系': '您可以通过以下方式联系站长：<br>📧 查看"关于我"页面<br>💬 访问<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">论坛</a>留言<br>🌐 关注<a href="https://weibo.com/u/5603126701" target="_blank" style="color:#ff9a56">微博</a>动态',
+                    '推荐': '为您推荐：<br>✨ 记录日常 - 工作、经历、美食、琐碎<br>📖 博客文章 - 最新思考与分享<br>🎮 小游戏 - 休闲娱乐放松心情',
+                    '游戏': '我们提供多款小游戏供您娱乐！🎮<br>点击导航栏的"<a href="game.html" style="color:#ff9a56">游戏</a>"即可体验，祝您玩得开心！',
+                    '博客': '博客栏目包含站长的心得体会和技术分享 📝<br>欢迎点击导航栏"<a href="boke.html" style="color:#ff9a56">博客</a>"查看最新文章！',
+                    '音乐': '我们提供免费音乐VIP服务！🎵<br>在快捷入口中点击"听音乐VIP"即可免费畅听！',
+                    '更新': '想了解最新更新？点击导航栏的"<a href="最近更新.html" style="color:#ff9a56">更新</a>"查看网站最新动态！✨',
+                };
+
+                // 检查是否是网站相关问题
+                for (let key in websiteKeywords) {
+                    if (lowerMessage.includes(key)) {
+                        return websiteKeywords[key];
+                    }
+                }
+
+                // 尝试调用免费AI API
+                try {
+                    const aiResponse = await callFreeAI(message);
+                    if (aiResponse) {
+                        conversationHistory.push({
+                            role: 'assistant',
+                            content: aiResponse
+                        });
+                        return aiResponse;
+                    }
+                } catch (error) {
+                    console.log('AI API调用失败，使用智能回复', error);
+                }
+
+                // 智能降级回复
+                return getSmartFallbackResponse(message);
+            }
+
+            // 调用免费AI API（支持多个免费模型）
+            async function callFreeAI(message) {
+                // 如果未启用AI，直接返回
+                if (!AI_CONFIG.enableAI) {
+                    return null;
+                }
+
+                // 准备系统提示词
+                const systemPrompt = `你是浩天个人站的AI智能助手。这是一个个人博客网站，包含以下内容：
+- 博客文章（技术分享和生活感悟）
+- 小游戏（休闲娱乐）
+- 音乐VIP（免费音乐服务）
+- 热剧推荐
+- 电子木鱼
+- 记录日常（工作、经历、美食、琐碎）
+
+请用友好、专业的态度回答用户问题。回答要简洁明了（100字以内），适当使用emoji表情。如果用户问题与网站内容相关，请提供具体的引导。`;
+
+                // 方案1: DeepSeek API
+                if (AI_CONFIG.deepseek.enabled && AI_CONFIG.deepseek.apiKey) {
+                    try {
+                        const response = await fetch(AI_CONFIG.deepseek.apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${AI_CONFIG.deepseek.apiKey}`
+                            },
+                            body: JSON.stringify({
+                                model: AI_CONFIG.deepseek.model,
+                                messages: [
+                                    { role: 'system', content: systemPrompt },
+                                    ...conversationHistory.slice(-AI_CONFIG.maxHistory)
+                                ],
+                                max_tokens: AI_CONFIG.maxTokens,
+                                temperature: AI_CONFIG.temperature
+                            }),
+                            timeout: 10000 // 10秒超时
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const aiReply = data.choices[0].message.content;
+                            console.log('✅ DeepSeek API调用成功');
+                            return aiReply;
+                        }
+                    } catch (error) {
+                        console.log('❌ DeepSeek API失败:', error.message);
+                    }
+                }
+
+                // 方案2: 智谱AI GLM
+                if (AI_CONFIG.glm.enabled && AI_CONFIG.glm.apiKey) {
+                    try {
+                        const response = await fetch(AI_CONFIG.glm.apiUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${AI_CONFIG.glm.apiKey}`
+                            },
+                            body: JSON.stringify({
+                                model: AI_CONFIG.glm.model,
+                                messages: [
+                                    { role: 'system', content: systemPrompt },
+                                    ...conversationHistory.slice(-AI_CONFIG.maxHistory)
+                                ],
+                                max_tokens: AI_CONFIG.maxTokens,
+                                temperature: AI_CONFIG.temperature
+                            }),
+                            timeout: 10000
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const aiReply = data.choices[0].message.content;
+                            console.log('✅ 智谱AI调用成功');
+                            return aiReply;
+                        }
+                    } catch (error) {
+                        console.log('❌ 智谱AI调用失败:', error.message);
+                    }
+                }
+
+                console.log('💡 未配置AI API或调用失败，使用智能降级回复');
+                return null;
+            }
+
+            // 智能降级回复
+            function getSmartFallbackResponse(message) {
+                const lowerMessage = message.toLowerCase();
+
+                // 问候语识别
+                if (lowerMessage.match(/^(hi|hello|嗨|哈喽|您好)/)) {
+                    return '您好呀！👋 我是AI智能助手，有什么可以帮您的吗？<br><small style="color:#999">提示：您可以问我关于网站功能、内容推荐等问题</small>';
+                }
+
+                // 感谢回复
+                if (lowerMessage.includes('谢谢') || lowerMessage.includes('感谢') || lowerMessage.includes('thanks')) {
+                    return '不客气！很高兴能帮到您！😊 还有其他问题随时问我哦～';
+                }
+
+                // 问题类型识别
+                if (lowerMessage.includes('怎么') || lowerMessage.includes('如何') || lowerMessage.includes('怎样')) {
+                    return '关于"<strong>' + message + '</strong>"这个问题：<br>📌 您可以浏览网站导航栏查找相关内容<br>📌 查看<a href="boke.html" style="color:#ff9a56">博客文章</a>可能有详细说明<br>📌 或在<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">论坛</a>发帖询问<br><small style="color:#999">💡 AI助手正在学习中，暂时无法回答所有问题</small>';
+                }
+
+                // 什么是类型
+                if (lowerMessage.includes('什么是') || lowerMessage.includes('是什么')) {
+                    return '这是个好问题！关于"<strong>' + message + '</strong>"：<br>🔍 建议您在网站中搜索相关内容<br>📖 <a href="boke.html" style="color:#ff9a56">博客栏目</a>可能有相关文章<br>💬 也欢迎在<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">论坛</a>与大家交流讨论';
+                }
+
+                // 推荐类型
+                if (lowerMessage.includes('推荐') || lowerMessage.includes('建议') || lowerMessage.includes('有什么')) {
+                    return '为您推荐本站精彩内容：<br>📝 <a href="boke.html" style="color:#ff9a56">博客</a> - 技术分享与生活感悟<br>🎮 <a href="game.html" style="color:#ff9a56">小游戏</a> - 轻松娱乐<br>🎵 <a href="http://www.78497.com/" target="_blank" style="color:#ff9a56">音乐VIP</a> - 免费畅听<br>📺 <a href="https://fanwantv.com/" target="_blank" style="color:#ff9a56">热剧</a> - 追剧必备<br>✨ 记录日常 - 工作、美食、生活点滴';
+                }
+
+                // 默认智能回复
+                const smartReplies = [
+                    '我理解您的问题！本站内容丰富：<br>🏠 <a href="index.html" style="color:#ff9a56">首页</a> - 了解网站概况<br>📖 <a href="boke.html" style="color:#ff9a56">博客</a> - 精彩文章<br>🎮 <a href="game.html" style="color:#ff9a56">游戏</a> - 休闲娱乐<br>🔄 <a href="最近更新.html" style="color:#ff9a56">更新</a> - 最新动态<br><small style="color:#999">💡 也可以问我：网站功能、内容推荐、如何联系等</small>',
+                    '关于"<strong>' + message + '</strong>"这个话题很有意思！<br>💭 虽然我还在学习中，但您可以：<br>• 在<a href="boke.html" style="color:#ff9a56">博客</a>中查找相关文章<br>• 访问<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">论坛</a>与大家讨论<br>• 关注<a href="https://weibo.com/u/5603126701" target="_blank" style="color:#ff9a56">微博</a>获取更多动态',
+                    '感谢您的提问！🤔<br>我可以为您介绍：<br>✨ <strong>网站功能</strong> - 了解本站特色<br>🎯 <strong>内容推荐</strong> - 发现精彩内容<br>📞 <strong>联系方式</strong> - 与站长互动<br>🔧 <strong>使用指南</strong> - 快速上手<br><small style="color:#999">直接说出您感兴趣的内容，我会详细介绍～</small>'
+                ];
+
+                return smartReplies[Math.floor(Math.random() * smartReplies.length)];
+            }
+
+            // 快捷回复
+            window.sendQuickReply = function(text) {
+                chatInput.value = text;
+                sendMessage();
+            };
+
+            // 发送按钮点击事件
+            chatSend.addEventListener('click', sendMessage);
+
+            // 回车发送
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // 防止聊天窗口点击事件冒泡
+            chatWindow.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            // 点击页面其他地方关闭聊天窗口
+            document.addEventListener('click', function(e) {
+                if (!chatButtonWrapper.contains(e.target) && !chatWindow.contains(e.target)) {
+                    if (chatWindow.classList.contains('active')) {
+                        chatWindow.classList.remove('active');
+                    }
+                }
+            });
+        })();
+
+        // ============================================
+        // 🎯 AI客服配置指南
+        // ============================================
+        /*
+        
+        【当前状态】
+        ✅ AI助手已启用智能降级回复系统
+        ⚙️ 大模型API未配置（使用规则匹配回复）
+        
+        【如何接入免费AI大模型】
+        
+        方案1：DeepSeek（推荐 - 国产免费AI）
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        1. 访问: https://platform.deepseek.com/
+        2. 注册账号并获取API密钥
+        3. 在上面的AI_CONFIG中配置:
+           - 将 deepseek.enabled 改为 true
+           - 填入 deepseek.apiKey
+        4. 刷新页面即可使用！
+        
+        特点：
+        • 完全免费（有额度限制）
+        • 中文理解能力强
+        • 响应速度快
+        • 适合个人网站使用
+        
+        方案2：智谱AI GLM-4-Flash（国产免费）
+        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        1. 访问: https://open.bigmodel.cn/
+        2. 注册并获取API密钥
+        3. 在AI_CONFIG中配置:
+           - 将 glm.enabled 改为 true
+           - 填入 glm.apiKey
+        4. 刷新页面即可使用！
+        
+        特点：
+        • 免费版本可用
+        • 智能问答能力强
+        • 支持上下文记忆
+        
+        【注意事项】
+        ⚠️ API密钥安全：
+           - 建议使用后端代理，避免前端暴露密钥
+           - 定期更换API密钥
+           - 设置请求频率限制
+        
+        💡 优化建议：
+           - 可以同时配置多个AI，实现自动降级
+           - 调整maxTokens和temperature参数优化回复
+           - 增加conversationHistory保持更长对话记忆
+        
+        📚 更多AI服务商：
+           - 阿里通义千问: https://dashscope.aliyuncs.com/
+           - 百度文心一言: https://cloud.baidu.com/product/wenxinworkshop
+           - 讯飞星火: https://xinghuo.xfyun.cn/
+           - Moonshot AI: https://platform.moonshot.cn/
+        
+        【测试建议】
+        1. 先不配置API，测试智能降级回复是否正常
+        2. 配置API后，打开浏览器控制台查看调用日志
+        3. 测试各种问题类型，优化系统提示词
+        
+        祝使用愉快！ 🎉
+        */
     </script>
 </body>
 
