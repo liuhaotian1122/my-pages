@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="keywords" content="" />
     <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>浩天的个人站</title>
     <!--360 browser -->
     <meta name="renderer" content="webkit">
@@ -797,18 +797,34 @@
         }
         
         /* 响应式设计 */
-        @media (max-width: 768px) {
+        /* 平板设备 */
+        @media (min-width: 481px) and (max-width: 768px) {
             .ai-chat-window {
-                width: 320px;
-                height: 480px;
-                right: 15px;
-                bottom: 110px;
+                width: 400px;
+                height: 550px;
+                right: 20px;
+                bottom: 95px;
+                left: auto;
+            }
+        }
+        
+        /* 手机设备 */
+        @media (max-width: 480px) {
+            .ai-chat-window {
+                width: 92%;
+                max-width: 360px;
+                height: 72vh;
+                max-height: 520px;
+                left: 4%;
+                right: 4%;
+                bottom: calc(85px + env(safe-area-inset-bottom, 0px));
+                margin: 0 auto;
                 border-radius: 16px;
             }
             
             .ai-chat-button-wrapper {
-                bottom: 15px;
-                right: 15px;
+                bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+                right: calc(15px + env(safe-area-inset-right, 0px));
             }
             
             .ai-chat-button {
@@ -855,19 +871,25 @@
             }
             
             .ai-chat-messages {
-                padding: 12px;
+                padding: 14px 12px;
+                max-height: calc(72vh - 150px);
             }
             
             .message-avatar {
-                width: 30px;
-                height: 30px;
-                font-size: 13px;
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
             }
             
             .message-content {
-                max-width: 75%;
-                font-size: 13px;
-                padding: 10px 12px;
+                max-width: 72%;
+                font-size: 13.5px;
+                padding: 10px 13px;
+                line-height: 1.5;
+            }
+            
+            .ai-message {
+                margin-bottom: 12px;
             }
             
             .ai-chat-input-area {
@@ -903,8 +925,60 @@
         /* 超小屏幕 (最大375px) 进一步缩小 */
         @media (max-width: 375px) {
             .ai-chat-window {
-                width: 280px;
-                height: 420px;
+                width: 94%;
+                left: 3%;
+                right: 3%;
+                height: 68vh;
+                max-height: 450px;
+                bottom: calc(80px + env(safe-area-inset-bottom, 0px));
+            }
+            
+            .ai-chat-button-wrapper {
+                bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+                right: calc(12px + env(safe-area-inset-right, 0px));
+            }
+            
+            .ai-chat-header {
+                padding: 12px 14px;
+            }
+            
+            .ai-chat-header h3 {
+                font-size: 14px;
+            }
+            
+            .ai-chat-header p {
+                font-size: 11px;
+            }
+            
+            .ai-chat-messages {
+                padding: 12px 10px;
+            }
+            
+            .message-avatar {
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
+            }
+            
+            .message-content {
+                font-size: 13px;
+                max-width: 68%;
+                padding: 9px 12px;
+                line-height: 1.45;
+            }
+            
+            .ai-message {
+                margin-bottom: 10px;
+            }
+            
+            .ai-chat-input {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+            
+            .quick-reply-btn {
+                padding: 6px 10px;
+                font-size: 11px;
             }
         }
         
