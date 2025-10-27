@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朋友圈</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #000;
+        }
+
+        /* 顶部个人信息区域 */
+        .profile-header {
+            position: relative;
+            height: 320px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .cover-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+        }
+
+        .profile-name {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            margin-bottom: 5px;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            border: 3px solid white;
+            object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        /* 朋友圈内容区域 */
+        .moments-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f0f0f0;
+        }
+
+        .moment-item {
+            background-color: white;
+            margin-bottom: 10px;
+            padding: 15px;
+        }
+
+        .moment-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .moment-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 4px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .moment-content-wrapper {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .moment-username {
+            font-size: 16px;
+            color: #576b95;
+            font-weight: 500;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .moment-username:hover {
+            text-decoration: underline;
+        }
+
+        .moment-text {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #000;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+
+        /* 图片网格 */
+        .moment-images {
+            display: grid;
+            gap: 4px;
+            margin-bottom: 10px;
+        }
+
+        .moment-images.single {
+            grid-template-columns: 1fr;
+            max-width: 200px;
+        }
+
+        .moment-images.double {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 300px;
+        }
+
+        .moment-images.multiple {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .moment-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #f5f5f5;
+        }
+
+        .moment-image:hover {
+            opacity: 0.9;
+        }
+
+        /* 时间和操作 */
+        .moment-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+        }
+
+        .moment-time {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .moment-actions {
+            position: relative;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-size: 14px;
+            color: #576b95;
+        }
+
+        .action-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .action-menu.show {
+            display: block;
+        }
+
+        .action-menu-item {
+            padding: 10px 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-menu-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* 点赞和评论区域 */
+        .interactions {
+            background-color: #f7f7f7;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .likes {
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+            padding: 5px 0;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 5px;
+        }
+
+        .likes-icon {
+            color: #576b95;
+            font-size: 14px;
+            margin-top: 2px;
+        }
+
+        .likes-list {
+            flex: 1;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .like-user {
+            color: #576b95;
+            cursor: pointer;
+        }
+
+        .like-user:hover {
+            text-decoration: underline;
+        }
+
+        /* 评论 */
+        .comments {
+            padding: 5px 0;
+        }
+
+        .comment-item {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 5px;
+        }
+
+        .comment-user {
+            color: #576b95;
+            cursor: pointer;
+        }
+
+        .comment-user:hover {
+            text-decoration: underline;
+        }
+
+        .comment-reply-to {
+            color: #576b95;
+        }
+
+        .comment-text {
+            color: #000;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background-color: #393a3e;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+        }
+
+        .navbar-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .navbar-action {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        /* 底部发布按钮 */
+        .publish-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .publish-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .publish-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 图片预览模态框 */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal.show {
+            display: flex;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 36px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* 响应式 */
+        @media (max-width: 600px) {
+            .profile-header {
+                height: 280px;
+            }
+
+            .profile-avatar {
+                width: 60px;
+                height: 60px;
+            }
+
+            .moment-item {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div class="navbar">
+        <a href="index.html"><button class="navbar-action">‹ 返回</button></a>
+        <div class="navbar-title">朋友圈</div>
+        <button class="navbar-action">⋯</button>
+    </div>
+
+    <!-- 个人信息头部 -->
+    <div class="profile-header">
+        <img src="https://i.postimg.cc/c41xdgHz/5211ec9bd56380a042daed730e0f10a.jpg" alt="封面" class="cover-image">
+        <div class="profile-info">
+            <div class="profile-name">许我半夏</div>
+            <img src="https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg" alt="头像" class="profile-avatar">
+        </div>
+    </div>
+
+    <!-- 朋友圈内容 -->
+    <div class="moments-container">
+        <!-- 动态1 - 多图 -->
+        <div class="moment-item">
+            <div class="moment-header">
+                <img src="https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg" alt="头像" class="moment-avatar">
+                <div class="moment-content-wrapper">
+                    <div class="moment-username">许我半夏</div>
+                    <div class="moment-text">今天天气真好，和朋友们一起去爬山，心情超级棒！🏔️</div>
+                    <div class="moment-images multiple">
+                        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400" alt="图片1" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=400" alt="图片2" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400" alt="图片3" class="moment-image" onclick="showImageModal(this.src)">
+                    </div>
+                    <div class="moment-footer">
+                        <div class="moment-time">10分钟前</div>
+                        <div class="moment-actions">
+                            <button class="action-btn" onclick="toggleActionMenu(this)">⋯</button>
+                            <div class="action-menu">
+                                <div class="action-menu-item" onclick="likePost(this)">👍 点赞</div>
+                                <div class="action-menu-item" onclick="commentPost(this)">💬 评论</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="interactions">
+                        <div class="likes">
+                            <span class="likes-icon">❤️</span>
+                            <div class="likes-list">
+                                <span class="like-user">小春春</span>，<span class="like-user">许我半夏</span>
+                            </div>
+                        </div>
+                        <div class="comments">
+                            <div class="comment-item">
+                                <span class="comment-user">小春春</span>：<span class="comment-text">风景真美！</span>
+                            </div>
+                            <div class="comment-item">
+                                <span class="comment-user">许我半夏</span> 回复 <span class="comment-reply-to">小春春</span>：<span class="comment-text">是啊</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 动态2 - 单图 -->
+        <div class="moment-item">
+            <div class="moment-header">
+                <img src="https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg" alt="头像" class="moment-avatar">
+                <div class="moment-content-wrapper">
+                    <div class="moment-username">许我半夏</div>
+                    <div class="moment-text">周末的咖啡时光☕️</div>
+                    <div class="moment-images single">
+                        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400" alt="咖啡" class="moment-image" onclick="showImageModal(this.src)">
+                    </div>
+                    <div class="moment-footer">
+                        <div class="moment-time">1小时前</div>
+                        <div class="moment-actions">
+                            <button class="action-btn" onclick="toggleActionMenu(this)">⋯</button>
+                            <div class="action-menu">
+                                <div class="action-menu-item" onclick="likePost(this)">👍 点赞</div>
+                                <div class="action-menu-item" onclick="commentPost(this)">💬 评论</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="interactions">
+                        <div class="likes">
+                            <span class="likes-icon">❤️</span>
+                            <div class="likes-list">
+                                <span class="like-user">许我半夏</span>，<span class="like-user">小春春</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 动态3 - 纯文字 -->
+        <div class="moment-item">
+            <div class="moment-header">
+                <img src="https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg" alt="头像" class="moment-avatar">
+                <div class="moment-content-wrapper">
+                    <div class="moment-username">许我半夏</div>
+                    <div class="moment-text">人生就像一杯茶，不会苦一辈子，但总会苦一阵子。加油！💪</div>
+                    <div class="moment-footer">
+                        <div class="moment-time">3小时前</div>
+                        <div class="moment-actions">
+                            <button class="action-btn" onclick="toggleActionMenu(this)">⋯</button>
+                            <div class="action-menu">
+                                <div class="action-menu-item" onclick="likePost(this)">👍 点赞</div>
+                                <div class="action-menu-item" onclick="commentPost(this)">💬 评论</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="interactions">
+                        <div class="likes">
+                            <span class="likes-icon">❤️</span>
+                            <div class="likes-list">
+                                <span class="like-user">许我半夏</span>，<span class="like-user">刘浩天</span>，<span class="like-user">小春春</span>
+                            </div>
+                        </div>
+                        <div class="comments">
+                            <div class="comment-item">
+                                <span class="comment-user">许我半夏</span>：<span class="comment-text">说得好！</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 动态4 - 四张图 -->
+        <div class="moment-item">
+            <div class="moment-header">
+                <img src="https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg" alt="头像" class="moment-avatar">
+                <div class="moment-content-wrapper">
+                    <div class="moment-username">许我半夏</div>
+                    <div class="moment-text">今天的美食打卡 🍜🍱🍰🍕</div>
+                    <div class="moment-images double">
+                        <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" alt="美食1" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400" alt="美食2" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400" alt="美食3" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400" alt="美食4" class="moment-image" onclick="showImageModal(this.src)">
+                    </div>
+                    <div class="moment-footer">
+                        <div class="moment-time">5小时前</div>
+                        <div class="moment-actions">
+                            <button class="action-btn" onclick="toggleActionMenu(this)">⋯</button>
+                            <div class="action-menu">
+                                <div class="action-menu-item" onclick="likePost(this)">👍 点赞</div>
+                                <div class="action-menu-item" onclick="commentPost(this)">💬 评论</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="interactions">
+                        <div class="comments">
+                            <div class="comment-item">
+                                <span class="comment-user">小春春</span>：<span class="comment-text">看起来好好吃！</span>
+                            </div>
+                            <div class="comment-item">
+                                <span class="comment-user">许我半夏</span> 回复 <span class="comment-reply-to">小春春</span>：<span class="comment-text">下次一起去吃</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 动态5 - 九宫格 -->
+        <div class="moment-item">
+            <div class="moment-header">
+                <img src="https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg" alt="头像" class="moment-avatar">
+                <div class="moment-content-wrapper">
+                    <div class="moment-username">许我半夏</div>
+                    <div class="moment-text">旅行的意义 🌏✈️ 探索未知的世界，遇见更好的自己</div>
+                    <div class="moment-images multiple">
+                        <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400" alt="旅行1" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400" alt="旅行2" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400" alt="旅行3" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=400" alt="旅行4" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=400" alt="旅行5" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400" alt="旅行6" class="moment-image" onclick="showImageModal(this.src)">
+                    </div>
+                    <div class="moment-footer">
+                        <div class="moment-time">昨天</div>
+                        <div class="moment-actions">
+                            <button class="action-btn" onclick="toggleActionMenu(this)">⋯</button>
+                            <div class="action-menu">
+                                <div class="action-menu-item" onclick="likePost(this)">👍 点赞</div>
+                                <div class="action-menu-item" onclick="commentPost(this)">💬 评论</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="interactions">
+                        <div class="likes">
+                            <span class="likes-icon">❤️</span>
+                            <div class="likes-list">
+                                <span class="like-user">许我半夏</span>
+                            </div>
+                        </div>
+                        <div class="comments">
+                            <div class="comment-item">
+                                <span class="comment-user">我</span>：<span class="comment-text">好羡慕啊！</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 动态6 - 两张图 -->
+        <div class="moment-item">
+            <div class="moment-header">
+                <img src="https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg" alt="头像" class="moment-avatar">
+                <div class="moment-content-wrapper">
+                    <div class="moment-username">许我半夏</div>
+                    <div class="moment-text">读书是一种享受 📚</div>
+                    <div class="moment-images double">
+                        <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400" alt="读书1" class="moment-image" onclick="showImageModal(this.src)">
+                        <img src="https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400" alt="读书2" class="moment-image" onclick="showImageModal(this.src)">
+                    </div>
+                    <div class="moment-footer">
+                        <div class="moment-time">2天前</div>
+                        <div class="moment-actions">
+                            <button class="action-btn" onclick="toggleActionMenu(this)">⋯</button>
+                            <div class="action-menu">
+                                <div class="action-menu-item" onclick="likePost(this)">👍 点赞</div>
+                                <div class="action-menu-item" onclick="commentPost(this)">💬 评论</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="interactions">
+                        <div class="likes">
+                            <span class="likes-icon">❤️</span>
+                            <div class="likes-list">
+                                <span class="like-user">许我半夏</span>，<span class="like-user">小春春</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 发布按钮 -->
+
+
+    <!-- 图片预览模态框 -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <button class="close-modal">×</button>
+        <img id="modalImage" src="" alt="预览">
+    </div>
+
+    <script>
+        // 切换操作菜单
+        function toggleActionMenu(btn) {
+            const menu = btn.nextElementSibling;
+            const allMenus = document.querySelectorAll('.action-menu');
+            
+            // 关闭其他菜单
+            allMenus.forEach(m => {
+                if (m !== menu) m.classList.remove('show');
+            });
+            
+            menu.classList.toggle('show');
+            
+            // 点击其他地方关闭菜单
+            setTimeout(() => {
+                document.addEventListener('click', function closeMenu(e) {
+                    if (!e.target.closest('.moment-actions')) {
+                        menu.classList.remove('show');
+                        document.removeEventListener('click', closeMenu);
+                    }
+                }, 10);
+            });
+        }
+
+        // 点赞功能
+        function likePost(element) {
+            const momentItem = element.closest('.moment-item');
+            const contentWrapper = momentItem.querySelector('.moment-content-wrapper');
+            let interactions = contentWrapper.querySelector('.interactions');
+            
+            // 如果没有互动区域，创建一个
+            if (!interactions) {
+                interactions = document.createElement('div');
+                interactions.className = 'interactions';
+                contentWrapper.appendChild(interactions);
+            }
+            
+            let likes = interactions.querySelector('.likes');
+            
+            // 如果没有点赞区域，创建一个
+            if (!likes) {
+                likes = document.createElement('div');
+                likes.className = 'likes';
+                likes.innerHTML = `
+                    <span class="likes-icon">❤️</span>
+                    <div class="likes-list"></div>
+                `;
+                interactions.insertBefore(likes, interactions.firstChild);
+            }
+            
+            const likesList = likes.querySelector('.likes-list');
+            const currentLikes = likesList.innerHTML;
+            
+            if (currentLikes.includes('你')) {
+                alert('你已经点过赞了');
+            } else {
+                if (currentLikes) {
+                    likesList.innerHTML = '<span class="like-user">你</span>，' + currentLikes;
+                } else {
+                    likesList.innerHTML = '<span class="like-user">你</span>';
+                }
+            }
+            
+            // 关闭菜单
+            element.closest('.action-menu').classList.remove('show');
+        }
+
+        // 评论功能
+        function commentPost(element) {
+            const username = prompt('请输入评论内容：');
+            if (!username) return;
+            
+            const momentItem = element.closest('.moment-item');
+            const contentWrapper = momentItem.querySelector('.moment-content-wrapper');
+            let interactions = contentWrapper.querySelector('.interactions');
+            
+            // 如果没有互动区域，创建一个
+            if (!interactions) {
+                interactions = document.createElement('div');
+                interactions.className = 'interactions';
+                contentWrapper.appendChild(interactions);
+            }
+            
+            let comments = interactions.querySelector('.comments');
+            
+            // 如果没有评论区域，创建一个
+            if (!comments) {
+                comments = document.createElement('div');
+                comments.className = 'comments';
+                interactions.appendChild(comments);
+            }
+            
+            // 添加新评论
+            const newComment = document.createElement('div');
+            newComment.className = 'comment-item';
+            newComment.innerHTML = `<span class="comment-user">你</span>：<span class="comment-text">${username}</span>`;
+            comments.appendChild(newComment);
+            
+            // 关闭菜单
+            element.closest('.action-menu').classList.remove('show');
+        }
+
+        // 显示图片预览
+        function showImageModal(src) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = src;
+            modal.classList.add('show');
+        }
+
+        // 关闭图片预览
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('show');
+        }
+    </script>
+</body>
+</html>
