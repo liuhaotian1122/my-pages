@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>瑞虎8PRO冠军版密码计算器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <!-- 配置Tailwind自定义颜色 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#E63946', // 奇瑞红色
+                        secondary: '#1D3557',
+                        accent: '#457B9D',
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .card-shadow {
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            }
+            .btn-hover {
+                @apply transition-all duration-300 hover:scale-105 active:scale-95;
+            }
+            .digit-highlight {
+                @apply inline-block bg-primary text-white w-10 h-10 rounded-full flex items-center justify-center font-bold;
+            }
+            .array-item {
+                @apply inline-block border border-gray-200 rounded px-3 py-1 mx-1 my-1;
+            }
+            .date-highlight {
+                @apply bg-primary/10 px-2 py-1 rounded font-mono;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- 标题区域 -->
+        <header class="text-center mb-8">
+            <div class="flex items-center justify-center gap-2 mb-2">
+                <i class="fa fa-car text-primary text-2xl"></i>
+                <h1 class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold text-secondary">瑞虎8PRO冠军版密码计算器</h1>
+            </div>
+            <p class="text-gray-600">根据当前日期自动计算车辆加密项密码</p>
+        </header>
+        
+        <!-- 主内容卡片 -->
+        <div class="bg-white rounded-xl card-shadow p-6 md:p-8 mb-8">
+            <!-- 当前日期信息 -->
+            <div class="mb-8 border-b border-gray-100 pb-6">
+                <h2 class="text-lg font-semibold text-gray-800 mb-4">当前日期信息</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">完整日期</p>
+                        <p id="full-date" class="text-xl font-medium text-secondary"></p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-gray-500 text-sm mb-1">紧凑格式 (<span class="text-xs bg-gray-100 px-2 py-0.5 rounded">yyyymmdd</span>)</p>
+                        <p id="compact-date" class="text-xl font-medium text-primary font-mono"></p>
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">日期最后一位</p>
+                            <span id="last-digit" class="digit-highlight text-lg"></span>
+                        </div>
+                        
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">对应数组值</p>
+                            <p id="array-value" class="text-xl font-medium text-accent"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 计算规则说明 -->
+            <div class="mb-8 bg-blue-50 border border-blue-100 rounded-lg p-4">
+                <h3 class="font-medium text-blue-800 mb-2 flex items-center gap-2">
+                    <i class="fa fa-info-circle"></i>密码计算规则
+                </h3>
+                <p class="text-blue-700 text-sm mb-3">
+                    密码 = 当前日期（yyyymmdd格式） + 日期最后一位对应的数组值
+                </p>
+            </div>
+            
+            <!-- 密码结果 -->
+            <div class="text-center">
+                <button id="calculate-btn" class="bg-primary hover:bg-primary/90 text-white font-medium px-6 py-3 rounded-lg mb-6 btn-hover">
+                    <i class="fa fa-calculator mr-2"></i>计算密码
+                </button>
+                
+                <div id="password-result" class="hidden">
+                    <div class="mb-3">
+                        <p class="text-gray-500 text-sm">计算得出的安全密码</p>
+                        <div class="flex items-center justify-center gap-2 my-4">
+                            <span id="password" class="text-[clamp(1.8rem,5vw,2.8rem)] font-bold text-primary font-mono"></span>
+                        </div>
+                        <div class="text-sm text-gray-500 whitespace-nowrap overflow-x-auto pb-2">
+                            计算过程: 
+                            <span id="calculation-process" class="font-medium text-secondary"></span>
+                        </div>
+                    </div>
+                    
+                    <button id="copy-btn" class="bg-accent hover:bg-accent/90 text-white text-sm px-4 py-2 rounded-lg btn-hover">
+                        <i class="fa fa-copy mr-1"></i>复制密码
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 使用说明 -->
+        <div class="bg-white rounded-xl card-shadow p-6">
+            <h3 class="font-semibold text-secondary mb-4 flex items-center gap-2">
+                <i class="fa fa-lightbulb-o text-accent"></i>使用说明
+            </h3>
+            <ul class="space-y-2 text-gray-600 text-sm">
+                <li class="flex items-start gap-2">
+                    <i class="fa fa-check-circle text-green-500 mt-1"></i>
+                    <span>系统会自动获取当前日期，以完整格式和yyyymmdd紧凑格式显示</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fa fa-check-circle text-green-500 mt-1"></i>
+                    <span>系统会提取日期最后一位数字，并匹配对应的数组值</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fa fa-check-circle text-green-500 mt-1"></i>
+                    <span>点击"计算密码"按钮，系统会按照规则生成安全密码</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <i class="fa fa-check-circle text-green-500 mt-1"></i>
+                    <span>密码每日更新，请使用当天生成的密码进行操作</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 页脚 -->
+        <footer class="mt-8 text-center text-gray-500 text-sm">
+            <p>© <span id="current-year"></span> 瑞虎8PRO冠军版工具 | 仅供参考使用</p>
+        </footer>
+    </div>
+    
+    <!-- 提示框 -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300">
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+        // 定义数字对应的数组值
+        const numberArray = [213518, 658035, 235657, 567534, 647825, 234700, 127347, 648924, 733782, 553456];
+        
+        // 获取并显示当前日期信息
+        function displayCurrentDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1; // 月份从0开始，所以加1
+            const date = today.getDate();
+            
+            // 计算yyyymmdd格式
+            const yy = String(year).slice(-2);
+            const mm = String(month).padStart(2, '0'); // 确保两位数
+            const dd = String(date).padStart(2, '0'); // 确保两位数
+            const compactDate = `${yy}${mm}${dd}`;
+            
+            // 获取日期最后一位数字及对应数组值
+            const lastDigit = parseInt(dd[dd.length - 1]); // 从dd中获取最后一位
+            const correspondingValue = numberArray[lastDigit];
+            
+            // 显示完整日期
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            document.getElementById('full-date').textContent = today.toLocaleDateString('zh-CN', options);
+            
+            // 显示紧凑格式日期(yyyymmdd)
+            document.getElementById('compact-date').textContent = compactDate;
+            
+            // 显示最后一位数字
+            document.getElementById('last-digit').textContent = lastDigit;
+            
+            // 显示对应数组值
+            document.getElementById('array-value').textContent = correspondingValue;
+            
+            // 显示当前年份（用于页脚）
+            document.getElementById('current-year').textContent = year;
+            
+            // 存储在数据属性中供后续计算使用
+            document.body.dataset.compactDate = compactDate;
+            document.body.dataset.lastDigit = lastDigit;
+            document.body.dataset.correspondingValue = correspondingValue;
+        }
+        
+        // 计算密码
+        function calculatePassword() {
+            const compactDate = parseInt(document.body.dataset.compactDate);
+            const lastDigit = parseInt(document.body.dataset.lastDigit);
+            const correspondingValue = parseInt(document.body.dataset.correspondingValue);
+            const password = compactDate + correspondingValue; // 密码 = yyyymmdd格式日期 + 对应数组值
+            
+            // 显示密码和计算过程
+            document.getElementById('password').textContent = password;
+            document.getElementById('calculation-process').textContent = 
+                `${document.body.dataset.compactDate} + ${correspondingValue} = ${password}`;
+            document.getElementById('password-result').classList.remove('hidden');
+            
+            // 平滑滚动到密码区域
+            document.getElementById('password-result').scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center' 
+            });
+        }
+        
+        // 复制密码到剪贴板
+        function copyToClipboard() {
+            const password = document.getElementById('password').textContent;
+            navigator.clipboard.writeText(password).then(() => {
+                showToast('密码已复制到剪贴板');
+            }).catch(err => {
+                showToast('复制失败，请手动复制');
+                console.error('复制失败:', err);
+            });
+        }
+        
+        // 显示提示消息
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2000);
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            displayCurrentDate();
+            
+            // 绑定事件监听器
+            document.getElementById('calculate-btn').addEventListener('click', calculatePassword);
+            document.getElementById('copy-btn').addEventListener('click', copyToClipboard);
+        });
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"5f01fe40f04c407e9a2b1f69f5ab7f7e","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+    
