@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>摄像头+麦克风调用工具</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "微软雅黑", sans-serif;
+    }
+    body {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      text-align: center;
+    }
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+    .btn-group {
+      margin-bottom: 25px;
+    }
+    button {
+      padding: 12px 30px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 0 8px;
+      transition: all 0.3s;
+    }
+    #startBtn {
+      background: #27ae60;
+      color: white;
+    }
+    #stopBtn {
+      background: #e74c3c;
+      color: white;
+      display: none;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .video-box {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 3px solid #3498db;
+      background: #000;
+      margin-bottom: 25px;
+    }
+    video {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+    .audio-box {
+      width: 100%;
+      height: 30px;
+      background: #ffffff;
+      border-radius: 15px;
+      border: 2px solid #3498db;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .volume-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #27ae60, #3498db);
+      transition: width 0.1s linear;
+    }
+    .status {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    .status.normal {
+      color: #2c3e50;
+    }
+    .status.success {
+      color: #27ae60;
+    }
+    .status.error {
+      color: #e74c3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>摄像头 & 麦克风实时调用</h1>
+    <div class="btn-group">
+      <button id="startBtn">开启摄像头+麦克风</button>
+      <button id="stopBtn">停止设备</button>
+    </div>
+    <!-- 摄像头视频预览区 -->
+    <div class="video-box">
+      <video id="videoPreview" autoplay playsinline muted></video>
+    </div>
+    <!-- 麦克风音量可视化 -->
+    <div class="audio-box">
+      <div class="volume-bar" id="volumeBar"></div>
+    </div>
+    <!-- 状态提示 -->
+    <div class="status normal" id="statusText">就绪：点击按钮开启设备</div>
+  </div>
+
+  <script>
+    // 获取页面元素
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const videoPreview = document.getElementById('videoPreview');
+    const volumeBar = document.getElementById('volumeBar');
+    const statusText = document.getElementById('statusText');
+
+    // 全局变量：存储媒体流（摄像头+麦克风）、音频分析器
+    let mediaStream = null;
+    let audioContext = null;
+    let analyser = null;
+    let volumeTimer = null;
+
+    // 1. 开启摄像头和麦克风的核心方法
+    async function startMedia() {
+      try {
+        // 定义要获取的媒体设备约束：开启摄像头+开启麦克风
+        const mediaConstraints = {
+          video: true,  // true=开启摄像头，可配置分辨率 { width: { ideal: 1280 }, height: { ideal: 720 } }
+          audio: true   // true=开启麦克风
+        };
+
+        // 核心API：调用设备，获取媒体流（摄像头视频流+麦克风音频流）
+        mediaStream = await navigator.mediaDevices.getUserMedia(mediaConstraints);
+        
+        // 将媒体流赋值给video标签，实现摄像头预览
+        videoPreview.srcObject = mediaStream;
+
+        // 初始化麦克风音量检测
+        initAudioVolumeDetection();
+
+        // 更新页面状态
+        updateStatus('success', '✅ 设备已开启：摄像头+麦克风正常工作');
+        startBtn.style.display = 'none';
+        stopBtn.style.display = 'inline-block';
+
+      } catch (error) {
+        // 捕获所有可能的错误，给出友好提示
+        let errMsg = '❌ 开启失败：';
+        switch (error.name) {
+          case 'NotAllowedError':
+            errMsg += '你拒绝了摄像头/麦克风权限，请在浏览器地址栏授权后重试';
+            break;
+          case 'NotFoundError':
+            errMsg += '未检测到摄像头或麦克风设备，请确认设备已连接';
+            break;
+          case 'NotReadableError':
+            errMsg += '设备被占用中，无法打开（可能被其他软件占用）';
+            break;
+          default:
+            errMsg += error.message;
+        }
+        updateStatus('error', errMsg);
+        console.error('媒体设备错误：', error);
+      }
+    }
+
+    // 2. 停止摄像头和麦克风的核心方法
+    function stopMedia() {
+      if (mediaStream) {
+        // 关键：遍历所有媒体轨道并停止，彻底释放设备资源
+        mediaStream.getTracks().forEach(track => {
+          track.stop();
+        });
+        mediaStream = null;
+      }
+
+      // 停止音量检测，释放音频资源
+      if (volumeTimer) clearInterval(volumeTimer);
+      if (audioContext) audioContext.close();
+      audioContext = null;
+      analyser = null;
+
+      // 清空视频预览
+      videoPreview.srcObject = null;
+      volumeBar.style.width = '0%';
+
+      // 更新页面状态
+      updateStatus('normal', '就绪：点击按钮开启设备');
+      startBtn.style.display = 'inline-block';
+      stopBtn.style.display = 'none';
+    }
+
+    // 3. 初始化麦克风音量检测与可视化
+    function initAudioVolumeDetection() {
+      // 创建音频上下文
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      // 创建音频分析器，用于获取音量数据
+      analyser = audioContext.createAnalyser();
+      analyser.fftSize = 256; // 采样精度，值越小越灵敏
+
+      // 将麦克风的音频流接入音频分析器
+      const audioSource = audioContext.createMediaStreamSource(mediaStream);
+      audioSource.connect(analyser);
+
+      // 定时检测音量并更新进度条（每秒检测30次，流畅无卡顿）
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      volumeTimer = setInterval(() => {
+        analyser.getByteFrequencyData(dataArray);
+        // 计算平均音量值
+        const average = dataArray.reduce((sum, val) => sum + val, 0) / bufferLength;
+        // 将音量值映射到进度条宽度（0-100%）
+        const volumePercent = Math.min(Math.max(average / 2.55, 0), 100);
+        volumeBar.style.width = `${volumePercent}%`;
+      }, 33);
+    }
+
+    // 4. 页面状态更新工具方法
+    function updateStatus(type, text) {
+      statusText.textContent = text;
+      statusText.className = `status ${type}`;
+    }
+
+    // 绑定按钮点击事件
+    startBtn.addEventListener('click', startMedia);
+    stopBtn.addEventListener('click', stopMedia);
+
+    // 页面关闭时自动停止设备，防止内存泄漏
+    window.addEventListener('beforeunload', stopMedia);
+  </script>
+</body>
+</html>
