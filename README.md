@@ -1,27 +1,39 @@
-# 浩天个人站2.0
+# Personal Blog Website
 
-## 介绍
-浩天的个人网站（个人博客）
+## Project Overview
+This personal blog website serves as a platform for sharing thoughts, ideas, and experiences. It is designed to be user-friendly and visually appealing, providing a great experience for both the content creator and the visitors.
 
-## 软件架构
-- web前端静态页面，纯html、css、JavaScript编写完成
+## Features
+- Responsive design
+- User authentication
+- Commenting system
+- Categories for blog posts
+- Search functionality
+- Admin panel for content management
 
+## Tech Stack
+- **Front-end:** HTML, CSS, JavaScript, React
+- **Back-end:** Node.js, Express
+- **Database:** MongoDB
+- **Hosting:** GitHub Pages / Heroku
 
-## 安装教程
+## Installation
+1. Clone the repository using `git clone https://github.com/liuhaotian1122/my-pages.git`
+2. Navigate to the project directory: `cd my-pages`
+3. Install dependencies: `npm install`
+4. Run the application: `npm start`
 
-1.  博客部署
-2.  不需要额外安装
-3.  可安装独立app进行访问
+## Usage Guide
+- Open your browser and go to `http://localhost:3000` to view the blog.
+- Users can register, log in, and start creating content.
+- Admins can manage posts and comments from the admin panel.
 
-## 使用说明
+## Contribution Guidelines
+1. Fork the repository.
+2. Create a new branch for your feature: `git checkout -b feature/MyFeature`
+3. Make your changes and commit them.
+4. Push to the branch: `git push origin feature/MyFeature`
+5. Create a pull request.
 
-*  **[下载连接，请点击下载体验](http://liuhaotian1122.gitee.io/download/)**
-
-
-## 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
