@@ -1312,7 +1312,8 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.length > 0) {
-                        return data;
+                        // 合并：后端数据在前，原有静态数据在后
+                        return [...data, ...defaultExperienceData];
                     }
                 }
             } catch (error) {

@@ -37,6 +37,7 @@
     <![endif]-->
     <script src="assets/js/amazeui.min.js"></script>
     <script src="js/public.js"></script>
+    <script src="js/api-config.js"></script>
 </head>
 <body>
 
@@ -50,91 +51,8 @@
         <i class="am-icon-angle-right"></i>
     </div>
     <div class="am-container" >
-        <ul class="am-avg-sm-2 am-avg-md-3 am-avg-lg-6 am-thumbnails" id="topface">
-            <li>
-                <a href="https://www.yikm.net/play?id=3501&n=L2Zjcm9tL2R6bXgvU3VwZXIgTWFyaW8gQnJvcy4gKFcpIFshXS5uZXM=&t=%E8%B6%85%E7%BA%A7%E9%A9%AC%E9%87%8C%E5%A5%A5">
-                <div class="ctl active">
-                    <img src="Temp-images/game/shuzi.jpg">
-                    <h3>超级玛丽</h3>
-                    
-                </div>
-                <button type="button" class="am-btn am-btn-primary">进入游戏</button>
-                </a>
-            </li>
-            <li>
-                <a href="https://game.ur1.fun/tetris/">
-                <div class="ctl">
-                    <img src="https://game.ur1.fun/tetris/favicon.png">
-                    <h3>俄罗斯方块</h3>
-                </div>
-                <button type="button" class="am-btn am-btn-default">进入游戏</button>
-                </a>
-            </li>
-            <li>
-                <a href="https://tool.liumingye.cn/watermelon/">
-                    <div class="ctl">
-                        <img src="Temp-images/game/dxg.jpg">
-                        <h3>合成大西瓜</h3>
-                    </div>
-                    <button type="button" class="am-btn am-btn-default">进入游戏</button>
-                </a>
-            </li>
-            <li>
-                <a href="https://game.ur1.fun/plane-wars/">
-                    <div class="ctl">
-                        <img src="https://game.ur1.fun/plane-wars/favicon.png">
-                        <h3>飞机大战</h3>
-                    </div>
-                    <button type="button" class="am-btn am-btn-default">进入游戏</button>
-                </a>
-            </li>
-			
-			<li>
-			    <a href="https://game.ur1.fun/poker/">
-			        <div class="ctl">
-			            <img src="https://game.ur1.fun/poker/favicon.png">
-			            <h3>纸牌</h3>
-			        </div>
-			        <button type="button" class="am-btn am-btn-default">进入游戏</button>
-			    </a>
-			</li>
-			<li>
-			    <a href="https://game.ur1.fun/flaser-bird/">
-			        <div class="ctl">
-			            <img src="https://game.ur1.fun/flaser-bird/favicon.png">
-			            <h3>压扁小鸟</h3>
-			        </div>
-			        <button type="button" class="am-btn am-btn-default">进入游戏</button>
-			    </a>
-			</li>
-			<li>
-			    <a href="https://game.ur1.fun/looptap/">
-			        <div class="ctl">
-			            <img src="https://game.ur1.fun/looptap/favicon.png">
-			            <h3>looptap</h3>
-			        </div>
-			        <button type="button" class="am-btn am-btn-default">进入游戏</button>
-			    </a>
-			</li>
-			
-			<li>
-			    <a href="https://game.ur1.fun/stack/">
-			        <div class="ctl">
-			            <img src="https://game.ur1.fun/stack/favicon.png">
-			            <h3>叠砖块</h3>
-			        </div>
-			        <button type="button" class="am-btn am-btn-default">进入游戏</button>
-			    </a>
-			</li>
-            <li>
-                <a href="https://www.yikm.net/">
-                    <div class="ctl">
-                        <img src="Temp-images/game/poki.jpg">
-                        <h3>小霸王游戏</h3>
-                    </div>
-                    <button type="button" class="am-btn am-btn-default">进入游戏</button>
-                </a>
-            </li>
+                <ul class="am-avg-sm-2 am-avg-md-3 am-avg-lg-6 am-thumbnails" id="topface">
+            <!-- 顶部游戏卡片将通过JS动态生成 -->
         </ul>
 
     </div>
@@ -142,416 +60,142 @@
 </div>
 
 <script>
-    var countnum=8 //一共多少个图 例如6个请输入5
-    $("#leftbtn").click(function(){
-        var temp_href=$("#topface li:eq(0) a").attr("href");
-        var temp_img=$("#topface li:eq(0) img").attr("src");
-        var temp_h3=$("#topface li:eq(0) h3").html();
-        var temp_p=$("#topface li:eq(0) p").html();
+    // 默认静态游戏数据
+    var staticGames = [
+        { title: '超级玛丽', url: 'https://www.yikm.net/play?id=3501&n=L2Zjcm9tL2R6bXgvU3VwZXIgTWFyaW8gQnJvcy4gKFcpIFshXS5uZXM=&t=%E8%B6%85%E7%BA%A7%E9%A9%AC%E9%87%8C%E5%A5%A5', icon: 'Temp-images/game/shuzi.jpg', desc: '回味童年，原汁原味的像素游戏（可开启作弊）！', featured: true },
+        { title: '俄罗斯方块', url: 'https://game.ur1.fun/tetris/', icon: 'https://game.ur1.fun/tetris/favicon.png', desc: '俄罗斯方块游戏机' },
+        { title: '合成大西瓜', url: 'https://tool.liumingye.cn/watermelon/', icon: 'Temp-images/game/dxg.jpg', desc: '两个较小的水果相撞即可合成更大的水果。' },
+        { title: '飞机大战', url: 'https://game.ur1.fun/plane-wars/', icon: 'https://game.ur1.fun/plane-wars/favicon.png', desc: '微信经典飞机大战' },
+        { title: '纸牌', url: 'https://game.ur1.fun/poker/', icon: 'https://game.ur1.fun/poker/favicon.png', desc: 'Windows 纸牌游戏同款玩法' },
+        { title: '压扁小鸟', url: 'https://game.ur1.fun/flaser-bird/', icon: 'https://game.ur1.fun/flaser-bird/favicon.png', desc: '跳不过就压扁！' },
+        { title: 'looptap', url: 'https://game.ur1.fun/looptap/', icon: 'https://game.ur1.fun/looptap/favicon.png', desc: '消磨时间的小游戏，把球停在有颜色区域' },
+        { title: '叠砖块', url: 'https://game.ur1.fun/stack/', icon: 'https://game.ur1.fun/stack/favicon.png', desc: '试试你能叠多高' },
+        { title: '小霸王游戏', url: 'https://www.yikm.net/', icon: 'Temp-images/game/poki.jpg', desc: '小霸王游戏网站，您可以免费几百个游戏！' },
+        { title: 'mikutap', url: 'https://toolwa.com/mikutap/', icon: 'https://i.postimg.cc/HxbdT88W/favicon.png', desc: '每格区域对应一个声音，随意点击发出不一样的歌曲。' },
+        { title: '奔跑吧兔子', url: 'https://game.ur1.fun/hop/', icon: 'https://game.ur1.fun/hop/favicon.png', desc: '神庙逃亡风格的跑酷游戏' },
+        { title: '架子鼓模拟器', url: 'https://toolwa.com/durms/', icon: 'https://toolwa.com/durms/favicon.png', desc: '架子鼓是一套以鼓为主的组合性打击乐器' },
+        { title: 'AI 五子棋', url: 'https://game.ur1.fun/gomoku/', icon: 'https://game.ur1.fun/gomoku/favicon.png', desc: '试试你能打得过 AI 吗' }
+    ];
 
-        for (i=0; i<countnum; i++){
-            var n=i+1;
-            $("#topface li:eq("+i+") a").attr('href',$("#topface li:eq("+n+") a").attr("href"));
-            $("#topface li:eq("+i+") img").attr('src',$("#topface li:eq("+n+") img").attr("src"));
-            $("#topface li:eq("+i+") h3").html($("#topface li:eq("+n+") h3").html());
-            $("#topface li:eq("+i+") p").html($("#topface li:eq("+n+") p").html());
-        };
-        $("#topface li:eq("+countnum+") a").attr('href',temp_href);
-        $("#topface li:eq("+countnum+") img").attr('src',temp_img);
-        $("#topface li:eq("+countnum+") h3").html(temp_h3);
-        $("#topface li:eq("+countnum+") p").html(temp_p);
-    });
-    $("#rightbtn").click(function(){
-        var temp_href=$("#topface li:eq("+countnum+") a").attr("href");
-        var temp_img=$("#topface li:eq("+countnum+") img").attr("src");
-        var temp_h3=$("#topface li:eq("+countnum+") h3").html();
-        var temp_p=$("#topface li:eq("+countnum+") p").html();
+    // 渲染顶部卡片
+    function renderTopFace(games) {
+        var html = games.map(function(g, i) {
+            var activeClass = i === 0 ? ' active' : '';
+            var btnClass = i === 0 ? 'am-btn-primary' : 'am-btn-default';
+            return '<li>' +
+                '<a href="' + g.url + '">' +
+                '<div class="ctl' + activeClass + '">' +
+                    '<img src="' + (g.icon || '') + '" onerror="this.src=\'Temp-images/game/poki.jpg\'">' +
+                    '<h3>' + g.title + '</h3>' +
+                '</div>' +
+                '<button type="button" class="am-btn ' + btnClass + '">进入游戏</button>' +
+                '</a></li>';
+        }).join('');
+        $('#topface').html(html);
+    }
 
-        for (i=countnum; i>0; i--){
-            var n=i-1;
-            $("#topface li:eq("+i+") a").attr('href',$("#topface li:eq("+n+") a").attr("href"));
-            $("#topface li:eq("+i+") img").attr('src',$("#topface li:eq("+n+") img").attr("src"));
-            $("#topface li:eq("+i+") h3").html($("#topface li:eq("+n+") h3").html());
-            $("#topface li:eq("+i+") p").html($("#topface li:eq("+n+") p").html());
-        };
-        $("#topface li:eq(0) a").attr('href',temp_href);
-        $("#topface li:eq(0) img").attr('src',temp_img);
-        $("#topface li:eq(0) h3").html(temp_h3);
-        $("#topface li:eq(0) p").html(temp_p);
-    });
+    // 渲染底部详细列表
+    function renderCattlist(games) {
+        var html = games.map(function(g, i) {
+            var btnClass = i % 2 === 0 ? 'am-btn-warning' : 'am-btn-default';
+            return '<li>' +
+                '<div class="cattlist_0">' +
+                    '<div class="cattlist_1">' +
+                        '<div class="am-g">' +
+                            '<div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">' +
+                                '<div class="am-vertical-align-middle">' +
+                                    '<img src="' + (g.icon || '') + '" onerror="this.src=\'Temp-images/game/poki.jpg\'">' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="am-u-sm-8 am-u-md-7 am-u-lg-7">' +
+                                '<h3>' + g.title + '</h3>' +
+                                '<h4>&nbsp;' + (g.desc || '') + '</h4>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="cattlist_3">' +
+                        '<a href="' + g.url + '">' +
+                        '<button type="button" class="am-btn ' + btnClass + '">' +
+                            '<i class="am-icon-plus"></i> 进入游戏' +
+                        '</button></a>' +
+                    '</div>' +
+                '</div>' +
+            '</li>';
+        }).join('');
+        $('#cattlistUl').html(html);
+    }
+
+    // 初始化：先渲染静态数据，再异步加载后端动态数据
+    renderTopFace(staticGames);
+    renderCattlist(staticGames);
+
+    // 轮播切换逻辑
+    var countnum = staticGames.length - 1;
+    function bindCarousel() {
+        $('#leftbtn').off('click').on('click', function() {
+            var temp_href = $('#topface li:eq(0) a').attr('href');
+            var temp_img = $('#topface li:eq(0) img').attr('src');
+            var temp_h3 = $('#topface li:eq(0) h3').html();
+            for (var i = 0; i < countnum; i++) {
+                var n = i + 1;
+                $('#topface li:eq(' + i + ') a').attr('href', $('#topface li:eq(' + n + ') a').attr('href'));
+                $('#topface li:eq(' + i + ') img').attr('src', $('#topface li:eq(' + n + ') img').attr('src'));
+                $('#topface li:eq(' + i + ') h3').html($('#topface li:eq(' + n + ') h3').html());
+            }
+            $('#topface li:eq(' + countnum + ') a').attr('href', temp_href);
+            $('#topface li:eq(' + countnum + ') img').attr('src', temp_img);
+            $('#topface li:eq(' + countnum + ') h3').html(temp_h3);
+        });
+        $('#rightbtn').off('click').on('click', function() {
+            var temp_href = $('#topface li:eq(' + countnum + ') a').attr('href');
+            var temp_img = $('#topface li:eq(' + countnum + ') img').attr('src');
+            var temp_h3 = $('#topface li:eq(' + countnum + ') h3').html();
+            for (var i = countnum; i > 0; i--) {
+                var n = i - 1;
+                $('#topface li:eq(' + i + ') a').attr('href', $('#topface li:eq(' + n + ') a').attr('href'));
+                $('#topface li:eq(' + i + ') img').attr('src', $('#topface li:eq(' + n + ') img').attr('src'));
+                $('#topface li:eq(' + i + ') h3').html($('#topface li:eq(' + n + ') h3').html());
+            }
+            $('#topface li:eq(0) a').attr('href', temp_href);
+            $('#topface li:eq(0) img').attr('src', temp_img);
+            $('#topface li:eq(0) h3').html(temp_h3);
+        });
+    }
+    bindCarousel();
+
+    // 异步加载后端动态游戏数据
+    if (typeof apiUrl === 'function') {
+        fetch(apiUrl('/api/public/game')).then(function(res) { return res.json(); }).then(function(dynamicGames) {
+            if (dynamicGames && dynamicGames.length > 0) {
+                var formatted = dynamicGames.map(function(item) {
+                    return {
+                        title: item.title || '未知游戏',
+                        url: item.location || '#',
+                        icon: (item.images && item.images[0]) || '',
+                        desc: item.content || ''
+                    };
+                });
+                // 合并：后端数据在前，静态数据在后
+                var allGames = formatted.concat(staticGames);
+                renderTopFace(allGames);
+                renderCattlist(allGames);
+                countnum = allGames.length - 1;
+                bindCarousel();
+            }
+        }).catch(function(err) {
+            console.error('加载动态游戏数据失败:', err);
+        });
+    }
 </script>
 <div id="cattit">
         <h3><a href="#">小游戏专栏,赶快试一试吧！</a></h3>
 </div>
 <hr data-am-widget="divider" style="" class="am-divider am-divider-default" />
 <div id="cattlist" class="am-container">
-    <ul class="am-avg-sm-1 am-avg-md-3 am-avg-lg-4">
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="Temp-images/game/shuzi.jpg">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>超级玛丽</h3>
-                            <h4>&nbsp;回味童年，原汁原味的像素游戏（可开启作弊）！</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://www.yikm.net/play?id=3501&n=L2Zjcm9tL2R6bXgvU3VwZXIgTWFyaW8gQnJvcy4gKFcpIFshXS5uZXM=&t=%E8%B6%85%E7%BA%A7%E9%A9%AC%E9%87%8C%E5%A5%A5">
-                    <button type="button" class="am-btn am-btn-warning">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://game.ur1.fun/tetris/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>俄罗斯方块</h3>
-                            <h4>&nbsp;  俄罗斯方块游戏机</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://game.ur1.fun/tetris/">
-                    <button type="button" class="am-btn am-btn-default">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-
-
-
-
-
-
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="Temp-images/game/dxg.jpg">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>合成大西瓜</h3>
-                            <h4>&nbsp;
-							两个较小的水果相撞即可合成更大的水果。</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://tool.liumingye.cn/watermelon/">
-                    <button type="button" class="am-btn am-btn-warning">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://game.ur1.fun/plane-wars/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>飞机大战</h3>
-                            <h4>&nbsp;  微信经典飞机大战</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://game.ur1.fun/plane-wars/">
-                    <button type="button" class="am-btn am-btn-default">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://game.ur1.fun/stack/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>叠砖块</h3>
-                            <h4>&nbsp;试试你能叠多高</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://game.ur1.fun/stack/">
-                    <button type="button" class="am-btn am-btn-warning">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://i.postimg.cc/HxbdT88W/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>mikutap</h3>
-                            <h4>&nbsp;  每格区域对应一个声音，随意点击发出不一样的歌曲。</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://toolwa.com/mikutap/">
-                    <button type="button" class="am-btn am-btn-default">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-
-
- <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://game.ur1.fun/poker/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>纸牌</h3>
-                            <h4>&nbsp; Windows 纸牌游戏同款玩法</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://game.ur1.fun/poker/">
-                    <button type="button" class="am-btn am-btn-warning">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://game.ur1.fun/hop/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>奔跑吧兔子</h3>
-                            <h4>&nbsp;  神庙逃亡风格的跑酷游戏</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://game.ur1.fun/hop/">
-                    <button type="button" class="am-btn am-btn-default">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-
- <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://game.ur1.fun/looptap/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>looptap</h3>
-                            <h4>&nbsp; 消磨时间的小游戏，把球停在有颜色区域</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://game.ur1.fun/looptap/">
-                    <button type="button" class="am-btn am-btn-warning">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://toolwa.com/durms/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>架子鼓模拟器</h3>
-                            <h4>&nbsp;  架子鼓是一套以鼓为主的组合性打击乐器</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://toolwa.com/durms/">
-                    <button type="button" class="am-btn am-btn-default">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-
- <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://game.ur1.fun/flaser-bird/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>压扁小鸟</h3>
-                            <h4>&nbsp; 跳不过就压扁！</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://game.ur1.fun/flaser-bird/">
-                    <button type="button" class="am-btn am-btn-warning">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="Temp-images/game/poki.jpg">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>小霸王游戏</h3>
-                            <h4>&nbsp;  小霸王游戏网站，您可以免费几百个游戏！</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://www.yikm.net/">
-                    <button type="button" class="am-btn am-btn-default">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
-
-
-        <li>
-            <div class="cattlist_0">
-                <div class="cattlist_1">
-                    <div class="am-g">
-
-                        <div class="am-u-sm-4 am-u-md-5 am-u-lg-5 am-vertical-align">
-                            <div class="am-vertical-align-middle">
-                                <img src="https://game.ur1.fun/gomoku/favicon.png">
-                            </div>
-                        </div>
-                        <div class="am-u-sm-8 am-u-md-7 am-u-lg-7">
-
-                            <h3>AI 五子棋</h3>
-                            <h4>&nbsp; 试试你能打得过 AI 吗</h4>
-                        </div>
-                    </div>
-                </div>
-                <div class="cattlist_3">
-					<a href="https://game.ur1.fun/gomoku/">
-                    <button type="button" class="am-btn am-btn-warning">
-                        <i class="am-icon-plus"></i>
-                        进入游戏
-                    </button></a>
-                </div>
-            </div>
-        </li>
+    <ul class="am-avg-sm-1 am-avg-md-3 am-avg-lg-4" id="cattlistUl">
+        <!-- 游戏详细列表将通过JS动态生成 -->
+    </ul>
+</div>
 
 
 
