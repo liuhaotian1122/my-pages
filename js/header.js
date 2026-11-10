@@ -29,6 +29,7 @@ document.write(`
                 <li><a href="game.html">游戏</a></li>
                 <li><a href="最近更新.html">更新</a></li>
                 <li><a href="https://support.qq.com/product/374554">论坛</a></li>
+                <li><a href="https://haotian-site.pages.dev/content-manager.html">后台</a></li>
             </ul>
             <div class="am-topbar-right">
                 <a href="https://www.lanzouw.com/b02oefvsf"><button
