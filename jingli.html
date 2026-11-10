@@ -936,6 +936,7 @@
 </head>
 
 <body>
+<script src="js/api-config.js"></script>
 <script src="js/header.js"></script>
 
     <!-- 搜索框 -->
@@ -1304,21 +1305,24 @@
 
         ];
 
-        // 从localStorage加载数据，如果没有则使用默认数据
-        function loadExperienceData() {
+        // 从后端API加载数据，如果API不可用则降级使用默认数据
+        async function loadExperienceData() {
             try {
-                const savedData = localStorage.getItem('workData');
-                if (savedData) {
-                    return JSON.parse(savedData);
+                const res = await fetch(apiUrl('/api/public/experience'));
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        return data;
+                    }
                 }
             } catch (error) {
-                console.error('加载保存的数据失败:', error);
+                console.error('从后端加载失败，使用默认数据:', error);
             }
             return [...defaultExperienceData];
         }
 
-        // 经历数据
-        let experienceData = loadExperienceData();
+        // 经历数据（先用默认数据初始化，DOMContentLoaded时再异步更新）
+        let experienceData = [...defaultExperienceData];
 
 
 
@@ -1894,10 +1898,19 @@
             });
         }
 
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', () => {
-            // 初始化分页功能
-            window.experiencePagination = new ExperiencePagination();
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', async () => {
+// 异步从后端加载数据
+try {
+    const apiData = await loadExperienceData();
+    if (apiData && apiData.length > 0) {
+        experienceData = apiData;
+    }
+} catch (e) {
+    console.error('加载数据异常:', e);
+}
+// 初始化分页功能
+window.experiencePagination = new ExperiencePagination();
 
             // 初始化图片查看器
             window.imageViewer = new ImageViewer();

@@ -349,6 +349,72 @@
             justify-content: flex-end;
         }
 
+        /* 登录页面样式 */
+        .login-overlay {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .login-box h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+
+        .login-box .form-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        .login-box .btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .user-bar {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 10px 20px;
+            gap: 15px;
+        }
+
+        .user-bar .user-name {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            padding: 6px 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #f8f9fa;
+            border-color: #999;
+        }
+
         @media (max-width: 768px) {
             .tab-nav {
                 flex-wrap: wrap;
@@ -393,10 +459,34 @@
 </head>
 
 <body>
-    <div class="container">
+
+    <!-- 登录页面 -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <h2>🔐 管理员登录</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>用户名</label>
+                    <input type="text" id="loginUsername" placeholder="输入用户名" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="loginPassword" placeholder="输入密码" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary">登录</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 管理主界面 -->
+    <div id="adminPanel" class="container" style="display: none;">
+        <div class="user-bar">
+            <span class="user-name" id="userDisplay"></span>
+            <button class="logout-btn" onclick="logout()">退出登录</button>
+        </div>
         <div class="header">
             <h1>📝 内容管理系统</h1>
-            <p>统一管理工作、经历、美食、琐碎内容</p>
+            <p>统一管理工作、经历、美食、琐碎内容（数据已同步到后端数据库）</p>
         </div>
         <div class="main-card">
             <div class="stats-bar">
@@ -441,7 +531,6 @@
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加工作记录</button>
                         <button type="button" class="btn btn-success" onclick="generateCode('work')">生成代码</button>
-                        <button type="button" class="btn btn-info" onclick="insertDataToPage('work')">插入到页面</button>
                         <button type="button" class="btn btn-danger" onclick="clearData('work')">清空数据</button>
                     </div>
                 </form>
@@ -465,8 +554,6 @@
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加经历记录</button>
                         <button type="button" class="btn btn-success" onclick="generateCode('experience')">生成代码</button>
-                        <button type="button" class="btn btn-info"
-                            onclick="insertDataToPage('experience')">插入到页面</button>
                         <button type="button" class="btn btn-danger" onclick="clearData('experience')">清空数据</button>
                     </div>
                 </form>
@@ -490,7 +577,6 @@
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加美食记录</button>
                         <button type="button" class="btn btn-success" onclick="generateCode('food')">生成代码</button>
-                        <button type="button" class="btn btn-info" onclick="insertDataToPage('food')">插入到页面</button>
                         <button type="button" class="btn btn-danger" onclick="clearData('food')">清空数据</button>
                     </div>
                 </form>
@@ -513,7 +599,6 @@
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加琐碎记录</button>
                         <button type="button" class="btn btn-success" onclick="generateCode('suosui')">生成代码</button>
-                        <button type="button" class="btn btn-info" onclick="insertDataToPage('suosui')">插入到页面</button>
                         <button type="button" class="btn btn-danger" onclick="clearData('suosui')">清空数据</button>
                     </div>
                 </form>
@@ -541,29 +626,157 @@
         </div>
     </div>
 
-    <script>
+<script src="js/api-config.js"></script>
+<script>
+// ========== 全局状态 ==========
         let data = { work: [], experience: [], food: [], suosui: [] };
         let currentTab = 'work';
+        let authToken = localStorage.getItem('authToken') || '';
 
-        function loadData() {
-            try {
-                data.work = JSON.parse(localStorage.getItem('contentWork') || '[]');
-                data.experience = JSON.parse(localStorage.getItem('contentExperience') || '[]');
-                data.food = JSON.parse(localStorage.getItem('contentFood') || '[]');
-                data.suosui = JSON.parse(localStorage.getItem('contentSuosui') || '[]');
-            } catch (error) { console.error('加载数据失败:', error); }
+        // ========== API 工具函数 ==========
+
+        /**
+         * 获取带认证头的 fetch 配置
+         */
+        function authFetchOptions(method = 'GET', body = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+            if (authToken) {
+                options.headers['Authorization'] = 'Bearer ' + authToken;
+            }
+            if (body) {
+                options.body = JSON.stringify(body);
+            }
+            return options;
         }
 
-        function saveData(type) {
-            try {
-                localStorage.setItem('content' + type.charAt(0).toUpperCase() + type.slice(1), JSON.stringify(data[type]));
-            } catch (error) { console.error('保存数据失败:', error); }
+        /**
+         * 统一的 API 请求函数，自动处理 401 跳转登录
+         */
+        async function apiRequest(url, method = 'GET', body = null) {
+            const options = authFetchOptions(method, body);
+            const res = await fetch(apiUrl(url), options);
+            if (res.status === 401) {
+                // token 失效，跳转登录
+                showLoginPanel();
+                throw new Error('认证已过期，请重新登录');
+            }
+            const result = await res.json();
+            if (!res.ok) {
+                throw new Error(result.error || '请求失败');
+            }
+            return result;
         }
 
-        function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+        // ========== 登录/认证 ==========
+
+        /**
+         * 检查登录状态
+         */
+        async function checkAuth() {
+            if (!authToken) {
+                showLoginPanel();
+                return;
+            }
+            try {
+                const result = await apiRequest('/api/auth/verify');
+                if (result.valid) {
+                    showAdminPanel(result.user.username);
+                    await loadAllData();
+                } else {
+                    showLoginPanel();
+                }
+            } catch (error) {
+                console.error('验证失败:', error);
+                showLoginPanel();
+            }
+        }
+
+        /**
+         * 显示登录页面
+         */
+        function showLoginPanel() {
+            document.getElementById('loginOverlay').style.display = 'flex';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        /**
+         * 显示管理面板
+         */
+        function showAdminPanel(username) {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('userDisplay').textContent = '👤 ' + username;
+        }
+
+        /**
+         * 登录表单提交
+         */
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const res = await fetch(apiUrl('/api/auth/login'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const result = await res.json();
+                if (!res.ok) {
+                    showNotification(result.error || '登录失败', 'error');
+                    return;
+                }
+                authToken = result.token;
+                localStorage.setItem('authToken', authToken);
+                showAdminPanel(result.user.username);
+                await loadAllData();
+                showNotification('登录成功！', 'success');
+            } catch (error) {
+                showNotification('登录失败：' + error.message, 'error');
+            }
+        });
+
+        /**
+         * 退出登录
+         */
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                authToken = '';
+                localStorage.removeItem('authToken');
+                showLoginPanel();
+                showNotification('已退出登录', 'info');
+            }
+        }
+
+        // ========== 数据加载/保存（后端 API） ==========
+
+        /**
+         * 从后端加载所有内容数据
+         */
+        async function loadAllData() {
+            try {
+                const [work, experience, food, suosui] = await Promise.all([
+                    apiRequest('/api/content/work').catch(() => []),
+                    apiRequest('/api/content/experience').catch(() => []),
+                    apiRequest('/api/content/food').catch(() => []),
+                    apiRequest('/api/content/suosui').catch(() => [])
+                ]);
+                data = { work, experience, food, suosui };
+                updateStats();
+                renderList(currentTab);
+            } catch (error) {
+                console.error('加载数据失败:', error);
+            }
+        }
+
         function formatDate(date) { return new Date(date).toLocaleString('zh-CN'); }
 
-        // 获取当前时间的格式化字符串
         function getCurrentTime() {
             const now = new Date();
             const year = now.getFullYear();
@@ -572,7 +785,6 @@
             return `${year}.${month}.${day}`;
         }
 
-        // 获取当前日期的格式化字符串（用于琐碎记录）
         function getCurrentDate() {
             const now = new Date();
             const year = now.getFullYear();
@@ -581,11 +793,9 @@
             return `${year}-${month}-${day}`;
         }
 
-        // 设置表单默认值
         function setFormDefaults(tabName) {
             const currentTime = getCurrentTime();
             const currentDate = getCurrentDate();
-            
             switch (tabName) {
                 case 'work':
                     document.getElementById('workTitle').value = '工作记录-';
@@ -620,8 +830,6 @@
             if (tabIndex !== -1 && buttons[tabIndex]) buttons[tabIndex].classList.add('active');
             currentTab = tabName;
             renderList(tabName);
-            
-            // 设置当前标签页的默认值
             setFormDefaults(tabName);
         }
 
@@ -649,29 +857,14 @@
         }
 
         function generateItemHTML(type, item) {
-            const resetButton = item.inserted 
-                ? '<button class="btn btn-sm btn-success" onclick="resetInsertStatus(\'' + type + '\', \'' + item.id + '\')">重置状态</button>' 
-                : '';
-            return '<div class="data-item-header"><div class="data-item-title">' + item.title + '</div><div class="data-item-date">' + formatDate(item.createdAt) + '</div></div><div class="data-item-content">' + getItemContent(type, item) + '</div><div class="data-actions">' + resetButton + '<button class="btn btn-sm btn-danger" onclick="deleteItem(\'' + type + '\', \'' + item.id + '\')">删除</button></div>';
-        }
-
-        function resetInsertStatus(type, id) {
-            if (confirm('确定要重置这条记录的插入状态吗？重置后可以重新插入。')) {
-                const item = data[type].find(dataItem => dataItem.id === id);
-                if (item) {
-                    item.inserted = false;
-                    saveData(type);
-                    renderList(type);
-                    showNotification('插入状态已重置！', 'success');
-                }
-            }
+            return '<div class="data-item-header"><div class="data-item-title">' + item.title + '</div><div class="data-item-date">' + formatDate(item.createdAt || item.created_at) + '</div></div><div class="data-item-content">' + getItemContent(type, item) + '</div><div class="data-actions"><button class="btn btn-sm btn-danger" onclick="deleteItem(\'' + type + '\', ' + item.id + ')">删除</button></div>';
         }
 
         function getItemContent(type, item) {
-            const insertedStatus = item.inserted 
-                ? '<p><strong>状态:</strong> <span style="color: #28a745;">✅ 已插入</span></p>' 
-                : '<p><strong>状态:</strong> <span style="color: #dc3545;">⏳ 未插入</span></p>';
-                
+            const statusBadge = item.status === 'published'
+                ? '<p><strong>状态:</strong> <span style="color: #28a745;">✅ 已发布</span></p>'
+                : '<p><strong>状态:</strong> <span style="color: #dc3545;">📝 草稿</span></p>';
+
             switch (type) {
                 case 'work':
                 case 'experience':
@@ -679,94 +872,54 @@
                     const imageInfo = item.images && item.images.length > 0
                         ? `<p><strong>图片:</strong> ${item.images.length}张图片</p>`
                         : '<p><strong>图片:</strong> 无</p>';
-                    return '<p><strong>时间:</strong> ' + item.time + '</p><p><strong>地点:</strong> ' + (item.location || '无') + '</p><p><strong>内容:</strong> ' + (item.content || '无') + '</p>' + imageInfo + insertedStatus;
+                    return '<p><strong>时间:</strong> ' + (item.time || '无') + '</p><p><strong>地点:</strong> ' + (item.location || '无') + '</p><p><strong>内容:</strong> ' + (item.content || '无') + '</p>' + imageInfo + statusBadge;
                 case 'suosui':
-                    return '<p><strong>副标题:</strong> ' + (item.subtitle || '无') + '</p><p><strong>描述:</strong> ' + (item.description || '无') + '</p><p><strong>日期:</strong> ' + item.date + '</p><p><strong>视频:</strong> ' + (item.videoUrl ? '已设置' : '无') + '</p>' + insertedStatus;
+                    return '<p><strong>副标题:</strong> ' + (item.subtitle || '无') + '</p><p><strong>描述:</strong> ' + (item.content || item.description || '无') + '</p><p><strong>日期:</strong> ' + (item.date || '无') + '</p><p><strong>视频:</strong> ' + (item.videoUrl ? '已设置' : '无') + '</p>' + statusBadge;
                 default: return '<p>未知内容</p>';
             }
         }
 
-        function deleteItem(type, id) {
-            if (confirm('确定要删除这条记录吗？这将同时删除目标页面中对应的数据！')) {
-                // 找到要删除的记录
-                const itemToDelete = data[type].find(item => item.id === id);
-                if (!itemToDelete) {
-                    showNotification('未找到要删除的记录！', 'error');
-                    return;
-                }
-
-                // 从内容管理系统中删除
-                data[type] = data[type].filter(item => item.id !== id);
-                saveData(type);
-
-                // 如果记录已经插入过，也要从目标页面删除
-                if (itemToDelete.inserted) {
-                    deleteFromTargetPage(type, itemToDelete);
-                }
-
-                renderList(type); 
-                updateStats();
-                showNotification('记录删除成功！', 'info');
-            }
-        }
-
-        function deleteFromTargetPage(type, itemToDelete) {
+        /**
+         * 删除记录 —— 调用后端 API
+         */
+        async function deleteItem(type, id) {
+            if (!confirm('确定要删除这条记录吗？此操作不可恢复！')) return;
             try {
-                const storageKey = getTargetPageStorageKey(type);
-                let targetData = JSON.parse(localStorage.getItem(storageKey) || '[]');
-                
-                // 根据标题和时间匹配要删除的数据
-                const originalLength = targetData.length;
-                targetData = targetData.filter(targetItem => {
-                    // 匹配条件：标题和时间都相同
-                    const titleMatch = targetItem.title === itemToDelete.title;
-                    const timeMatch = targetItem.time === itemToDelete.time;
-                    
-                    // 对于琐碎记录，使用日期而不是时间
-                    if (type === 'suosui') {
-                        const dateMatch = targetItem.date === itemToDelete.date;
-                        return !(titleMatch && dateMatch);
-                    } else {
-                        return !(titleMatch && timeMatch);
-                    }
-                });
-
-                // 保存更新后的目标页面数据
-                localStorage.setItem(storageKey, JSON.stringify(targetData));
-                
-                const deletedCount = originalLength - targetData.length;
-                if (deletedCount > 0) {
-                    console.log(`已从目标页面删除 ${deletedCount} 条匹配的记录`);
-                } else {
-                    console.log('在目标页面中未找到匹配的记录');
-                }
+                await apiRequest('/api/content/' + type + '/' + id, 'DELETE');
+                data[type] = data[type].filter(item => item.id !== id);
+                renderList(type);
+                updateStats();
+                showNotification('记录删除成功！', 'success');
             } catch (error) {
-                console.error('从目标页面删除数据时出错:', error);
+                showNotification('删除失败：' + error.message, 'error');
             }
         }
 
-        function clearData(type) {
+        /**
+         * 清空数据 —— 逐条删除所有记录
+         */
+        async function clearData(type) {
             const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
-            if (confirm('确定要清空所有' + typeNames[type] + '数据吗？这将同时清空目标页面中对应的数据！此操作不可恢复！')) {
-                // 清空内容管理系统中的数据
-                data[type] = []; 
-                saveData(type); 
-                
-                // 同时清空目标页面中的数据
-                const storageKey = getTargetPageStorageKey(type);
-                localStorage.removeItem(storageKey);
-                console.log(`已清空目标页面数据，localStorage键: ${storageKey}`);
-                
-                renderList(type); 
+            if (!confirm('确定要清空所有' + typeNames[type] + '数据吗？此操作不可恢复！')) return;
+            try {
+                const promises = data[type].map(item =>
+                    apiRequest('/api/content/' + type + '/' + item.id, 'DELETE')
+                );
+                await Promise.all(promises);
+                data[type] = [];
+                renderList(type);
                 updateStats();
-                showNotification(typeNames[type] + '数据已清空（包括目标页面数据）！', 'info');
+                showNotification(typeNames[type] + '数据已全部清空！', 'success');
+            } catch (error) {
+                showNotification('清空失败：' + error.message, 'error');
+                await loadAllData();
             }
         }
 
         function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
             notification.style.cssText = `
-                position: fixed; top: 20px; right: 20px; z-index: 1000;
+                position: fixed; top: 20px; right: 20px; z-index: 3000;
                 padding: 15px 20px; border-radius: 10px; color: white;
                 background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#17a2b8'};
                 box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -781,155 +934,6 @@
             }, 3000);
         }
 
-        function insertDataToPage(type) {
-            if (data[type].length === 0) {
-                showNotification('没有数据可以插入！', 'error');
-                return;
-            }
-
-            // 筛选出未插入的数据
-            const uninsertedData = data[type].filter(item => !item.inserted);
-            
-            if (uninsertedData.length === 0) {
-                showNotification('所有数据都已经插入过了！', 'info');
-                return;
-            }
-
-            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
-            const fileName = type === 'suosui' ? 'suosui.html' :
-                type === 'experience' ? 'jingli.html' :
-                    type + '.html';
-
-            // 转换数据格式以匹配目标页面的数据结构
-            const convertedData = convertDataForPage(type, uninsertedData);
-            console.log(`准备插入${type}数据:`, convertedData);
-
-            // 获取目标页面现有的数据
-            const storageKey = getTargetPageStorageKey(type);
-            let existingData = [];
-            try {
-                existingData = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            } catch (error) {
-                console.error('读取现有数据失败:', error);
-            }
-
-            // 将新数据添加到现有数据前面
-            const mergedData = [...convertedData, ...existingData];
-            console.log(`合并后的${type}数据:`, mergedData);
-
-            // 直接保存到目标页面的localStorage中
-            localStorage.setItem(storageKey, JSON.stringify(mergedData));
-            console.log(`数据已保存到localStorage键: ${storageKey}`);
-
-            // 标记这些数据为已插入
-            uninsertedData.forEach(item => {
-                const originalItem = data[type].find(dataItem => dataItem.id === item.id);
-                if (originalItem) {
-                    originalItem.inserted = true;
-                }
-            });
-            
-            // 保存更新后的数据
-            saveData(type);
-            renderList(type);
-
-            // 打开对应页面（不需要传递插入标识，因为数据已经在localStorage中）
-            const targetUrl = fileName;
-            window.open(targetUrl, '_blank');
-
-            showNotification(`成功插入${uninsertedData.length}条未插入的${typeNames[type]}记录到${fileName}，数据已持久化保存`, 'success');
-        }
-
-        function getTargetPageStorageKey(type) {
-            // 根据目标页面的实际localStorage键名返回对应的键
-            switch (type) {
-                case 'work':
-                    return 'workData'; // work.html使用的localStorage键
-                case 'experience':
-                    return 'experienceData'; // jingli.html使用的localStorage键
-                case 'food':
-                    return 'foodData'; // food.html使用的localStorage键
-                case 'suosui':
-                    return 'suosuiData'; // suosui.html使用的localStorage键
-                default:
-                    return `${type}Data`;
-            }
-        }
-
-        function convertDataForPage(type, items) {
-            return items.map((item, index) => {
-                const baseId = Date.now() + index;
-
-                switch (type) {
-                    case 'work':
-                        return {
-                            id: baseId,
-                            title: item.title,
-                            time: item.time,
-                            location: item.location || item.content || '工作地点',
-                            images: item.images && item.images.length > 0 ? item.images : [],
-                            content: item.content || item.location || '工作内容描述'
-                        };
-
-                    case 'experience':
-                        return {
-                            id: baseId,
-                            title: item.title,
-                            time: item.time,
-                            location: item.location || item.content || '经历地点',
-                            images: item.images && item.images.length > 0 ? item.images : [],
-                            content: item.content || item.location || '经历内容描述'
-                        };
-
-                    case 'food':
-                        return {
-                            id: baseId,
-                            title: item.title,
-                            time: item.time,
-                            location: item.location || item.content || '美食地点',
-                            images: item.images && item.images.length > 0 ? item.images : [],
-                            content: item.content || item.location || '美食体验描述'
-                        };
-
-                    case 'suosui':
-                        return {
-                            id: baseId,
-                            title: item.title,
-                            subtitle: item.subtitle || '副标题',
-                            description: item.description || '描述内容',
-                            videoUrl: item.videoUrl || '//player.bilibili.com/player.html?aid=41032763&bvid=BV1Vt411a7Kr&cid=72076219&page=1',
-                            tags: ['标签1', '标签2'],
-                            date: item.date || formatDateForSuosui(new Date())
-                        };
-
-                    default:
-                        return item;
-                }
-            });
-        }
-
-        function generatePlaceholderImages(count) {
-            const placeholderImages = [
-                'images/w1.jpg', 'images/w2.jpg', 'images/w3.jpg', 'images/w4.jpg',
-                'images/n1.jpg', 'images/n2.jpg', 'images/n3.jpg', 'images/n4.jpg',
-                'images/jd1.jpg', 'images/jd2.jpg', 'images/jd3.jpg'
-            ];
-
-            const result = [];
-            for (let i = 0; i < count; i++) {
-                result.push(placeholderImages[i % placeholderImages.length]);
-            }
-            return result;
-        }
-
-        function formatDateForSuosui(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        // 图片链接处理函数
         function parseImageLinks(imageText) {
             if (!imageText || !imageText.trim()) return [];
             return imageText.split('\n')
@@ -937,109 +941,117 @@
                 .filter(link => link.length > 0);
         }
 
-        // 表单提交处理
-        document.getElementById('workForm').addEventListener('submit', function (e) {
+        // ========== 表单提交（调用后端 API） ==========
+
+        document.getElementById('workForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const item = {
-                id: generateId(),
+            const body = {
                 title: document.getElementById('workTitle').value,
                 time: document.getElementById('workTime').value,
                 location: document.getElementById('workLocation').value,
                 content: document.getElementById('workContent').value,
-                images: parseImageLinks(document.getElementById('workImages').value),
-                createdAt: new Date()
+                images: parseImageLinks(document.getElementById('workImages').value)
             };
-            data.work.push(item);
-            saveData('work');
-            renderList('work');
-            updateStats();
-            this.reset();
-            showNotification('工作记录添加成功！');
+            try {
+                const created = await apiRequest('/api/content/work', 'POST', body);
+                data.work.unshift(created);
+                renderList('work');
+                updateStats();
+                this.reset();
+                setFormDefaults('work');
+                showNotification('工作记录添加成功！');
+            } catch (error) {
+                showNotification('添加失败：' + error.message, 'error');
+            }
         });
 
-        document.getElementById('experienceForm').addEventListener('submit', function (e) {
+        document.getElementById('experienceForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const item = {
-                id: generateId(),
+            const body = {
                 title: document.getElementById('experienceTitle').value,
                 time: document.getElementById('experienceTime').value,
                 location: document.getElementById('experienceLocation').value,
                 content: document.getElementById('experienceContent').value,
-                images: parseImageLinks(document.getElementById('experienceImages').value),
-                createdAt: new Date()
+                images: parseImageLinks(document.getElementById('experienceImages').value)
             };
-            data.experience.push(item);
-            saveData('experience');
-            renderList('experience');
-            updateStats();
-            this.reset();
-            showNotification('经历记录添加成功！');
+            try {
+                const created = await apiRequest('/api/content/experience', 'POST', body);
+                data.experience.unshift(created);
+                renderList('experience');
+                updateStats();
+                this.reset();
+                setFormDefaults('experience');
+                showNotification('经历记录添加成功！');
+            } catch (error) {
+                showNotification('添加失败：' + error.message, 'error');
+            }
         });
 
-        document.getElementById('foodForm').addEventListener('submit', function (e) {
+        document.getElementById('foodForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const item = {
-                id: generateId(),
+            const body = {
                 title: document.getElementById('foodTitle').value,
                 time: document.getElementById('foodTime').value,
                 location: document.getElementById('foodLocation').value,
                 content: document.getElementById('foodContent').value,
-                images: parseImageLinks(document.getElementById('foodImages').value),
-                createdAt: new Date()
+                images: parseImageLinks(document.getElementById('foodImages').value)
             };
-            data.food.push(item);
-            saveData('food');
-            renderList('food');
-            updateStats();
-            this.reset();
-            showNotification('美食记录添加成功！');
+            try {
+                const created = await apiRequest('/api/content/food', 'POST', body);
+                data.food.unshift(created);
+                renderList('food');
+                updateStats();
+                this.reset();
+                setFormDefaults('food');
+                showNotification('美食记录添加成功！');
+            } catch (error) {
+                showNotification('添加失败：' + error.message, 'error');
+            }
         });
 
-        document.getElementById('suosuiForm').addEventListener('submit', function (e) {
+        document.getElementById('suosuiForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            const item = {
-                id: generateId(),
+            const body = {
                 title: document.getElementById('suosuiTitle').value,
                 subtitle: document.getElementById('suosuiSubtitle').value,
                 date: document.getElementById('suosuiDate').value,
-                description: document.getElementById('suosuiDescription').value,
-                videoUrl: document.getElementById('suosuiVideoUrl').value,
-                createdAt: new Date()
+                content: document.getElementById('suosuiDescription').value,
+                videoUrl: document.getElementById('suosuiVideoUrl').value
             };
-            data.suosui.push(item);
-            saveData('suosui');
-            renderList('suosui');
-            updateStats();
-            this.reset();
-            showNotification('琐碎记录添加成功！');
+            try {
+                const created = await apiRequest('/api/content/suosui', 'POST', body);
+                data.suosui.unshift(created);
+                renderList('suosui');
+                updateStats();
+                this.reset();
+                setFormDefaults('suosui');
+                showNotification('琐碎记录添加成功！');
+            } catch (error) {
+                showNotification('添加失败：' + error.message, 'error');
+            }
         });
 
-        // 生成代码功能
+        // ========== 生成代码功能（保留原功能） ==========
+
         function generateCode(type) {
             if (data[type].length === 0) {
                 showNotification('没有数据可以生成代码！', 'error');
                 return;
             }
-
-            // 处理数据，按照指定格式生成JSON
             const processedData = data[type].map(item => {
-                // 从标题中提取数字作为id
                 const numberMatch = item.title.match(/(\d+)/);
                 const id = numberMatch ? parseInt(numberMatch[1]) : Math.floor(Math.random() * 1000) + 1;
-                
                 if (type === 'suosui') {
-                    // 琐碎记录的特殊格式
                     return {
                         id: id,
                         title: item.title,
                         subtitle: item.subtitle || "程宝vlog",
-                        description: item.description || "程宝vlog.part2",
+                        description: item.content || item.description || "程宝vlog.part2",
                         videoUrl: item.videoUrl || "//player.bilibili.com/player.html?isOutside=true&aid=336426195&bvid=BV1SR4y1j7i2&cid=218963994&page=1",
                         tags: generateRandomTags(),
                         date: item.date
                     };
                 } else {
-                    // 其他类型记录的格式
                     return {
                         id: id,
                         title: item.title,
@@ -1050,33 +1062,22 @@
                     };
                 }
             });
-
-            // 手动生成格式化的JSON字符串，确保格式完全一致
             const jsonCode = formatJsonCustom(processedData, type);
-            
-            // 显示在弹窗中
             document.getElementById('generatedCode').textContent = jsonCode;
             document.getElementById('codeModal').style.display = 'block';
-            
             showNotification(`已生成${data[type].length}条${getTypeName(type)}记录的JSON代码！`, 'success');
         }
 
-        // 自定义JSON格式化函数，严格按照图片格式
         function formatJsonCustom(data, type) {
             let result = '';
-            
             data.forEach((item, index) => {
                 result += '{\n';
                 result += `    id: ${item.id},\n`;
                 result += `    title: "${item.title}",\n`;
-                
                 if (type === 'suosui') {
-                    // 琐碎记录的特殊格式
                     result += `    subtitle: "${item.subtitle}",\n`;
                     result += `    description: "${item.description}",\n`;
                     result += `    videoUrl: "${item.videoUrl}",\n`;
-                    
-                    // 格式化tags数组
                     if (item.tags && item.tags.length > 0) {
                         result += '    tags: [';
                         item.tags.forEach((tag, tagIndex) => {
@@ -1088,14 +1089,10 @@
                         const randomTags = generateRandomTags();
                         result += `    tags: ["${randomTags.join('", "')}"],\n`;
                     }
-                    
                     result += `    date: "${item.date}"\n`;
                 } else {
-                    // 其他类型记录的格式
                     result += `    time: "${item.time}",\n`;
                     result += `    location: "${item.location}",\n`;
-                    
-                    // 格式化images数组
                     if (item.images && item.images.length > 0) {
                         result += '    images: [\n';
                         item.images.forEach((img, imgIndex) => {
@@ -1106,25 +1103,19 @@
                     } else {
                         result += '    images: [],\n';
                     }
-                    
                     result += `    content: "${item.content}"\n`;
                 }
-                
                 result += '},\n';
-                
-                // 如果不是最后一个元素，添加换行
                 if (index < data.length - 1) {
                     result += '\n';
                 }
             });
-            
             return result;
         }
 
-        // 生成随机标签函数
         function generateRandomTags() {
             const allTags = [
-                "回忆", "美好", "生活", "感悟", 
+                "回忆", "美好", "生活", "感悟",
                 "时光", "温暖", "快乐", "成长",
                 "梦想", "希望", "友情", "爱情",
                 "家庭", "旅行", "美食", "音乐",
@@ -1133,23 +1124,18 @@
                 "青春", "回味", "岁月", "故事",
                 "心情", "日常", "记录", "分享"
             ];
-            
-            // 随机选择2个不同的标签
             const shuffled = [...allTags].sort(() => 0.5 - Math.random());
             return shuffled.slice(0, 2);
         }
 
-        // 获取类型中文名称
         function getTypeName(type) {
             const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
             return typeNames[type] || type;
         }
 
-        // 复制代码到剪贴板
         function copyCode() {
             const codeElement = document.getElementById('generatedCode');
             const text = codeElement.textContent;
-            
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(text).then(() => {
                     showNotification('代码已复制到剪贴板！', 'success');
@@ -1161,7 +1147,6 @@
             }
         }
 
-        // 备用复制方法
         function fallbackCopyText(text) {
             const textArea = document.createElement('textarea');
             textArea.value = text;
@@ -1178,12 +1163,10 @@
             document.body.removeChild(textArea);
         }
 
-        // 关闭代码弹窗
         function closeCodeModal() {
             document.getElementById('codeModal').style.display = 'none';
         }
 
-        // 点击弹窗背景关闭弹窗
         window.onclick = function(event) {
             const modal = document.getElementById('codeModal');
             if (event.target === modal) {
@@ -1191,13 +1174,9 @@
             }
         }
 
-        // 页面加载时初始化
+        // ========== 页面初始化 ==========
         document.addEventListener('DOMContentLoaded', function () {
-            loadData();
-            updateStats();
-            renderList('work');
-            // 设置初始默认值（工作管理标签页）
-            setFormDefaults('work');
+            checkAuth();
         });
     </script>
 </body>
