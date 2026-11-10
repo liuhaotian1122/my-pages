@@ -672,12 +672,17 @@
                     <div class="stat-number" id="suosuiCount">0</div>
                     <div class="stat-label">琐碎记录</div>
                 </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="updateCount">0</div>
+                    <div class="stat-label">更新记录</div>
+                </div>
             </div>
             <div class="tab-nav">
                 <button class="tab-button active" onclick="switchTab('work')">💼 工作管理</button>
                 <button class="tab-button" onclick="switchTab('experience')">🎯 经历管理</button>
                 <button class="tab-button" onclick="switchTab('food')">🍽️ 美食管理</button>
                 <button class="tab-button" onclick="switchTab('suosui')">📝 琐碎管理</button>
+                <button class="tab-button" onclick="switchTab('update')">📢 更新管理</button>
             </div>
             <div id="work-tab" class="tab-content active">
                 <form id="workForm">
@@ -770,6 +775,26 @@
                 </form>
                 <div class="data-list" id="suosuiList"></div>
             </div>
+            <div id="update-tab" class="tab-content">
+                <form id="updateForm">
+                    <div class="form-group"><label>更新标题</label><input type="text" id="updateTitle" placeholder="输入更新标题"
+                            required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>日期</label><input type="text" id="updateDate"
+                                placeholder="例如：2026.11.10" required></div>
+                        <div class="form-group"><label>分类/标签</label><input type="text" id="updateCategory"
+                                placeholder="例如：功能更新"></div>
+                    </div>
+                    <div class="form-group"><label>更新内容</label><textarea id="updateContent" rows="3"
+                            placeholder="详细描述更新内容"></textarea></div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">添加更新记录</button>
+                        <button type="button" class="btn btn-success" onclick="generateCode('update')">生成代码</button>
+                        <button type="button" class="btn btn-danger" onclick="clearData('update')">清空数据</button>
+                    </div>
+                </form>
+                <div class="data-list" id="updateList"></div>
+            </div>
         </div>
     </div>
 
@@ -796,7 +821,7 @@
 <script src="js/api-config.js"></script>
 <script>
 // ========== 全局状态 ==========
-        let data = { work: [], experience: [], food: [], suosui: [] };
+        let data = { work: [], experience: [], food: [], suosui: [], update: [] };
         let currentTab = 'work';
         let authToken = localStorage.getItem('authToken') || '';
 
@@ -928,13 +953,14 @@
          */
         async function loadAllData() {
             try {
-                const [work, experience, food, suosui] = await Promise.all([
+                const [work, experience, food, suosui, update] = await Promise.all([
                     apiRequest('/api/content/work').catch(() => []),
                     apiRequest('/api/content/experience').catch(() => []),
                     apiRequest('/api/content/food').catch(() => []),
-                    apiRequest('/api/content/suosui').catch(() => [])
+                    apiRequest('/api/content/suosui').catch(() => []),
+                    apiRequest('/api/content/update').catch(() => [])
                 ]);
-                data = { work, experience, food, suosui };
+                data = { work, experience, food, suosui, update };
                 updateStats();
                 renderList(currentTab);
             } catch (error) {
@@ -983,6 +1009,10 @@
                     document.getElementById('suosuiTitle').value = '琐碎记录-';
                     document.getElementById('suosuiDate').value = currentDate;
                     break;
+                case 'update':
+                    document.getElementById('updateTitle').value = '更新记录-';
+                    document.getElementById('updateDate').value = currentTime;
+                    break;
             }
         }
 
@@ -992,7 +1022,7 @@
             const targetTab = document.getElementById(tabName + '-tab');
             if (targetTab) targetTab.classList.add('active');
             const buttons = document.querySelectorAll('.tab-button');
-            const tabOrder = ['work', 'experience', 'food', 'suosui'];
+            const tabOrder = ['work', 'experience', 'food', 'suosui', 'update'];
             const tabIndex = tabOrder.indexOf(tabName);
             if (tabIndex !== -1 && buttons[tabIndex]) buttons[tabIndex].classList.add('active');
             currentTab = tabName;
@@ -1005,6 +1035,7 @@
             document.getElementById('experienceCount').textContent = data.experience.length;
             document.getElementById('foodCount').textContent = data.food.length;
             document.getElementById('suosuiCount').textContent = data.suosui.length;
+            document.getElementById('updateCount').textContent = data.update.length;
         }
 
         function renderList(type) {
@@ -1042,6 +1073,8 @@
                     return '<p><strong>时间:</strong> ' + (item.time || '无') + '</p><p><strong>地点:</strong> ' + (item.location || '无') + '</p><p><strong>内容:</strong> ' + (item.content || '无') + '</p>' + imageInfo + statusBadge;
                 case 'suosui':
                     return '<p><strong>副标题:</strong> ' + (item.subtitle || '无') + '</p><p><strong>描述:</strong> ' + (item.content || item.description || '无') + '</p><p><strong>日期:</strong> ' + (item.date || '无') + '</p><p><strong>视频:</strong> ' + (item.videoUrl ? '已设置' : '无') + '</p>' + statusBadge;
+                case 'update':
+                    return '<p><strong>日期:</strong> ' + (item.date || item.time || '无') + '</p><p><strong>分类:</strong> ' + (item.location || '无') + '</p><p><strong>内容:</strong> ' + (item.content || '无') + '</p>' + statusBadge;
                 default: return '<p>未知内容</p>';
             }
         }
@@ -1066,7 +1099,7 @@
          * 清空数据 —— 逐条删除所有记录
          */
         async function clearData(type) {
-            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新' };
             if (!confirm('确定要清空所有' + typeNames[type] + '数据吗？此操作不可恢复！')) return;
             try {
                 const promises = data[type].map(item =>
@@ -1199,6 +1232,27 @@
             }
         });
 
+        document.getElementById('updateForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const body = {
+                title: document.getElementById('updateTitle').value,
+                date: document.getElementById('updateDate').value,
+                location: document.getElementById('updateCategory').value,
+                content: document.getElementById('updateContent').value
+            };
+            try {
+                const created = await apiRequest('/api/content/update', 'POST', body);
+                data.update.unshift(created);
+                renderList('update');
+                updateStats();
+                this.reset();
+                setFormDefaults('update');
+                showNotification('更新记录添加成功！');
+            } catch (error) {
+                showNotification('添加失败：' + error.message, 'error');
+            }
+        });
+
         // ========== 生成代码功能（保留原功能） ==========
 
         function generateCode(type) {
@@ -1218,6 +1272,14 @@
                         videoUrl: item.videoUrl || "//player.bilibili.com/player.html?isOutside=true&aid=336426195&bvid=BV1SR4y1j7i2&cid=218963994&page=1",
                         tags: generateRandomTags(),
                         date: item.date
+                    };
+                } else if (type === 'update') {
+                    return {
+                        id: id,
+                        title: item.title,
+                        date: item.date || item.time || "",
+                        category: item.location || "",
+                        content: item.content || ""
                     };
                 } else {
                     return {
@@ -1258,6 +1320,10 @@
                         result += `    tags: ["${randomTags.join('", "')}"],\n`;
                     }
                     result += `    date: "${item.date}"\n`;
+                } else if (type === 'update') {
+                    result += `    date: "${item.date}",\n`;
+                    result += `    category: "${item.category}",\n`;
+                    result += `    content: "${item.content}"\n`;
                 } else {
                     result += `    time: "${item.time}",\n`;
                     result += `    location: "${item.location}",\n`;
@@ -1297,7 +1363,7 @@
         }
 
         function getTypeName(type) {
-            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎' };
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新' };
             return typeNames[type] || type;
         }
 

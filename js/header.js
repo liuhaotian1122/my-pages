@@ -27,7 +27,7 @@ document.write(`
                     </ul>
                 </li>
                 <li><a href="game.html">游戏</a></li>
-                <li><a href="最近更新.html">更新</a></li>
+                <li><a href="update.html">更新</a></li>
                 <li><a href="https://support.qq.com/product/374554">论坛</a></li>
                 <li><a href="content-manager.html">后台</a></li>
             </ul>

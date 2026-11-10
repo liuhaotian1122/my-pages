@@ -761,6 +761,7 @@
     </div>
 
     <script src="js/footer.js"></script>
+    <script src="js/api-config.js"></script>
 
     <!-- 延迟加载JavaScript -->
     <script>
@@ -837,10 +838,13 @@
             setDate();
             setInterval(setDate, 1000);
 
-            // 初始化功能
-            initPagination();
-            initStats();
-            initSearch();
+            // 从后端加载动态更新记录
+            loadDynamicUpdates().then(() => {
+                // 初始化功能
+                initPagination();
+                initStats();
+                initSearch();
+            });
         });
 
         // 延迟加载非关键功能
@@ -883,6 +887,29 @@
                 });
             }, 1000);
         });
+
+        // 从后端 API 加载动态更新记录，插入到列表顶部
+        async function loadDynamicUpdates() {
+            try {
+                const res = await fetch(apiUrl('/api/public/update'));
+                if (!res.ok) return;
+                const updates = await res.json();
+                if (!updates || updates.length === 0) return;
+
+                const updateList = document.getElementById('updateList');
+                const svgIcon = '<svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="48" fill="white" fill-opacity="0.01" /><rect x="6" y="6" width="36" height="36" rx="3" fill="none" stroke="#e1652f" stroke-width="4" stroke-linejoin="round" /><path d="M32 28L24 20L16 28" stroke="#e1652f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /><path d="M24 36V20.5" stroke="#e1652f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /><path d="M16 14H32" stroke="#e1652f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>';
+
+                updates.forEach(item => {
+                    const li = document.createElement('li');
+                    const dateStr = item.date || item.time || '';
+                    li.setAttribute('data-date', dateStr);
+                    li.innerHTML = svgIcon + '<span>' + (item.title || '更新') + (item.content ? '：' + item.content : '') + (item.location ? '（' + item.location + '）' : '') + '（' + dateStr + '）</span>';
+                    updateList.insertBefore(li, updateList.firstChild);
+                });
+            } catch (err) {
+                console.error('加载动态更新失败:', err);
+            }
+        }
 
         // 分页功能实现
         function initPagination() {
