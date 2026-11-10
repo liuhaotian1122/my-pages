@@ -989,6 +989,7 @@
 </div>
 
 <script src="js/footer.js"></script>
+<script src="js/api-config.js"></script>
 
 <script>
 // 延迟加载JavaScript
@@ -1034,7 +1035,7 @@ const blogData = [
         description: "风平浪静的大海，每个人都是领航员。",
         location: "宁夏",
         date: "2021-10-11",
-        url: "真实的高贵.html",
+        url: "true-nobility.html",
         tags: ["哲学", "人生"]
     },
     {
@@ -1043,7 +1044,7 @@ const blogData = [
         description: "工具箱移动工具 【V】 矩形、椭圆选框工具",
         location: "银川",
         date: "2021-10-21",
-        url: "ps操作.html",
+        url: "ps-shortcuts.html",
         tags: ["技术", "设计"]
     },
     {
@@ -1052,7 +1053,7 @@ const blogData = [
         description: "今天我知道，在世上，最让人畏惧的恰恰是通向自己的道路。",
         location: "宁夏",
         date: "2021-11-05",
-        url: "找到自己的命运.html",
+        url: "find-your-destiny.html",
         tags: ["哲学", "成长"]
     },
     {
@@ -1061,7 +1062,7 @@ const blogData = [
         description: "阻止移动端H5开发浏览器默认左右滑动行为.",
         location: "宁夏",
         date: "2021-11-11",
-        url: "h5阻止滑动.html",
+        url: "h5-prevent-swipe.html",
         tags: ["技术", "前端"]
     },
     {
@@ -1070,7 +1071,7 @@ const blogData = [
         description: "搜集一些好用的工具，帮助你们快速生产。",
         location: "宁夏",
         date: "2021-11-21",
-        url: "一些工具.html",
+        url: "useful-tools.html",
         tags: ["工具", "效率"]
     },
     // 可以继续添加更多博客数据
@@ -1401,7 +1402,31 @@ class BlogPagination {
 }
 
 // 页面加载完成后初始化分页
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 先从后端加载动态博客数据
+    try {
+        const res = await fetch(apiUrl('/api/public/blog'));
+        if (res.ok) {
+            const dynamicBlogs = await res.json();
+            if (dynamicBlogs && dynamicBlogs.length > 0) {
+                // 将后端博客数据转换为 blogData 格式，插入到列表前面
+                const formatted = dynamicBlogs.map(item => ({
+                    id: item.id,
+                    title: item.title || '无标题',
+                    description: (item.images && item.images[0]) || item.location || '',
+                    location: item.location || '宁夏',
+                    date: item.date || '',
+                    url: 'blog-detail.html?id=' + item.id,
+                    tags: item.tags || []
+                }));
+                // 合并：后端数据在前，原有静态数据在后
+                blogData.unshift(...formatted);
+            }
+        }
+    } catch (err) {
+        console.error('加载动态博客失败:', err);
+    }
+    
     new BlogPagination();
     
     // 初始化高级效果

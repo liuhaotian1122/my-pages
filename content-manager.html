@@ -616,6 +616,69 @@
                 padding: 30px 20px;
             }
         }
+
+        /* 富文本编辑器样式 */
+        .editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 8px 10px;
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .editor-toolbar button {
+            padding: 6px 10px;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            color: #555;
+            transition: all 0.2s ease;
+            min-width: 32px;
+        }
+
+        .editor-toolbar button:hover {
+            background: #e1652f;
+            color: white;
+            border-color: #e1652f;
+        }
+
+        .editor-toolbar button:active {
+            transform: scale(0.95);
+        }
+
+        .editor-content {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 0 0 8px 8px;
+            font-size: 14px;
+            line-height: 1.8;
+            outline: none;
+            background: white;
+            overflow-y: auto;
+        }
+
+        .editor-content:focus {
+            border-color: #e1652f;
+            box-shadow: 0 0 0 3px rgba(225, 101, 47, 0.12);
+        }
+
+        .editor-content:empty::before {
+            content: '在此输入博客正文内容...';
+            color: #bbb;
+        }
+
+        .blog-item-edit-btn {
+            background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%) !important;
+            color: white !important;
+            box-shadow: 0 2px 6px rgba(255, 152, 0, 0.2);
+        }
     </style>
 </head>
 
@@ -676,6 +739,10 @@
                     <div class="stat-number" id="updateCount">0</div>
                     <div class="stat-label">更新记录</div>
                 </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="blogCount">0</div>
+                    <div class="stat-label">博客文章</div>
+                </div>
             </div>
             <div class="tab-nav">
                 <button class="tab-button active" onclick="switchTab('work')">💼 工作管理</button>
@@ -683,6 +750,7 @@
                 <button class="tab-button" onclick="switchTab('food')">🍽️ 美食管理</button>
                 <button class="tab-button" onclick="switchTab('suosui')">📝 琐碎管理</button>
                 <button class="tab-button" onclick="switchTab('update')">📢 更新管理</button>
+                <button class="tab-button" onclick="switchTab('blog')">📚 博客管理</button>
             </div>
             <div id="work-tab" class="tab-content active">
                 <form id="workForm">
@@ -795,6 +863,46 @@
                 </form>
                 <div class="data-list" id="updateList"></div>
             </div>
+            <div id="blog-tab" class="tab-content">
+                <form id="blogForm">
+                    <div class="form-group"><label>博客标题</label><input type="text" id="blogTitle" placeholder="输入博客标题"
+                            required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>日期</label><input type="text" id="blogDate"
+                                placeholder="例如：2021-10-11" required></div>
+                        <div class="form-group"><label>地点</label><input type="text" id="blogLocation"
+                                placeholder="例如：宁夏-银川"></div>
+                    </div>
+                    <div class="form-group"><label>摘要描述</label><input type="text" id="blogDescription"
+                            placeholder="一句话描述博客内容"></div>
+                    <div class="form-group"><label>标签</label><input type="text" id="blogTags"
+                            placeholder="多个标签用逗号分隔，例如：技术,前端,CSS"></div>
+                    <div class="form-group"><label>正文内容</label>
+                        <div class="editor-toolbar">
+                            <button type="button" onclick="execEdit('bold')" title="加粗"><b>B</b></button>
+                            <button type="button" onclick="execEdit('italic')" title="斜体"><i>I</i></button>
+                            <button type="button" onclick="execEdit('underline')" title="下划线"><u>U</u></button>
+                            <button type="button" onclick="execEdit('strikeThrough')" title="删除线"><s>S</s></button>
+                            <button type="button" onclick="execEdit('formatBlock','<h3>')" title="标题">H3</button>
+                            <button type="button" onclick="execEdit('formatBlock','<p>')" title="段落">P</button>
+                            <button type="button" onclick="execEdit('insertUnorderedList')" title="无序列表">• 列表</button>
+                            <button type="button" onclick="execEdit('insertOrderedList')" title="有序列表">1. 列表</button>
+                            <button type="button" onclick="execEdit('justifyLeft')" title="左对齐">≡</button>
+                            <button type="button" onclick="execEdit('justifyCenter')" title="居中">≡</button>
+                            <button type="button" onclick="insertImage()" title="插入图片">🖼</button>
+                            <button type="button" onclick="insertLink()" title="插入链接">🔗</button>
+                            <button type="button" onclick="execEdit('removeFormat')" title="清除格式">✕</button>
+                        </div>
+                        <div class="editor-content" id="blogContent" contenteditable="true"></div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">添加博客文章</button>
+                        <button type="button" class="btn btn-success" onclick="generateCode('blog')">生成代码</button>
+                        <button type="button" class="btn btn-danger" onclick="clearData('blog')">清空数据</button>
+                    </div>
+                </form>
+                <div class="data-list" id="blogList"></div>
+            </div>
         </div>
     </div>
 
@@ -821,7 +929,7 @@
 <script src="js/api-config.js"></script>
 <script>
 // ========== 全局状态 ==========
-        let data = { work: [], experience: [], food: [], suosui: [], update: [] };
+        let data = { work: [], experience: [], food: [], suosui: [], update: [], blog: [] };
         let currentTab = 'work';
         let authToken = localStorage.getItem('authToken') || '';
 
@@ -953,14 +1061,15 @@
          */
         async function loadAllData() {
             try {
-                const [work, experience, food, suosui, update] = await Promise.all([
+                const [work, experience, food, suosui, update, blog] = await Promise.all([
                     apiRequest('/api/content/work').catch(() => []),
                     apiRequest('/api/content/experience').catch(() => []),
                     apiRequest('/api/content/food').catch(() => []),
                     apiRequest('/api/content/suosui').catch(() => []),
-                    apiRequest('/api/content/update').catch(() => [])
+                    apiRequest('/api/content/update').catch(() => []),
+                    apiRequest('/api/content/blog').catch(() => [])
                 ]);
-                data = { work, experience, food, suosui, update };
+                data = { work, experience, food, suosui, update, blog };
                 updateStats();
                 renderList(currentTab);
             } catch (error) {
@@ -1013,6 +1122,11 @@
                     document.getElementById('updateTitle').value = '更新记录-';
                     document.getElementById('updateDate').value = currentTime;
                     break;
+                case 'blog':
+                    document.getElementById('blogTitle').value = '';
+                    document.getElementById('blogDate').value = currentDate;
+                    document.getElementById('blogContent').innerHTML = '';
+                    break;
             }
         }
 
@@ -1022,7 +1136,7 @@
             const targetTab = document.getElementById(tabName + '-tab');
             if (targetTab) targetTab.classList.add('active');
             const buttons = document.querySelectorAll('.tab-button');
-            const tabOrder = ['work', 'experience', 'food', 'suosui', 'update'];
+            const tabOrder = ['work', 'experience', 'food', 'suosui', 'update', 'blog'];
             const tabIndex = tabOrder.indexOf(tabName);
             if (tabIndex !== -1 && buttons[tabIndex]) buttons[tabIndex].classList.add('active');
             currentTab = tabName;
@@ -1036,6 +1150,7 @@
             document.getElementById('foodCount').textContent = data.food.length;
             document.getElementById('suosuiCount').textContent = data.suosui.length;
             document.getElementById('updateCount').textContent = data.update.length;
+            document.getElementById('blogCount').textContent = data.blog.length;
         }
 
         function renderList(type) {
@@ -1055,7 +1170,8 @@
         }
 
         function generateItemHTML(type, item) {
-            return '<div class="data-item-header"><div class="data-item-title">' + item.title + '</div><div class="data-item-date">' + formatDate(item.createdAt || item.created_at) + '</div></div><div class="data-item-content">' + getItemContent(type, item) + '</div><div class="data-actions"><button class="btn btn-sm btn-danger" onclick="deleteItem(\'' + type + '\', ' + item.id + ')">删除</button></div>';
+            var editBtn = type === 'blog' ? '<button class="btn btn-sm blog-item-edit-btn" onclick="editBlog(' + item.id + ')">编辑正文</button>' : '';
+            return '<div class="data-item-header"><div class="data-item-title">' + item.title + '</div><div class="data-item-date">' + formatDate(item.createdAt || item.created_at) + '</div></div><div class="data-item-content">' + getItemContent(type, item) + '</div><div class="data-actions">' + editBtn + '<button class="btn btn-sm btn-danger" onclick="deleteItem(\'' + type + '\', ' + item.id + ')">删除</button></div>';
         }
 
         function getItemContent(type, item) {
@@ -1075,6 +1191,11 @@
                     return '<p><strong>副标题:</strong> ' + (item.subtitle || '无') + '</p><p><strong>描述:</strong> ' + (item.content || item.description || '无') + '</p><p><strong>日期:</strong> ' + (item.date || '无') + '</p><p><strong>视频:</strong> ' + (item.videoUrl ? '已设置' : '无') + '</p>' + statusBadge;
                 case 'update':
                     return '<p><strong>日期:</strong> ' + (item.date || item.time || '无') + '</p><p><strong>分类:</strong> ' + (item.location || '无') + '</p><p><strong>内容:</strong> ' + (item.content || '无') + '</p>' + statusBadge;
+                case 'blog':
+                    var tags = item.tags && item.tags.length > 0 ? item.tags.join(', ') : '无';
+                    var desc = item.location || '无';
+                    var hasContent = item.content && item.content.trim().length > 0;
+                    return '<p><strong>日期:</strong> ' + (item.date || '无') + '</p><p><strong>摘要:</strong> ' + desc + '</p><p><strong>标签:</strong> ' + tags + '</p><p><strong>正文:</strong> ' + (hasContent ? '已编写 (' + item.content.length + ' 字)' : '无') + '</p>' + statusBadge;
                 default: return '<p>未知内容</p>';
             }
         }
@@ -1099,7 +1220,7 @@
          * 清空数据 —— 逐条删除所有记录
          */
         async function clearData(type) {
-            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新' };
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客' };
             if (!confirm('确定要清空所有' + typeNames[type] + '数据吗？此操作不可恢复！')) return;
             try {
                 const promises = data[type].map(item =>
@@ -1253,6 +1374,82 @@
             }
         });
 
+        // ========== 富文本编辑器 ==========
+        function execEdit(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('blogContent').focus();
+        }
+
+        function insertImage() {
+            const url = prompt('请输入图片链接：');
+            if (url) execEdit('insertImage', url);
+        }
+
+        function insertLink() {
+            const url = prompt('请输入链接地址：');
+            if (url) execEdit('createLink', url);
+        }
+
+        // ========== 博客表单提交 ==========
+        document.getElementById('blogForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const tagsRaw = document.getElementById('blogTags').value.trim();
+            const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(t => t) : [];
+            const body = {
+                title: document.getElementById('blogTitle').value,
+                date: document.getElementById('blogDate').value,
+                location: document.getElementById('blogLocation').value,
+                content: document.getElementById('blogContent').innerHTML,
+                tags: tags
+            };
+            // description 存到 images 字段（复用数据库字段，以 JSON 格式）
+            body.images = [document.getElementById('blogDescription').value];
+            try {
+                if (editingBlogId) {
+                    // 编辑模式：PUT 更新
+                    const updated = await apiRequest('/api/content/blog/' + editingBlogId, 'PUT', body);
+                    const idx = data.blog.findIndex(b => b.id === editingBlogId);
+                    if (idx !== -1) data.blog[idx] = updated;
+                    editingBlogId = null;
+                    document.querySelector('#blogForm button[type="submit"]').textContent = '添加博客文章';
+                    showNotification('博客文章修改成功！');
+                } else {
+                    // 新建模式：POST
+                    const created = await apiRequest('/api/content/blog', 'POST', body);
+                    data.blog.unshift(created);
+                    showNotification('博客文章添加成功！');
+                }
+                renderList('blog');
+                updateStats();
+                this.reset();
+                document.getElementById('blogContent').innerHTML = '';
+                setFormDefaults('blog');
+            } catch (error) {
+                showNotification('操作失败：' + error.message, 'error');
+            }
+        });
+
+        // ========== 博客正文编辑 ==========
+        let editingBlogId = null;
+        async function editBlog(id) {
+            const item = data.blog.find(b => b.id === id);
+            if (!item) return;
+            editingBlogId = id;
+            // 填充表单
+            document.getElementById('blogTitle').value = item.title || '';
+            document.getElementById('blogDate').value = item.date || '';
+            document.getElementById('blogLocation').value = item.location || '';
+            document.getElementById('blogTags').value = (item.tags || []).join(', ');
+            document.getElementById('blogDescription').value = (item.images && item.images[0]) || '';
+            document.getElementById('blogContent').innerHTML = item.content || '';
+            // 修改提交按钮文案
+            const submitBtn = document.querySelector('#blogForm button[type="submit"]');
+            submitBtn.textContent = '保存修改';
+            // 滚动到表单
+            document.getElementById('blogForm').scrollIntoView({ behavior: 'smooth' });
+            showNotification('已加载文章内容，修改后点击「保存修改」', 'info');
+        }
+
         // ========== 生成代码功能（保留原功能） ==========
 
         function generateCode(type) {
@@ -1279,6 +1476,16 @@
                         title: item.title,
                         date: item.date || item.time || "",
                         category: item.location || "",
+                        content: item.content || ""
+                    };
+                } else if (type === 'blog') {
+                    return {
+                        id: id,
+                        title: item.title,
+                        date: item.date || "",
+                        location: item.location || "",
+                        description: (item.images && item.images[0]) || "",
+                        tags: item.tags || [],
                         content: item.content || ""
                     };
                 } else {
@@ -1324,6 +1531,19 @@
                     result += `    date: "${item.date}",\n`;
                     result += `    category: "${item.category}",\n`;
                     result += `    content: "${item.content}"\n`;
+                } else if (type === 'blog') {
+                    result += `    date: "${item.date}",\n`;
+                    result += `    location: "${item.location}",\n`;
+                    result += `    description: "${item.description}",\n`;
+                    result += '    tags: [';
+                    if (item.tags && item.tags.length > 0) {
+                        item.tags.forEach((tag, tagIndex) => {
+                            const comma = tagIndex < item.tags.length - 1 ? ', ' : '';
+                            result += `"${tag}"${comma}`;
+                        });
+                    }
+                    result += '],\n';
+                    result += `    content: "${item.content}"\n`;
                 } else {
                     result += `    time: "${item.time}",\n`;
                     result += `    location: "${item.location}",\n`;
@@ -1363,7 +1583,7 @@
         }
 
         function getTypeName(type) {
-            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新' };
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客' };
             return typeNames[type] || type;
         }
 
