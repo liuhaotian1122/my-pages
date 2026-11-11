@@ -12,8 +12,16 @@
 // 从 localStorage 获取用户设置的后端地址（优先级最高，方便动态调试）
 const CUSTOM_URL = localStorage.getItem('API_BASE_URL') || '';
 
-// 同源部署：默认空字符串；localStorage 里设置了地址则走跨域
-const API_BASE = CUSTOM_URL;
+// Cloudflare 后端地址（D1/KV 数据都在这里）
+const CF_BACKEND = 'https://haotian-site.pages.dev';
+
+// Cloudflare 同源部署（pages.dev / workers.dev / localhost）→ 走同源；
+// 其他域名（如 Netlify）→ 自动跨域指向 Cloudflare 后端
+const IS_CF_HOST = location.hostname === 'localhost'
+  || location.hostname.endsWith('.pages.dev')
+  || location.hostname.endsWith('.workers.dev');
+
+const API_BASE = CUSTOM_URL || (IS_CF_HOST ? '' : CF_BACKEND);
 
 /**
  * 获取 API 完整 URL
