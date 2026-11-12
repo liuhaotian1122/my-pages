@@ -14,7 +14,7 @@
 const CUSTOM_URL = localStorage.getItem('API_BASE_URL') || '';
 
 // Cloudflare 后端地址（D1/KV 数据都在这里）
-const CF_BACKEND = 'https://api.liuhaotian.de5.net';
+const CF_BACKEND = 'https://api.liuhaotian.cc.cd';
 
 // Cloudflare 同源部署（pages.dev / workers.dev / localhost）→ 走同源；
 // 其他域名（如 EdgeOne、de5.net）→ 跨域指向 Cloudflare API 子域
