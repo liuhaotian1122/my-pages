@@ -488,11 +488,11 @@
             try {
                 var res = await fetch(apiUrl('/api/public/wechat'));
                 if (!res.ok) throw new Error('API请求失败');
-                var moments = await res.json();
-                if (!moments || moments.length === 0) {
-                    // 后端无数据，使用备用静态数据
-                    moments = FALLBACK_MOMENTS;
-                }
+                var backendMoments = await res.json();
+                // 后端数据排在前面，静态备用数据追加在后面，避免发布新内容后"清空"原有静态数据
+                var moments = (backendMoments && backendMoments.length > 0)
+                    ? backendMoments.concat(FALLBACK_MOMENTS)
+                    : FALLBACK_MOMENTS;
                 container.innerHTML = moments.map(renderMoment).join('');
             } catch (err) {
                 console.error('加载朋友圈数据失败:', err);
