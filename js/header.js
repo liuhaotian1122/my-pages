@@ -27,6 +27,7 @@ document.write(`
                     </ul>
                 </li>
                 <li><a href="game.html">游戏</a></li>
+                <li><a href="Wechat.html">朋友圈</a></li>
                 <li><a href="update.html">更新</a></li>
                 <li><a href="https://support.qq.com/product/374554">论坛</a></li>
                 <li><a href="content-manager.html">后台</a></li>

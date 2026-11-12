@@ -747,6 +747,10 @@
                     <div class="stat-number" id="gameCount">0</div>
                     <div class="stat-label">游戏记录</div>
                 </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="wechatCount">0</div>
+                    <div class="stat-label">朋友圈</div>
+                </div>
             </div>
             <div class="tab-nav">
                 <button class="tab-button active" onclick="switchTab('work')">💼 工作管理</button>
@@ -756,6 +760,7 @@
                 <button class="tab-button" onclick="switchTab('update')">📢 更新管理</button>
                 <button class="tab-button" onclick="switchTab('blog')">📚 博客管理</button>
                 <button class="tab-button" onclick="switchTab('game')">🎮 游戏管理</button>
+                <button class="tab-button" onclick="switchTab('wechat')">💬 朋友圈管理</button>
             </div>
             <div id="work-tab" class="tab-content active">
                 <form id="workForm">
@@ -924,6 +929,25 @@
                 </form>
                 <div class="data-list" id="gameList"></div>
             </div>
+            <div id="wechat-tab" class="tab-content">
+                <form id="wechatForm">
+                    <div class="form-group"><label>发布者昵称</label><input type="text" id="wechatTitle" placeholder="例如：许我半夏" required></div>
+                    <div class="form-row">
+                        <div class="form-group"><label>发布时间</label><input type="text" id="wechatTime" placeholder="例如：10分钟前" required></div>
+                        <div class="form-group"><label>日期</label><input type="text" id="wechatDate" placeholder="例如：2026.11.12" required></div>
+                    </div>
+                    <div class="form-group"><label>动态内容</label><textarea id="wechatContent" rows="3" placeholder="输入朋友圈文字内容"></textarea></div>
+                    <div class="form-group"><label>图片链接</label><textarea id="wechatImages" rows="2" placeholder="输入图片链接，每行一个链接"></textarea></div>
+                    <div class="form-group"><label>点赞用户</label><input type="text" id="wechatLikes" placeholder="多个用户用逗号分隔，例如：小春春,许我半夏"></div>
+                    <div class="form-group"><label>评论内容</label><textarea id="wechatComments" rows="3" placeholder="每行一条评论，格式：用户名:评论内容 或 用户名回复用户名:评论内容"></textarea>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">添加朋友圈动态</button>
+                        <button type="button" class="btn btn-success" onclick="generateCode('wechat')">生成代码</button>
+                        <button type="button" class="btn btn-danger" onclick="clearData('wechat')">清空数据</button>
+                    </div>
+                </form>
+                <div class="data-list" id="wechatList"></div>
+            </div>
         </div>
     </div>
 
@@ -950,12 +974,12 @@
 <script src="js/api-config.js"></script>
 <script>
 // ========== 全局状态 ==========
-        let data = { work: [], experience: [], food: [], suosui: [], update: [], blog: [], game: [] };
+        let data = { work: [], experience: [], food: [], suosui: [], update: [], blog: [], game: [], wechat: [] };
         let currentTab = 'work';
         let authToken = localStorage.getItem('authToken') || '';
 
         // 各模块编辑状态：editingIds[type] = 正在编辑的记录 id，null 表示新建模式
-        let editingIds = { work: null, experience: null, food: null, suosui: null, update: null, blog: null, game: null };
+        let editingIds = { work: null, experience: null, food: null, suosui: null, update: null, blog: null, game: null, wechat: null };
 
         // 各模块表单字段配置（用于编辑时填充表单和提交时收集数据）
         const formFieldConfig = {
@@ -1027,6 +1051,20 @@
                     location: 'gameUrl',
                     content: 'gameDescription',
                     images: { el: 'gameIcon', type: 'single' }
+                }
+            },
+            wechat: {
+                formId: 'wechatForm',
+                submitBtnText: '添加朋友圈动态',
+                editBtnText: '保存修改',
+                fields: {
+                    title: 'wechatTitle',
+                    time: 'wechatTime',
+                    date: 'wechatDate',
+                    content: 'wechatContent',
+                    images: { el: 'wechatImages', type: 'imagelinks' },
+                    subtitle: 'wechatLikes',
+                    tags: { el: 'wechatComments', type: 'comments' }
                 }
             }
         };
@@ -1159,16 +1197,17 @@
          */
         async function loadAllData() {
             try {
-                const [work, experience, food, suosui, update, blog, game] = await Promise.all([
+                const [work, experience, food, suosui, update, blog, game, wechat] = await Promise.all([
                     apiRequest('/api/content/work').catch(() => []),
                     apiRequest('/api/content/experience').catch(() => []),
                     apiRequest('/api/content/food').catch(() => []),
                     apiRequest('/api/content/suosui').catch(() => []),
                     apiRequest('/api/content/update').catch(() => []),
                     apiRequest('/api/content/blog').catch(() => []),
-                    apiRequest('/api/content/game').catch(() => [])
+                    apiRequest('/api/content/game').catch(() => []),
+                    apiRequest('/api/content/wechat').catch(() => [])
                 ]);
-                data = { work, experience, food, suosui, update, blog, game };
+                data = { work, experience, food, suosui, update, blog, game, wechat };
                 updateStats();
                 renderList(currentTab);
             } catch (error) {
@@ -1232,6 +1271,15 @@
                     document.getElementById('gameIcon').value = '';
                     document.getElementById('gameDescription').value = '';
                     break;
+                case 'wechat':
+                    document.getElementById('wechatTitle').value = '许我半夏';
+                    document.getElementById('wechatTime').value = '刚刚';
+                    document.getElementById('wechatDate').value = currentDate;
+                    document.getElementById('wechatContent').value = '';
+                    document.getElementById('wechatImages').value = '';
+                    document.getElementById('wechatLikes').value = '';
+                    document.getElementById('wechatComments').value = '';
+                    break;
             }
         }
 
@@ -1254,7 +1302,7 @@
             const targetTab = document.getElementById(tabName + '-tab');
             if (targetTab) targetTab.classList.add('active');
             const buttons = document.querySelectorAll('.tab-button');
-            const tabOrder = ['work', 'experience', 'food', 'suosui', 'update', 'blog', 'game'];
+            const tabOrder = ['work', 'experience', 'food', 'suosui', 'update', 'blog', 'game', 'wechat'];
             const tabIndex = tabOrder.indexOf(tabName);
             if (tabIndex !== -1 && buttons[tabIndex]) buttons[tabIndex].classList.add('active');
             currentTab = tabName;
@@ -1270,6 +1318,7 @@
             document.getElementById('updateCount').textContent = data.update.length;
             document.getElementById('blogCount').textContent = data.blog.length;
             document.getElementById('gameCount').textContent = data.game.length;
+            document.getElementById('wechatCount').textContent = data.wechat.length;
         }
 
         function renderList(type) {
@@ -1320,6 +1369,14 @@
                     return '<p><strong>日期:</strong> ' + (item.date || '无') + '</p><p><strong>摘要:</strong> ' + desc + '</p><p><strong>标签:</strong> ' + tags + '</p><p><strong>正文:</strong> ' + (hasContent ? '已编写 (' + item.content.length + ' 字)' : '无') + '</p>' + statusBadge;
                 case 'game':
                     return '<p><strong>游戏名称:</strong> ' + (item.title || '无') + '</p><p><strong>描述:</strong> ' + (item.content || '无') + '</p><p><strong>游戏链接:</strong> <a href="' + (item.location || '#') + '" target="_blank" style="color:#e1652f;">点击打开</a></p><p><strong>图标:</strong> ' + (item.images && item.images[0] ? '<img src="' + item.images[0] + '" style="width:40px;height:40px;border-radius:6px;vertical-align:middle;" onerror="this.style.display=\'none\'">' : '无') + '</p>' + statusBadge;
+                case 'wechat':
+                    var likesStr = item.subtitle || '无';
+                    var comments = item.tags || [];
+                    var commentsStr = comments.length > 0 ? comments.length + '条评论' : '无';
+                    var wechatImageInfo = item.images && item.images.length > 0
+                        ? item.images.length + '张图片'
+                        : '无';
+                    return '<p><strong>发布者:</strong> ' + (item.title || '无') + '</p><p><strong>动态内容:</strong> ' + (item.content || '无') + '</p><p><strong>时间:</strong> ' + (item.time || '无') + '</p><p><strong>日期:</strong> ' + (item.date || '无') + '</p><p><strong>图片:</strong> ' + wechatImageInfo + '</p><p><strong>点赞:</strong> ' + likesStr + '</p><p><strong>评论:</strong> ' + commentsStr + '</p>' + statusBadge;
                 default: return '<p>未知内容</p>';
             }
         }
@@ -1351,6 +1408,15 @@
                     } else if (fieldDef.type === 'single') {
                         // 单个图片链接
                         el.value = (item.images && item.images[0]) || '';
+                    } else if (fieldDef.type === 'comments') {
+                        // 评论数组 → 每行一条评论
+                        var comments = item.tags || [];
+                        el.value = comments.map(function(c) {
+                            if (c.replyTo) {
+                                return c.user + '回复' + c.replyTo + ':' + c.text;
+                            }
+                            return c.user + ':' + c.text;
+                        }).join('\n');
                     }
                 }
             });
@@ -1412,7 +1478,7 @@
          * 清空数据 —— 逐条删除所有记录
          */
         async function clearData(type) {
-            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客', 'game': '游戏' };
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客', 'game': '游戏', 'wechat': '朋友圈' };
             if (!confirm('确定要清空所有' + typeNames[type] + '数据吗？此操作不可恢复！')) return;
             try {
                 const promises = data[type].map(item =>
@@ -1638,6 +1704,59 @@
             }
         });
 
+        // ========== 朋友圈表单提交 ==========
+        function parseComments(commentsText) {
+            if (!commentsText || !commentsText.trim()) return [];
+            return commentsText.split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0)
+                .map(line => {
+                    // 支持格式：用户名回复用户名:评论内容 或 用户名:评论内容
+                    var replyMatch = line.match(/^(.+?)回复(.+?):(.+)$/);
+                    if (replyMatch) {
+                        return { user: replyMatch[1].trim(), replyTo: replyMatch[2].trim(), text: replyMatch[3].trim() };
+                    }
+                    var match = line.match(/^(.+?):(.+)$/);
+                    if (match) {
+                        return { user: match[1].trim(), text: match[2].trim() };
+                    }
+                    return { user: '匿名', text: line };
+                });
+        }
+
+        document.getElementById('wechatForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var likesRaw = document.getElementById('wechatLikes').value.trim();
+            var body = {
+                title: document.getElementById('wechatTitle').value,
+                time: document.getElementById('wechatTime').value,
+                date: document.getElementById('wechatDate').value,
+                content: document.getElementById('wechatContent').value,
+                images: parseImageLinks(document.getElementById('wechatImages').value),
+                subtitle: likesRaw,
+                tags: parseComments(document.getElementById('wechatComments').value)
+            };
+            try {
+                if (editingIds.wechat) {
+                    var updated = await apiRequest('/api/content/wechat/' + editingIds.wechat, 'PUT', body);
+                    var idx = data.wechat.findIndex(it => it.id === editingIds.wechat);
+                    if (idx !== -1) data.wechat[idx] = updated;
+                    cancelEdit('wechat');
+                    showNotification('朋友圈动态修改成功！');
+                } else {
+                    var created = await apiRequest('/api/content/wechat', 'POST', body);
+                    data.wechat.unshift(created);
+                    this.reset();
+                    setFormDefaults('wechat');
+                    showNotification('朋友圈动态添加成功！');
+                }
+                renderList('wechat');
+                updateStats();
+            } catch (error) {
+                showNotification('操作失败：' + error.message, 'error');
+            }
+        });
+
         // ========== 富文本编辑器 ==========
         function execEdit(command, value = null) {
             document.execCommand(command, false, value);
@@ -1784,6 +1903,17 @@
                         icon: (item.images && item.images[0]) || "",
                         description: item.content || ""
                     };
+                } else if (type === 'wechat') {
+                    return {
+                        id: id,
+                        title: item.title,
+                        time: item.time || "",
+                        date: item.date || "",
+                        content: item.content || "",
+                        images: item.images || [],
+                        likes: item.subtitle ? item.subtitle.split(',').map(s => s.trim()).filter(s => s) : [],
+                        comments: item.tags || []
+                    };
                 } else {
                     return {
                         id: id,
@@ -1844,6 +1974,40 @@
                     result += `    url: "${item.url}",\n`;
                     result += `    icon: "${item.icon}",\n`;
                     result += `    description: "${item.description}"\n`;
+                } else if (type === 'wechat') {
+                    result += `    time: "${item.time}",\n`;
+                    result += `    date: "${item.date}",\n`;
+                    result += `    content: "${item.content}",\n`;
+                    if (item.images && item.images.length > 0) {
+                        result += '    images: [\n';
+                        item.images.forEach((img, imgIndex) => {
+                            const comma = imgIndex < item.images.length - 1 ? ',' : '';
+                            result += `        "${img}"${comma}\n`;
+                        });
+                        result += '    ],\n';
+                    } else {
+                        result += '    images: [],\n';
+                    }
+                    result += '    likes: [';
+                    if (item.likes && item.likes.length > 0) {
+                        item.likes.forEach((like, likeIndex) => {
+                            const comma = likeIndex < item.likes.length - 1 ? ', ' : '';
+                            result += `"${like}"${comma}`;
+                        });
+                    }
+                    result += '],\n';
+                    result += '    comments: [\n';
+                    if (item.comments && item.comments.length > 0) {
+                        item.comments.forEach((c, cIndex) => {
+                            const comma = cIndex < item.comments.length - 1 ? ',' : '';
+                            if (c.replyTo) {
+                                result += `        { user: "${c.user}", replyTo: "${c.replyTo}", text: "${c.text}" }${comma}\n`;
+                            } else {
+                                result += `        { user: "${c.user}", text: "${c.text}" }${comma}\n`;
+                            }
+                        });
+                    }
+                    result += '    ]\n';
                 } else {
                     result += `    time: "${item.time}",\n`;
                     result += `    location: "${item.location}",\n`;
@@ -1883,7 +2047,7 @@
         }
 
         function getTypeName(type) {
-            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客', 'game': '游戏' };
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客', 'game': '游戏', 'wechat': '朋友圈' };
             return typeNames[type] || type;
         }
 
