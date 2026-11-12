@@ -954,6 +954,83 @@
         let currentTab = 'work';
         let authToken = localStorage.getItem('authToken') || '';
 
+        // 各模块编辑状态：editingIds[type] = 正在编辑的记录 id，null 表示新建模式
+        let editingIds = { work: null, experience: null, food: null, suosui: null, update: null, blog: null, game: null };
+
+        // 各模块表单字段配置（用于编辑时填充表单和提交时收集数据）
+        const formFieldConfig = {
+            work: {
+                formId: 'workForm',
+                submitBtnText: '添加工作记录',
+                editBtnText: '保存修改',
+                fields: {
+                    title: 'workTitle',
+                    time: 'workTime',
+                    location: 'workLocation',
+                    content: 'workContent',
+                    images: { el: 'workImages', type: 'imagelinks' }
+                }
+            },
+            experience: {
+                formId: 'experienceForm',
+                submitBtnText: '添加经历记录',
+                editBtnText: '保存修改',
+                fields: {
+                    title: 'experienceTitle',
+                    time: 'experienceTime',
+                    location: 'experienceLocation',
+                    content: 'experienceContent',
+                    images: { el: 'experienceImages', type: 'imagelinks' }
+                }
+            },
+            food: {
+                formId: 'foodForm',
+                submitBtnText: '添加美食记录',
+                editBtnText: '保存修改',
+                fields: {
+                    title: 'foodTitle',
+                    time: 'foodTime',
+                    location: 'foodLocation',
+                    content: 'foodContent',
+                    images: { el: 'foodImages', type: 'imagelinks' }
+                }
+            },
+            suosui: {
+                formId: 'suosuiForm',
+                submitBtnText: '添加琐碎记录',
+                editBtnText: '保存修改',
+                fields: {
+                    title: 'suosuiTitle',
+                    subtitle: 'suosuiSubtitle',
+                    date: 'suosuiDate',
+                    content: 'suosuiDescription',
+                    videoUrl: 'suosuiVideoUrl'
+                }
+            },
+            update: {
+                formId: 'updateForm',
+                submitBtnText: '添加更新记录',
+                editBtnText: '保存修改',
+                fields: {
+                    title: 'updateTitle',
+                    date: 'updateDate',
+                    location: 'updateCategory',
+                    content: 'updateContent'
+                }
+            },
+            game: {
+                formId: 'gameForm',
+                submitBtnText: '添加游戏记录',
+                editBtnText: '保存修改',
+                fields: {
+                    title: 'gameTitle',
+                    location: 'gameUrl',
+                    content: 'gameDescription',
+                    images: { el: 'gameIcon', type: 'single' }
+                }
+            }
+        };
+
         // ========== API 工具函数 ==========
 
         /**
@@ -1159,6 +1236,19 @@
         }
 
         function switchTab(tabName) {
+            // 切换前取消当前 Tab 的编辑状态
+            if (currentTab && currentTab !== tabName && editingIds[currentTab]) {
+                cancelEdit(currentTab);
+            }
+            // 博客模块单独处理
+            if (currentTab === 'blog' && currentTab !== tabName && editingBlogId) {
+                editingBlogId = null;
+                editingIds.blog = null;
+                const blogForm = document.getElementById('blogForm');
+                const blogCancelBtn = blogForm.querySelector('.cancel-edit-btn');
+                if (blogCancelBtn) blogCancelBtn.remove();
+                blogForm.querySelector('button[type="submit"]').textContent = '添加博客文章';
+            }
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             const targetTab = document.getElementById(tabName + '-tab');
@@ -1199,7 +1289,10 @@
         }
 
         function generateItemHTML(type, item) {
-            var editBtn = type === 'blog' ? '<button class="btn btn-sm blog-item-edit-btn" onclick="editBlog(' + item.id + ')">编辑正文</button>' : '';
+            // 博客模块已有独立的 editBlog 编辑正文功能，保留原有按钮
+            var editBtn = type === 'blog'
+                ? '<button class="btn btn-sm blog-item-edit-btn" onclick="editBlog(' + item.id + ')">编辑正文</button>'
+                : '<button class="btn btn-sm btn-info" onclick="editItem(\'' + type + '\', ' + item.id + ')">编辑</button>';
             return '<div class="data-item-header"><div class="data-item-title">' + item.title + '</div><div class="data-item-date">' + formatDate(item.createdAt || item.created_at) + '</div></div><div class="data-item-content">' + getItemContent(type, item) + '</div><div class="data-actions">' + editBtn + '<button class="btn btn-sm btn-danger" onclick="deleteItem(\'' + type + '\', ' + item.id + ')">删除</button></div>';
         }
 
@@ -1229,6 +1322,74 @@
                     return '<p><strong>游戏名称:</strong> ' + (item.title || '无') + '</p><p><strong>描述:</strong> ' + (item.content || '无') + '</p><p><strong>游戏链接:</strong> <a href="' + (item.location || '#') + '" target="_blank" style="color:#e1652f;">点击打开</a></p><p><strong>图标:</strong> ' + (item.images && item.images[0] ? '<img src="' + item.images[0] + '" style="width:40px;height:40px;border-radius:6px;vertical-align:middle;" onerror="this.style.display=\'none\'">' : '无') + '</p>' + statusBadge;
                 default: return '<p>未知内容</p>';
             }
+        }
+
+        /**
+         * 编辑记录 —— 将数据填充到表单，切换为编辑模式
+         */
+        function editItem(type, id) {
+            const item = data[type].find(it => it.id === id);
+            if (!item) return;
+            editingIds[type] = id;
+            const config = formFieldConfig[type];
+            if (!config) return;
+
+            // 遍历字段配置，将数据填充到对应表单元素
+            Object.keys(config.fields).forEach(key => {
+                const fieldDef = config.fields[key];
+                if (typeof fieldDef === 'string') {
+                    // 简单字段：fieldDef 就是元素 id
+                    const el = document.getElementById(fieldDef);
+                    if (el) el.value = item[key] || '';
+                } else if (typeof fieldDef === 'object') {
+                    // 复合字段：{ el: '元素id', type: 'imagelinks' | 'single' }
+                    const el = document.getElementById(fieldDef.el);
+                    if (!el) return;
+                    if (fieldDef.type === 'imagelinks') {
+                        // 图片链接数组 → 每行一个
+                        el.value = (item.images || []).join('\n');
+                    } else if (fieldDef.type === 'single') {
+                        // 单个图片链接
+                        el.value = (item.images && item.images[0]) || '';
+                    }
+                }
+            });
+
+            // 修改提交按钮文案
+            const form = document.getElementById(config.formId);
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.textContent = config.editBtnText;
+
+            // 添加取消编辑按钮（如果还没有）
+            let cancelBtn = form.querySelector('.cancel-edit-btn');
+            if (!cancelBtn) {
+                cancelBtn = document.createElement('button');
+                cancelBtn.type = 'button';
+                cancelBtn.className = 'btn btn-danger cancel-edit-btn';
+                cancelBtn.textContent = '取消编辑';
+                cancelBtn.onclick = function() { cancelEdit(type); };
+                form.querySelector('.btn-group').appendChild(cancelBtn);
+            }
+
+            // 滚动到表单
+            form.scrollIntoView({ behavior: 'smooth' });
+            showNotification('已加载记录内容，修改后点击「保存修改」', 'info');
+        }
+
+        /**
+         * 取消编辑，恢复为新建模式
+         */
+        function cancelEdit(type) {
+            editingIds[type] = null;
+            const config = formFieldConfig[type];
+            if (!config) return;
+            const form = document.getElementById(config.formId);
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.textContent = config.submitBtnText;
+            const cancelBtn = form.querySelector('.cancel-edit-btn');
+            if (cancelBtn) cancelBtn.remove();
+            form.reset();
+            setFormDefaults(type);
         }
 
         /**
@@ -1306,15 +1467,25 @@
                 images: parseImageLinks(document.getElementById('workImages').value)
             };
             try {
-                const created = await apiRequest('/api/content/work', 'POST', body);
-                data.work.unshift(created);
+                if (editingIds.work) {
+                    // 编辑模式
+                    const updated = await apiRequest('/api/content/work/' + editingIds.work, 'PUT', body);
+                    const idx = data.work.findIndex(it => it.id === editingIds.work);
+                    if (idx !== -1) data.work[idx] = updated;
+                    cancelEdit('work');
+                    showNotification('工作记录修改成功！');
+                } else {
+                    // 新建模式
+                    const created = await apiRequest('/api/content/work', 'POST', body);
+                    data.work.unshift(created);
+                    this.reset();
+                    setFormDefaults('work');
+                    showNotification('工作记录添加成功！');
+                }
                 renderList('work');
                 updateStats();
-                this.reset();
-                setFormDefaults('work');
-                showNotification('工作记录添加成功！');
             } catch (error) {
-                showNotification('添加失败：' + error.message, 'error');
+                showNotification('操作失败：' + error.message, 'error');
             }
         });
 
@@ -1328,15 +1499,23 @@
                 images: parseImageLinks(document.getElementById('experienceImages').value)
             };
             try {
-                const created = await apiRequest('/api/content/experience', 'POST', body);
-                data.experience.unshift(created);
+                if (editingIds.experience) {
+                    const updated = await apiRequest('/api/content/experience/' + editingIds.experience, 'PUT', body);
+                    const idx = data.experience.findIndex(it => it.id === editingIds.experience);
+                    if (idx !== -1) data.experience[idx] = updated;
+                    cancelEdit('experience');
+                    showNotification('经历记录修改成功！');
+                } else {
+                    const created = await apiRequest('/api/content/experience', 'POST', body);
+                    data.experience.unshift(created);
+                    this.reset();
+                    setFormDefaults('experience');
+                    showNotification('经历记录添加成功！');
+                }
                 renderList('experience');
                 updateStats();
-                this.reset();
-                setFormDefaults('experience');
-                showNotification('经历记录添加成功！');
             } catch (error) {
-                showNotification('添加失败：' + error.message, 'error');
+                showNotification('操作失败：' + error.message, 'error');
             }
         });
 
@@ -1350,15 +1529,23 @@
                 images: parseImageLinks(document.getElementById('foodImages').value)
             };
             try {
-                const created = await apiRequest('/api/content/food', 'POST', body);
-                data.food.unshift(created);
+                if (editingIds.food) {
+                    const updated = await apiRequest('/api/content/food/' + editingIds.food, 'PUT', body);
+                    const idx = data.food.findIndex(it => it.id === editingIds.food);
+                    if (idx !== -1) data.food[idx] = updated;
+                    cancelEdit('food');
+                    showNotification('美食记录修改成功！');
+                } else {
+                    const created = await apiRequest('/api/content/food', 'POST', body);
+                    data.food.unshift(created);
+                    this.reset();
+                    setFormDefaults('food');
+                    showNotification('美食记录添加成功！');
+                }
                 renderList('food');
                 updateStats();
-                this.reset();
-                setFormDefaults('food');
-                showNotification('美食记录添加成功！');
             } catch (error) {
-                showNotification('添加失败：' + error.message, 'error');
+                showNotification('操作失败：' + error.message, 'error');
             }
         });
 
@@ -1372,15 +1559,23 @@
                 videoUrl: document.getElementById('suosuiVideoUrl').value
             };
             try {
-                const created = await apiRequest('/api/content/suosui', 'POST', body);
-                data.suosui.unshift(created);
+                if (editingIds.suosui) {
+                    const updated = await apiRequest('/api/content/suosui/' + editingIds.suosui, 'PUT', body);
+                    const idx = data.suosui.findIndex(it => it.id === editingIds.suosui);
+                    if (idx !== -1) data.suosui[idx] = updated;
+                    cancelEdit('suosui');
+                    showNotification('琐碎记录修改成功！');
+                } else {
+                    const created = await apiRequest('/api/content/suosui', 'POST', body);
+                    data.suosui.unshift(created);
+                    this.reset();
+                    setFormDefaults('suosui');
+                    showNotification('琐碎记录添加成功！');
+                }
                 renderList('suosui');
                 updateStats();
-                this.reset();
-                setFormDefaults('suosui');
-                showNotification('琐碎记录添加成功！');
             } catch (error) {
-                showNotification('添加失败：' + error.message, 'error');
+                showNotification('操作失败：' + error.message, 'error');
             }
         });
 
@@ -1393,15 +1588,23 @@
                 content: document.getElementById('updateContent').value
             };
             try {
-                const created = await apiRequest('/api/content/update', 'POST', body);
-                data.update.unshift(created);
+                if (editingIds.update) {
+                    const updated = await apiRequest('/api/content/update/' + editingIds.update, 'PUT', body);
+                    const idx = data.update.findIndex(it => it.id === editingIds.update);
+                    if (idx !== -1) data.update[idx] = updated;
+                    cancelEdit('update');
+                    showNotification('更新记录修改成功！');
+                } else {
+                    const created = await apiRequest('/api/content/update', 'POST', body);
+                    data.update.unshift(created);
+                    this.reset();
+                    setFormDefaults('update');
+                    showNotification('更新记录添加成功！');
+                }
                 renderList('update');
                 updateStats();
-                this.reset();
-                setFormDefaults('update');
-                showNotification('更新记录添加成功！');
             } catch (error) {
-                showNotification('添加失败：' + error.message, 'error');
+                showNotification('操作失败：' + error.message, 'error');
             }
         });
 
@@ -1415,15 +1618,23 @@
                 images: document.getElementById('gameIcon').value ? [document.getElementById('gameIcon').value] : []
             };
             try {
-                const created = await apiRequest('/api/content/game', 'POST', body);
-                data.game.unshift(created);
+                if (editingIds.game) {
+                    const updated = await apiRequest('/api/content/game/' + editingIds.game, 'PUT', body);
+                    const idx = data.game.findIndex(it => it.id === editingIds.game);
+                    if (idx !== -1) data.game[idx] = updated;
+                    cancelEdit('game');
+                    showNotification('游戏记录修改成功！');
+                } else {
+                    const created = await apiRequest('/api/content/game', 'POST', body);
+                    data.game.unshift(created);
+                    this.reset();
+                    setFormDefaults('game');
+                    showNotification('游戏记录添加成功！');
+                }
                 renderList('game');
                 updateStats();
-                this.reset();
-                setFormDefaults('game');
-                showNotification('游戏记录添加成功！');
             } catch (error) {
-                showNotification('添加失败：' + error.message, 'error');
+                showNotification('操作失败：' + error.message, 'error');
             }
         });
 
@@ -1464,7 +1675,11 @@
                     const idx = data.blog.findIndex(b => b.id === editingBlogId);
                     if (idx !== -1) data.blog[idx] = updated;
                     editingBlogId = null;
+                    editingIds.blog = null;
                     document.querySelector('#blogForm button[type="submit"]').textContent = '添加博客文章';
+                    // 移除取消编辑按钮
+                    const cancelBtn = document.querySelector('#blogForm .cancel-edit-btn');
+                    if (cancelBtn) cancelBtn.remove();
                     showNotification('博客文章修改成功！');
                 } else {
                     // 新建模式：POST
@@ -1488,6 +1703,7 @@
             const item = data.blog.find(b => b.id === id);
             if (!item) return;
             editingBlogId = id;
+            editingIds.blog = id;
             // 填充表单
             document.getElementById('blogTitle').value = item.title || '';
             document.getElementById('blogDate').value = item.date || '';
@@ -1498,8 +1714,27 @@
             // 修改提交按钮文案
             const submitBtn = document.querySelector('#blogForm button[type="submit"]');
             submitBtn.textContent = '保存修改';
+            // 添加取消编辑按钮（如果还没有）
+            const form = document.getElementById('blogForm');
+            let cancelBtn = form.querySelector('.cancel-edit-btn');
+            if (!cancelBtn) {
+                cancelBtn = document.createElement('button');
+                cancelBtn.type = 'button';
+                cancelBtn.className = 'btn btn-danger cancel-edit-btn';
+                cancelBtn.textContent = '取消编辑';
+                cancelBtn.onclick = function() {
+                    editingBlogId = null;
+                    editingIds.blog = null;
+                    submitBtn.textContent = '添加博客文章';
+                    cancelBtn.remove();
+                    form.reset();
+                    document.getElementById('blogContent').innerHTML = '';
+                    setFormDefaults('blog');
+                };
+                form.querySelector('.btn-group').appendChild(cancelBtn);
+            }
             // 滚动到表单
-            document.getElementById('blogForm').scrollIntoView({ behavior: 'smooth' });
+            form.scrollIntoView({ behavior: 'smooth' });
             showNotification('已加载文章内容，修改后点击「保存修改」', 'info');
         }
 
