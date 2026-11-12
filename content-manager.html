@@ -939,7 +939,7 @@
                     <div class="form-group"><label>动态内容</label><textarea id="wechatContent" rows="3" placeholder="输入朋友圈文字内容"></textarea></div>
                     <div class="form-group"><label>图片链接</label><textarea id="wechatImages" rows="2" placeholder="输入图片链接，每行一个链接"></textarea></div>
                     <div class="form-group"><label>点赞用户</label><input type="text" id="wechatLikes" placeholder="多个用户用逗号分隔，例如：小春春,许我半夏"></div>
-                    <div class="form-group"><label>评论内容</label><textarea id="wechatComments" rows="3" placeholder="每行一条评论，格式：用户名:评论内容 或 用户名回复用户名:评论内容"></textarea>
+                    <div class="form-group"><label>评论内容</label><textarea id="wechatComments" rows="3" placeholder="每行一条评论，格式：用户名:评论内容 或 用户名回复用户名:评论内容"></textarea></div>
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加朋友圈动态</button>
                         <button type="button" class="btn btn-success" onclick="generateCode('wechat')">生成代码</button>
@@ -1701,6 +1701,18 @@
                 updateStats();
             } catch (error) {
                 showNotification('操作失败：' + error.message, 'error');
+            }
+        });
+
+        // ========== 阻止表单回车键自动提交（只能通过点击按钮提交） ==========
+        ['workForm', 'experienceForm', 'foodForm', 'suosuiForm', 'updateForm', 'blogForm', 'gameForm', 'wechatForm'].forEach(function(formId) {
+            var form = document.getElementById(formId);
+            if (form) {
+                form.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                        e.preventDefault();
+                    }
+                });
             }
         });
 
