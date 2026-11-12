@@ -838,8 +838,10 @@
             setDate();
             setInterval(setDate, 1000);
 
-            // 从后端加载动态更新记录
+            // 从后端加载动态更新记录，然后排序并初始化功能
             loadDynamicUpdates().then(() => {
+                // 按日期降序排列所有条目（最新的在最上面）
+                sortUpdateList();
                 // 初始化功能
                 initPagination();
                 initStats();
@@ -888,7 +890,7 @@
             }, 1000);
         });
 
-        // 从后端 API 加载动态更新记录，插入到列表顶部
+        // 从后端 API 加载动态更新记录，追加到列表末尾（稍后会统一排序）
         async function loadDynamicUpdates() {
             try {
                 const res = await fetch(apiUrl('/api/public/update'));
@@ -904,11 +906,28 @@
                     const dateStr = item.date || item.time || '';
                     li.setAttribute('data-date', dateStr);
                     li.innerHTML = svgIcon + '<span>' + (item.title || '更新') + (item.content ? '：' + item.content : '') + (item.location ? '（' + item.location + '）' : '') + '（' + dateStr + '）</span>';
-                    updateList.insertBefore(li, updateList.firstChild);
+                    updateList.appendChild(li);
                 });
             } catch (err) {
                 console.error('加载动态更新失败:', err);
             }
+        }
+
+        // 将所有更新条目按日期降序排列（最新的在最上面）
+        function sortUpdateList() {
+            const updateList = document.getElementById('updateList');
+            const items = Array.from(updateList.children);
+            items.sort((a, b) => {
+                const dateA = a.getAttribute('data-date') || '';
+                const dateB = b.getAttribute('data-date') || '';
+              	// 将日期字符串（如 "2026.11.10"）转换为可比较的数字
+              	const parseDate = (str) => {
+              		const parts = str.split('.');
+              		return parts.map(Number).reduce((acc, n, i) => acc * 100 + (n || 0), 0);
+              	};
+              	return parseDate(dateB) - parseDate(dateA);
+            });
+            items.forEach(item => updateList.appendChild(item));
         }
 
         // 分页功能实现
@@ -1072,6 +1091,7 @@
             applyFilters(); // 应用默认筛选条件
         }
 
+        
         // 统计功能实现
         function initStats() {
             const allItems = Array.from(document.getElementById('updateList').children);
