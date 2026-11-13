@@ -5,6 +5,103 @@ html,body{
     overflow-x: hidden;
 }
 
+/* 统一 header 导航栏字体样式，与 content-manager.html 保持一致 */
+.am-topbar,
+.am-topbar a,
+.am-topbar button,
+.am-topbar .am-topbar-brand,
+.am-topbar .am-nav > li > a,
+.am-topbar .am-topbar-btn {
+    font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+}
+
+/* header 二级菜单（dropdown）统一样式，与全局橙色主题保持一致 */
+.am-topbar .am-dropdown-content {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    padding: 6px 0;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+/* 菜单项 hover 交互（用 transition，不用 animation，避免干扰 amazeui 的 animationend 关闭机制） */
+.am-topbar .am-dropdown-content > li > a {
+    padding: 10px 22px;
+    font-size: 14px;
+    color: #333;
+    transition: padding-left 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background-color 0.25s ease,
+                color 0.25s ease;
+    position: relative;
+}
+
+/* 悬停时左滑 + 橙色背景 + 左侧指示条 */
+.am-topbar .am-dropdown-content > li > a:hover {
+    background-color: #e1652f;
+    color: #fff;
+    padding-left: 28px;
+}
+
+.am-topbar .am-dropdown-content > li > a::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 5px;
+    border-radius: 3px;
+    background: #fff;
+    transition: width 0.25s ease;
+}
+
+.am-topbar .am-dropdown-content > li > a:hover::before {
+    width: 6px;
+}
+
+/* dropdown 小三角箭头颜色与边框统一 */
+.am-topbar .am-dropdown-content:before {
+    border-bottom-color: transparent;
+}
+
+.am-topbar .am-dropdown-content:after {
+    border-bottom-color: #fff;
+}
+
+/* 导航项交互增强：悬停下划线动画 */
+.am-topbar .am-nav > li > a {
+    position: relative;
+    transition: color 0.25s ease;
+}
+
+.am-topbar .am-nav > li > a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.85);
+    transform: translateX(-50%);
+    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.am-topbar .am-nav > li > a:hover::after,
+.am-topbar .am-nav > li.am-active > a::after {
+    width: 70%;
+}
+
+/* dropdown 触发器箭头旋转 */
+.am-topbar .am-dropdown.am-active .am-dropdown-toggle .am-icon-caret-down {
+    transform: rotate(180deg);
+}
+
+.am-topbar .am-dropdown-toggle .am-icon-caret-down {
+    transition: transform 0.3s ease;
+}
+
   .note {
     margin-bottom: 15px;
     padding: 4px 12px;

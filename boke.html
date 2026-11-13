@@ -26,20 +26,18 @@
 
     <link rel="icon" type="image/png" href="images/i/favicon.png">
     
-    <!-- 预加载关键资源 -->
-    <link rel="preload" href="assets/css/amazeui.min.css" as="style">
-    <link rel="preload" href="css/public.css" as="style">
+    <!-- 关键CSS同步加载（header依赖amazeui样式，异步加载会导致header闪烁/FOUC） -->
+    <link rel="stylesheet" href="assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="css/public.css">
     
-    <!-- 关键CSS内联 -->
     <style>
         html,body{margin:0 auto;width:100%;overflow-x:hidden;}
-        .am-topbar{background:#333;}
-        
+
         /* 顶部横幅优化 - 高级效果 */
         .am-container > .am-img-responsive {
             border-radius: 16px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: box-shadow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
         }
@@ -72,7 +70,6 @@
         }
         
         .am-container > .am-img-responsive:hover {
-            transform: translateY(-8px) scale(1.01);
             box-shadow: 0 15px 40px rgba(0,0,0,0.18);
         }
         
@@ -884,14 +881,6 @@
         footer a{color:#ddd;}
         footer a:hover{color:#fff;}
     </style>
-    
-    <!-- 非关键CSS异步加载 -->
-    <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="assets/css/amazeui.min.css">
-        <link rel="stylesheet" href="css/public.css">
-    </noscript>
 </head>
 
 <body>
@@ -1200,13 +1189,13 @@ class BlogPagination {
     render() {
         this.showLoading();
         
-        // 模拟加载延迟
-        setTimeout(() => {
+        // 使用 requestAnimationFrame 代替 setTimeout(300)，避免不必要的等待
+        requestAnimationFrame(() => {
             this.renderBlogList();
             this.renderPagination();
             this.renderPageInfo();
             this.hideLoading();
-        }, 300);
+        });
     }
     
     showLoading() {
@@ -1358,17 +1347,17 @@ class BlogPagination {
     
     // 重新初始化高级效果（分页后）
     reinitAdvancedEffects() {
-        setTimeout(() => {
+        // 使用 requestAnimationFrame 而非 setTimeout，减少不必要的延迟
+        requestAnimationFrame(() => {
             // 为新渲染的卡片添加鼠标跟随效果
             const blogItems = document.querySelectorAll('.am-gallery-item');
             blogItems.forEach(item => {
-                // 移除旧的监听器（如果有）
-                const newItem = item.cloneNode(true);
-                item.parentNode.replaceChild(newItem, item);
+                // 跳过已绑定效果的卡片，避免重复绑定
+                if (item._mouseMoveBound) return;
+                item._mouseMoveBound = true;
                 
-                // 添加新的监听器
-                newItem.addEventListener('mousemove', (e) => {
-                    const rect = newItem.getBoundingClientRect();
+                item.addEventListener('mousemove', (e) => {
+                    const rect = item.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
                     
@@ -1378,17 +1367,20 @@ class BlogPagination {
                     const rotateX = ((y - centerY) / centerY) * 3;
                     const rotateY = ((centerX - x) / centerX) * 3;
                     
-                    newItem.style.transform = `translateY(-12px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    item.style.transform = `translateY(-12px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
                 });
                 
-                newItem.addEventListener('mouseleave', () => {
-                    newItem.style.transform = '';
+                item.addEventListener('mouseleave', () => {
+                    item.style.transform = '';
                 });
             });
             
             // 重新绑定分页按钮动画
             const paginationLinks = document.querySelectorAll('.pagination a');
             paginationLinks.forEach(link => {
+                if (link._pulseBound) return;
+                link._pulseBound = true;
+                
                 link.addEventListener('mouseenter', () => {
                     link.style.animation = 'pulse 0.6s ease-in-out';
                 });
@@ -1397,7 +1389,7 @@ class BlogPagination {
                     link.style.animation = '';
                 });
             });
-        }, 100);
+        });
     }
 }
 
@@ -1433,12 +1425,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     initAdvancedEffects();
 });
 
-// 高级效果初始化
+// 高级效果初始化（使用事件委托，避免分页后重复绑定）
 function initAdvancedEffects() {
-    // 1. 博客卡片鼠标跟随倾斜效果
-    const blogItems = document.querySelectorAll('.am-gallery-item');
-    blogItems.forEach(item => {
-        item.addEventListener('mousemove', (e) => {
+    // 1. 博客卡片鼠标跟随倾斜效果 — 事件委托到 blogList
+    const blogList = document.getElementById('blogList');
+    if (blogList) {
+        blogList.addEventListener('mousemove', (e) => {
+            const item = e.target.closest('.am-gallery-item');
+            if (!item) return;
             const rect = item.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -1452,10 +1446,11 @@ function initAdvancedEffects() {
             item.style.transform = `translateY(-12px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
         });
         
-        item.addEventListener('mouseleave', () => {
-            item.style.transform = '';
-        });
-    });
+        blogList.addEventListener('mouseleave', (e) => {
+            const item = e.target.closest('.am-gallery-item');
+            if (item) item.style.transform = '';
+        }, true);
+    }
     
     // 2. 滚动视差效果
     let ticking = false;
@@ -1473,7 +1468,11 @@ function initAdvancedEffects() {
         const scrolled = window.pageYOffset;
         const banner = document.querySelector('.am-img-responsive');
         if (banner) {
-            banner.style.transform = `translateY(${scrolled * 0.3}px)`;
+            if (scrolled > 0) {
+                banner.style.transform = `translateY(${scrolled * 0.3}px)`;
+            } else {
+                banner.style.transform = '';
+            }
         }
     }
     
@@ -1509,19 +1508,20 @@ function initAdvancedEffects() {
         });
     }
     
-    // 5. 分页按钮悬停增强
-    setTimeout(() => {
-        const paginationLinks = document.querySelectorAll('.pagination a');
-        paginationLinks.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                link.style.animation = 'pulse 0.6s ease-in-out';
-            });
-            
-            link.addEventListener('animationend', () => {
-                link.style.animation = '';
-            });
+    // 5. 分页按钮悬停增强 — 事件委托到 pagination 容器
+    const pagination = document.getElementById('pagination');
+    if (pagination) {
+        pagination.addEventListener('mouseover', (e) => {
+            if (e.target.tagName === 'A') {
+                e.target.style.animation = 'pulse 0.6s ease-in-out';
+            }
         });
-    }, 1000);
+        pagination.addEventListener('animationend', (e) => {
+            if (e.target.tagName === 'A') {
+                e.target.style.animation = '';
+            }
+        });
+    }
 }
 </script>
 </body>
