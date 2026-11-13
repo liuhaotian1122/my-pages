@@ -25,63 +25,21 @@
     <meta name="msapplication-TileColor" content="#e1652f">
 
     <link rel="icon" type="image/png" href="images/i/favicon.png">
-
-    <!-- 预加载关键资源 -->
-    <link rel="preload" href="assets/css/amazeui.min.css" as="style">
-    <link rel="preload" href="css/public.css" as="style">
-    <link rel="preload" href="assets/js/jquery.min.js" as="script">
     
-    <!-- 关键CSS内联 -->
+    <!-- 关键CSS同步加载（header依赖amazeui样式，异步加载会导致header闪烁/FOUC） -->
+    <link rel="stylesheet" href="assets/css/amazeui.min.css">
+    <link rel="stylesheet" href="css/public.css">
+    
     <style>
-        /* 关键渲染路径CSS */
         html,body{margin:0 auto;width:100%;overflow-x:hidden;}
 
-        .am-topbar {
-            background: #333;
-        }
-
-        /* 页面加载遮罩层 - 防止 Live2D 加载闪烁 */
-        .page-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #fff;
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s ease, visibility 0s 0.5s;
-        }
-
-        .page-loader.hidden {
+        /* 防止 FOUC：导航栏默认透明，Amaze UI JS 初始化后淡入 */
+        .am-topbar-collapse {
             opacity: 0;
-            visibility: hidden;
+            transition: opacity 0.3s ease;
         }
-
-        .loader-content {
-            text-align: center;
-        }
-
-        .loader-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(225, 101, 47, 0.2);
-            border-top-color: #e1652f;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .loader-text {
-            color: #666;
-            font-size: 14px;
-            font-weight: 500;
+        .am-topbar-collapse.am-ready {
+            opacity: 1;
         }
 
         /* 顶部横幅优化 - 高级效果 */
@@ -931,29 +889,23 @@
         }
         footer a{color:#ddd;}
         footer a:hover{color:#fff;}
-        </style>
 
-    <!-- 非关键CSS异步加载 -->
-    <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="assets/css/amazeui.min.css">
-        <link rel="stylesheet" href="css/public.css">
-    </noscript>
+        /* Live2D 防闪烁优化 */
+        #live2d-widget,
+        .live2d-widget-container {
+            opacity: 0 !important;
+            transition: opacity 0.5s ease-in-out !important;
+            pointer-events: none;
+        }
+        #live2d-widget.live2d-ready,
+        .live2d-widget-container.live2d-ready {
+            opacity: 1 !important;
+            pointer-events: auto;
+        }
+    </style>
 </head>
 
 <body>
-<!-- 页面加载遮罩层 -->
-<div class="page-loader" id="pageLoader">
-    <div class="loader-content">
-        <div class="loader-spinner"></div>
-        <div class="loader-text">页面加载中...</div>
-    </div>
-</div>
-
-<!-- 共享导航栏 -->
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/amazeui.min.js"></script>
 <script src="js/header.js"></script>
 
 <div class="am-container" style="margin-top: 10px">
@@ -1050,9 +1002,8 @@
 <script src="js/footer.js"></script>
 <script src="js/api-config.js"></script>
 
-<!-- 延迟加载JavaScript -->
 <script>
-// 关键JS工具函数
+// 延迟加载JavaScript
 const loadScript = (src, callback) => {
     const script = document.createElement('script');
     script.src = src;
@@ -1061,26 +1012,25 @@ const loadScript = (src, callback) => {
     document.head.appendChild(script);
 };
 
-// jQuery已同步加载，直接加载其他依赖
-loadScript('js/public.js');
-
-// 延迟加载非关键功能
-window.addEventListener('load', () => {
-    // 页面主要内容加载完成，先隐藏遮罩层（Live2D稍后加载）
-    const loader = document.getElementById('pageLoader');
-    if (loader) {
-        setTimeout(() => {
-            loader.classList.add('hidden');
-            // 动画结束后移除DOM
-            setTimeout(() => {
-                if (loader.parentNode) {
-                    loader.parentNode.removeChild(loader);
-                }
-            }, 500);
-        }, 300); // 短暂延迟确保渲染完成
-    }
-
-    // 延迟加载Live2D（页面可见后再加载，避免闪烁）
+// 立即加载jQuery
+loadScript('assets/js/jquery.min.js', () => {
+    loadScript('assets/js/amazeui.min.js', () => {
+        // Amaze UI 初始化完成，平滑显示导航栏
+        const collapse = document.getElementById('collapse-head');
+        if (collapse) {
+            // 用 requestAnimationFrame 确保在下一帧渲染，避免闪烁
+            requestAnimationFrame(() => {
+                collapse.classList.add('am-ready');
+            });
+        }
+        // 触发 Amaze UI 组件初始化（特别是 dropdown）
+        if (typeof $.fn.amUI !== 'undefined') {
+            $.fn.amUI();
+        }
+    });
+    loadScript('js/public.js');
+    
+    // 延迟加载Live2D（优化：防止加载时闪烁）
     setTimeout(() => {
         loadScript('js/L2Dwidget.0.min.js', () => {
             loadScript('js/L2Dwidget.min.js', () => {
@@ -1093,12 +1043,34 @@ window.addEventListener('load', () => {
                             "position": "left",
                             "hOffset": 0,
                             "vOffset": 0
+                        },
+                        // 回调：Live2D 模型加载完成后显示
+                        "onLoad": function() {
+                            // 使用 requestAnimationFrame 确保在下一帧渲染，避免闪烁
+                            requestAnimationFrame(() => {
+                                const widget = document.getElementById('live2d-widget');
+                                const container = document.querySelector('.live2d-widget-container');
+                                if (widget) widget.classList.add('live2d-ready');
+                                if (container) container.classList.add('live2d-ready');
+                            });
                         }
                     });
+
+                    // 备用方案：如果 onLoad 没有触发，在一段时间后也显示（防止一直隐藏）
+                    setTimeout(() => {
+                        const widget = document.getElementById('live2d-widget');
+                        const container = document.querySelector('.live2d-widget-container');
+                        if (widget && !widget.classList.contains('live2d-ready')) {
+                            widget.classList.add('live2d-ready');
+                        }
+                        if (container && !container.classList.contains('live2d-ready')) {
+                            container.classList.add('live2d-ready');
+                        }
+                    }, 3000);
                 }
             });
         });
-    }, 2500); // 在遮罩层消失后加载Live2D
+    }, 2000);
 });
 
 // 博客数据
