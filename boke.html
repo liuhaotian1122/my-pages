@@ -25,21 +25,19 @@
     <meta name="msapplication-TileColor" content="#e1652f">
 
     <link rel="icon" type="image/png" href="images/i/favicon.png">
+
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="assets/css/amazeui.min.css" as="style">
+    <link rel="preload" href="css/public.css" as="style">
+    <link rel="preload" href="assets/js/jquery.min.js" as="script">
     
-    <!-- 关键CSS同步加载（header依赖amazeui样式，异步加载会导致header闪烁/FOUC） -->
-    <link rel="stylesheet" href="assets/css/amazeui.min.css">
-    <link rel="stylesheet" href="css/public.css">
-    
+    <!-- 关键CSS内联 -->
     <style>
+        /* 关键渲染路径CSS */
         html,body{margin:0 auto;width:100%;overflow-x:hidden;}
 
-        /* 防止 FOUC：导航栏默认透明，Amaze UI JS 初始化后淡入 */
-        .am-topbar-collapse {
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .am-topbar-collapse.am-ready {
-            opacity: 1;
+        .am-topbar {
+            background: #333;
         }
 
         /* 顶部横幅优化 - 高级效果 */
@@ -889,10 +887,21 @@
         }
         footer a{color:#ddd;}
         footer a:hover{color:#fff;}
-    </style>
+        </style>
+
+    <!-- 非关键CSS异步加载 -->
+    <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="assets/css/amazeui.min.css">
+        <link rel="stylesheet" href="css/public.css">
+    </noscript>
 </head>
 
 <body>
+<!-- 共享导航栏 -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/amazeui.min.js"></script>
 <script src="js/header.js"></script>
 
 <div class="am-container" style="margin-top: 10px">
@@ -989,8 +998,9 @@
 <script src="js/footer.js"></script>
 <script src="js/api-config.js"></script>
 
+<!-- 延迟加载JavaScript -->
 <script>
-// 延迟加载JavaScript
+// 关键JS工具函数
 const loadScript = (src, callback) => {
     const script = document.createElement('script');
     script.src = src;
@@ -999,24 +1009,11 @@ const loadScript = (src, callback) => {
     document.head.appendChild(script);
 };
 
-// 立即加载jQuery
-loadScript('assets/js/jquery.min.js', () => {
-    loadScript('assets/js/amazeui.min.js', () => {
-        // Amaze UI 初始化完成，平滑显示导航栏
-        const collapse = document.getElementById('collapse-head');
-        if (collapse) {
-            // 用 requestAnimationFrame 确保在下一帧渲染，避免闪烁
-            requestAnimationFrame(() => {
-                collapse.classList.add('am-ready');
-            });
-        }
-        // 触发 Amaze UI 组件初始化（特别是 dropdown）
-        if (typeof $.fn.amUI !== 'undefined') {
-            $.fn.amUI();
-        }
-    });
-    loadScript('js/public.js');
-    
+// jQuery已同步加载，直接加载其他依赖
+loadScript('js/public.js');
+
+// 延迟加载非关键功能
+window.addEventListener('load', () => {
     // 延迟加载Live2D
     setTimeout(() => {
         loadScript('js/L2Dwidget.0.min.js', () => {
