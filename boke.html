@@ -423,7 +423,7 @@
         /* 搜索框 - 高级效果 */
         .blog-search {
             max-width: 500px;
-            margin: 20px auto;
+            margin: 35px auto 20px;
             position: relative;
             filter: drop-shadow(0 2px 8px rgba(0,0,0,0.05));
         }
@@ -574,6 +574,28 @@
         
         .am-gotop:active {
             transform: translateY(-2px) scale(1.05);
+        }
+        
+        /* Live2D 防闪动优化 */
+        #live2d-widget {
+            opacity: 0 !important;
+            transition: opacity 0.8s ease-in-out !important;
+        }
+        
+        #live2d-widget.loaded {
+            opacity: 1 !important;
+        }
+        
+        /* 预留 Live2D 空间，防止布局偏移 */
+        body::before {
+            content: '';
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 160px;
+            height: 240px;
+            pointer-events: none;
+            z-index: -1;
         }
         
         /* 加载动画 */
@@ -889,19 +911,6 @@
         }
         footer a{color:#ddd;}
         footer a:hover{color:#fff;}
-
-        /* Live2D 防闪烁优化 */
-        #live2d-widget,
-        .live2d-widget-container {
-            opacity: 0 !important;
-            transition: opacity 0.5s ease-in-out !important;
-            pointer-events: none;
-        }
-        #live2d-widget.live2d-ready,
-        .live2d-widget-container.live2d-ready {
-            opacity: 1 !important;
-            pointer-events: auto;
-        }
     </style>
 </head>
 
@@ -1030,7 +1039,7 @@ loadScript('assets/js/jquery.min.js', () => {
     });
     loadScript('js/public.js');
     
-    // 延迟加载Live2D（优化：防止加载时闪烁）
+    // 延迟加载Live2D（优化：防闪动）
     setTimeout(() => {
         loadScript('js/L2Dwidget.0.min.js', () => {
             loadScript('js/L2Dwidget.min.js', () => {
@@ -1043,30 +1052,31 @@ loadScript('assets/js/jquery.min.js', () => {
                             "position": "left",
                             "hOffset": 0,
                             "vOffset": 0
-                        },
-                        // 回调：Live2D 模型加载完成后显示
-                        "onLoad": function() {
-                            // 使用 requestAnimationFrame 确保在下一帧渲染，避免闪烁
-                            requestAnimationFrame(() => {
-                                const widget = document.getElementById('live2d-widget');
-                                const container = document.querySelector('.live2d-widget-container');
-                                if (widget) widget.classList.add('live2d-ready');
-                                if (container) container.classList.add('live2d-ready');
-                            });
                         }
                     });
-
-                    // 备用方案：如果 onLoad 没有触发，在一段时间后也显示（防止一直隐藏）
+                    
+                    // Live2D加载完成后平滑显示，避免闪动
+                    const checkLive2D = setInterval(() => {
+                        const live2dWidget = document.getElementById('live2d-widget');
+                        if (live2dWidget) {
+                            clearInterval(checkLive2D);
+                            // 使用 requestAnimationFrame 确保在下一帧渲染，实现平滑淡入
+                            requestAnimationFrame(() => {
+                                requestAnimationFrame(() => {
+                                    live2dWidget.classList.add('loaded');
+                                });
+                            });
+                        }
+                    }, 100);
+                    
+                    // 超时保护：5秒后强制显示（防止检测失败）
                     setTimeout(() => {
-                        const widget = document.getElementById('live2d-widget');
-                        const container = document.querySelector('.live2d-widget-container');
-                        if (widget && !widget.classList.contains('live2d-ready')) {
-                            widget.classList.add('live2d-ready');
+                        clearInterval(checkLive2D);
+                        const live2dWidget = document.getElementById('live2d-widget');
+                        if (live2dWidget && !live2dWidget.classList.contains('loaded')) {
+                            live2dWidget.classList.add('loaded');
                         }
-                        if (container && !container.classList.contains('live2d-ready')) {
-                            container.classList.add('live2d-ready');
-                        }
-                    }, 3000);
+                    }, 5000);
                 }
             });
         });
