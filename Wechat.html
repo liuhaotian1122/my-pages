@@ -1,34 +1,86 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+<!doctype html>
+<html class="no-js">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="朋友圈" />
+    <meta name="description" content="朋友圈动态分享" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>朋友圈</title>
+
+    <!--360 browser -->
+    <meta name="renderer" content="webkit">
+    <meta name="author" content="wos">
+    <!-- Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" sizes="192x192" href="images/i/app.png">
+    <!--Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+    <link rel="apple-touch-icon-precomposed" href="images/i/app.png">
+    <!--Win8 or 10 -->
+    <meta name="msapplication-TileImage" content="images/i/app.png">
+    <meta name="msapplication-TileColor" content="#e1652f">
+
+    <link rel="icon" type="image/png" href="images/i/favicon.png">
+
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="assets/css/amazeui.min.css" as="style">
+    <link rel="preload" href="css/public.css" as="style">
+    <link rel="preload" href="assets/js/jquery.min.js" as="script">
+
+    <!-- 关键CSS内联 -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        html, body {
+            margin: 0 auto;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .am-topbar {
+            background: #333;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: #f0f0f0;
-            color: #000;
+            background-color: #f5f5f5;
+            font-family: "Segoe UI","Lucida Grande",Helvetica,Arial,"Microsoft YaHei",FreeSans,Arimo,"Droid Sans","wenquanyi micro hei","Hiragino Sans GB","Hiragino Sans GB W3",FontAwesome,sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            color: #333;
+            font-size: 1.6rem;
         }
 
-        /* 顶部个人信息区域 */
+        /* 顶部封面区域 */
         .profile-header {
             position: relative;
-            height: 320px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 360px;
+            margin-top: 0;
             overflow: hidden;
+            border-radius: 0 0 16px 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
         }
 
         .cover-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .profile-header:hover .cover-image {
+            transform: scale(1.05);
+        }
+
+        .cover-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5));
+            pointer-events: none;
         }
 
         .profile-info {
@@ -42,69 +94,142 @@
 
         .profile-name {
             color: white;
-            font-size: 18px;
-            font-weight: 500;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-            margin-bottom: 5px;
+            font-size: 20px;
+            font-weight: 600;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            margin-bottom: 8px;
         }
 
         .profile-avatar {
             width: 70px;
             height: 70px;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 3px solid white;
             object-fit: cover;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+            border-color: #e1652f;
+        }
+
+        /* 标题区域 */
+        .star {
+            margin: 35px auto 25px;
+            position: relative;
+        }
+
+        .star span {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 600;
+            padding: 12px 0;
+        }
+
+        .star img {
+            width: 28px;
+            height: 28px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
         /* 朋友圈内容区域 */
         .moments-container {
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
-            background-color: #f0f0f0;
+            padding: 0 15px 60px;
         }
 
         .moment-item {
-            background-color: white;
-            margin-bottom: 10px;
-            padding: 15px;
+            background: white;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .moment-item:hover {
+            transform: translateY(-6px);
+            box-shadow:
+                0 16px 35px rgba(0, 0, 0, 0.1),
+                0 6px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        /* 卡片光泽扫过 */
+        .moment-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transition: left 0.6s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .moment-item:hover::before {
+            left: 100%;
         }
 
         .moment-header {
             display: flex;
             gap: 12px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .moment-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 4px;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
             object-fit: cover;
             flex-shrink: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .moment-item:hover .moment-avatar {
+            transform: scale(1.08);
         }
 
         .moment-content-wrapper {
             flex: 1;
             min-width: 0;
+            position: relative;
+            z-index: 2;
         }
 
         .moment-username {
             font-size: 16px;
-            color: #576b95;
-            font-weight: 500;
-            margin-bottom: 5px;
+            color: #e1652f;
+            font-weight: 600;
+            margin-bottom: 6px;
             cursor: pointer;
+            display: inline-block;
+            transition: all 0.3s ease;
         }
 
         .moment-username:hover {
             text-decoration: underline;
+            transform: translateX(3px);
         }
 
         .moment-text {
             font-size: 16px;
-            line-height: 1.5;
-            color: #000;
+            line-height: 1.7;
+            color: #333;
             margin-bottom: 10px;
             word-wrap: break-word;
         }
@@ -112,18 +237,18 @@
         /* 图片网格 */
         .moment-images {
             display: grid;
-            gap: 4px;
-            margin-bottom: 10px;
+            gap: 5px;
+            margin-bottom: 12px;
         }
 
         .moment-images.single {
             grid-template-columns: 1fr;
-            max-width: 200px;
+            max-width: 220px;
         }
 
         .moment-images.double {
             grid-template-columns: repeat(2, 1fr);
-            max-width: 300px;
+            max-width: 320px;
         }
 
         .moment-images.multiple {
@@ -134,13 +259,17 @@
             width: 100%;
             aspect-ratio: 1;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             background-color: #f5f5f5;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
         }
 
         .moment-image:hover {
             opacity: 0.9;
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
         }
 
         /* 时间和操作 */
@@ -148,13 +277,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 12px;
             padding-top: 10px;
         }
 
         .moment-time {
             font-size: 13px;
             color: #999;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .moment-actions {
@@ -162,12 +294,23 @@
         }
 
         .action-btn {
-            background: none;
+            background: rgba(225, 101, 47, 0.08);
             border: none;
             cursor: pointer;
-            padding: 5px 10px;
+            padding: 6px 14px;
             font-size: 14px;
-            color: #576b95;
+            color: #e1652f;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: rgba(225, 101, 47, 0.15);
+            transform: scale(1.05);
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
         }
 
         .action-menu {
@@ -175,63 +318,95 @@
             right: 0;
             top: 100%;
             background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
             display: none;
             z-index: 10;
             overflow: hidden;
+            min-width: 130px;
         }
 
         .action-menu.show {
             display: block;
+            animation: fadeInDown 0.3s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .action-menu-item {
-            padding: 10px 20px;
+            padding: 10px 18px;
             cursor: pointer;
             white-space: nowrap;
             font-size: 14px;
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.3s ease;
+            color: #555;
         }
 
         .action-menu-item:hover {
-            background-color: #f5f5f5;
+            background-color: rgba(225, 101, 47, 0.06);
+            color: #e1652f;
+            padding-left: 22px;
         }
 
         /* 点赞和评论区域 */
         .interactions {
-            background-color: #f7f7f7;
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 4px;
+            background-color: #f8f8f8;
+            margin-top: 12px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .interactions::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 18px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid #f8f8f8;
         }
 
         .likes {
             display: flex;
             align-items: flex-start;
-            gap: 5px;
-            padding: 5px 0;
-            border-bottom: 1px solid #e5e5e5;
-            margin-bottom: 5px;
+            gap: 6px;
+            padding: 4px 0;
+            border-bottom: 1px solid #ececec;
+            margin-bottom: 4px;
         }
 
         .likes-icon {
-            color: #576b95;
+            color: #e1652f;
             font-size: 14px;
-            margin-top: 2px;
+            margin-top: 3px;
         }
 
         .likes-list {
             flex: 1;
             font-size: 14px;
-            line-height: 1.6;
+            line-height: 1.7;
         }
 
         .like-user {
-            color: #576b95;
+            color: #e1652f;
             cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .like-user:hover {
@@ -240,18 +415,20 @@
 
         /* 评论 */
         .comments {
-            padding: 5px 0;
+            padding: 4px 0;
         }
 
         .comment-item {
             font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 5px;
+            line-height: 1.7;
+            margin-bottom: 4px;
+            padding: 2px 0;
         }
 
         .comment-user {
-            color: #576b95;
+            color: #e1652f;
             cursor: pointer;
+            font-weight: 500;
         }
 
         .comment-user:hover {
@@ -259,62 +436,37 @@
         }
 
         .comment-reply-to {
-            color: #576b95;
+            color: #e1652f;
         }
 
         .comment-text {
-            color: #000;
+            color: #333;
         }
 
-        /* 导航栏 */
-        .navbar {
-            position: sticky;
-            top: 0;
-            background-color: #393a3e;
-            color: white;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 100;
-        }
-
-        .navbar-title {
-            font-size: 18px;
-            font-weight: 500;
-        }
-
-        .navbar-action {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            padding: 5px;
-        }
-
-        /* 底部发布按钮 */
+        /* 发布按钮 */
         .publish-btn {
             position: fixed;
-            bottom: 30px;
+            bottom: 80px;
             right: 30px;
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #e1652f 0%, #ff8a4c 100%);
             color: white;
             border: none;
             font-size: 28px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 16px rgba(225, 101, 47, 0.35);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 200;
         }
 
         .publish-btn:hover {
-            transform: scale(1.1);
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 24px rgba(225, 101, 47, 0.4);
         }
 
         .publish-btn:active {
@@ -329,10 +481,16 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0,0,0,0.9);
+            background-color: rgba(0, 0, 0, 0.92);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .image-modal.show {
@@ -343,21 +501,100 @@
             max-width: 90%;
             max-height: 90%;
             object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .close-modal {
             position: absolute;
             top: 20px;
-            right: 20px;
+            right: 25px;
             color: white;
             font-size: 36px;
             cursor: pointer;
-            background: none;
+            background: rgba(255, 255, 255, 0.15);
             border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
 
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        /* 回到顶部按钮增强 */
+        .am-gotop {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .am-gotop:hover {
+            transform: translateY(-5px) scale(1.1);
+        }
+
+        .am-gotop:active {
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        /* 页面淡入动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .star {
+            animation: fadeInUp 0.8s ease-out 0.1s backwards;
+        }
+
+        .moment-item {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .moment-item.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 底部 */
+        footer {
+            background-color: #222;
+            color: #fff;
+            padding: 15px 0 2px;
+            text-align: center;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        footer a { color: #ddd; }
+        footer a:hover { color: #fff; }
+
         /* 响应式 */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .profile-header {
                 height: 280px;
             }
@@ -367,257 +604,347 @@
                 height: 60px;
             }
 
+            .profile-name {
+                font-size: 17px;
+            }
+
+            .star span {
+                font-size: 20px;
+            }
+
+            .star img {
+                width: 24px;
+                height: 24px;
+            }
+
+            .moment-item {
+                padding: 15px;
+                margin-bottom: 15px;
+            }
+
+            .moment-avatar {
+                width: 42px;
+                height: 42px;
+            }
+
+            .moment-username {
+                font-size: 15px;
+            }
+
+            .moment-text {
+                font-size: 15px;
+            }
+
+            .publish-btn {
+                bottom: 70px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .star span {
+                font-size: 18px;
+            }
+
+            .star img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .moments-container {
+                padding: 0 10px 50px;
+            }
+
             .moment-item {
                 padding: 12px;
+                border-radius: 12px;
+            }
+
+            .moment-image {
+                border-radius: 6px;
             }
         }
     </style>
+
+    <!-- 非关键CSS异步加载 -->
+    <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="assets/css/amazeui.min.css">
+        <link rel="stylesheet" href="css/public.css">
+    </noscript>
 </head>
+
 <body>
-    <!-- 导航栏 -->
-    <div class="navbar">
-        <a href="index.html"><button class="navbar-action">‹ 返回</button></a>
-        <div class="navbar-title">朋友圈</div>
-        <button class="navbar-action">⋯</button>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/amazeui.min.js"></script>
+<script src="js/header.js"></script>
+
+<!-- 个人信息封面头部 -->
+<div class="profile-header">
+    <img src="https://i.postimg.cc/c41xdgHz/5211ec9bd56380a042daed730e0f10a.jpg" alt="封面" class="cover-image">
+    <div class="cover-overlay"></div>
+    <div class="profile-info">
+        <div class="profile-name">许我半夏</div>
+        <img src="https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg" alt="头像" class="profile-avatar">
     </div>
+</div>
 
-    <!-- 个人信息头部 -->
-    <div class="profile-header">
-        <img src="https://i.postimg.cc/c41xdgHz/5211ec9bd56380a042daed730e0f10a.jpg" alt="封面" class="cover-image">
-        <div class="profile-info">
-            <div class="profile-name">许我半夏</div>
-            <img src="https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg" alt="头像" class="profile-avatar">
-        </div>
-    </div>
+<!-- 标题 -->
+<div class="star am-container mcenter"><span><img src="images/star.png" loading="lazy">朋友圈动态</span></div>
 
-    <!-- 朋友圈内容 -->
-    <div class="moments-container" id="momentsContainer">
-        <!-- 动态内容将通过 JavaScript 从后端加载 -->
-    </div>
+<!-- 朋友圈内容 -->
+<div class="moments-container" id="momentsContainer">
+    <!-- 动态内容将通过 JavaScript 从后端加载 -->
+</div>
 
-    <!-- 发布按钮 -->
+<!-- 发布按钮 -->
+<button class="publish-btn" onclick="window.location.href='content-manager.html'" title="发布动态">
+    <i class="fa fa-pencil"></i>
+</button>
 
+<!-- 图片预览模态框 -->
+<div class="image-modal" id="imageModal" onclick="closeImageModal()">
+    <button class="close-modal"><i class="fa fa-times"></i></button>
+    <img id="modalImage" src="" alt="预览">
+</div>
 
-    <!-- 图片预览模态框 -->
-    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
-        <button class="close-modal">×</button>
-        <img id="modalImage" src="" alt="预览">
-    </div>
+<!-- 回到顶部 -->
+<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
+    <a href="#top" title="回到顶部">
+        <span class="am-gotop-title">回到顶部</span>
+        <i class="am-gotop-icon am-icon-chevron-up"></i>
+    </a>
+</div>
 
-    <script src="js/api-config.js"></script>
-    <script>
-        // 默认头像
-        var DEFAULT_AVATAR = 'https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg';
+<script src="js/footer.js"></script>
+<script src="js/api-config.js"></script>
+<script>
+    // 默认头像
+    var DEFAULT_AVATAR = 'https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg';
 
-        // 后端加载失败时的备用静态数据
-        var FALLBACK_MOMENTS = [
-            { title: '许我半夏', content: '今天天气真好，和朋友们一起去爬山，心情超级棒！🏔️', time: '10分钟前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400','https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=400','https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400'], likes: ['小春春','许我半夏'], comments: [{user:'小春春',text:'风景真美！'},{user:'许我半夏',replyTo:'小春春',text:'是啊'}] },
-            { title: '许我半夏', content: '周末的咖啡时光☕️', time: '1小时前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400'], likes: ['许我半夏','小春春'], comments: [] },
-            { title: '许我半夏', content: '人生就像一杯茶，不会苦一辈子，但总会苦一阵子。加油！💪', time: '3小时前', date: '2025.11.12', images: [], likes: ['许我半夏','刘浩天','小春春'], comments: [{user:'许我半夏',text:'说得好！'}] },
-            { title: '许我半夏', content: '今天的美食打卡 🍜🍱🍰🍕', time: '5小时前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400','https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400','https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400','https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400'], likes: [], comments: [{user:'小春春',text:'看起来好好吃！'},{user:'许我半夏',replyTo:'小春春',text:'下次一起去吃'}] },
-            { title: '许我半夏', content: '旅行的意义 🌏✈️ 探索未知的世界，遇见更好的自己', time: '昨天', date: '2025.11.11', images: ['https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400','https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400','https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400','https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=400','https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=400','https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400'], likes: ['许我半夏'], comments: [{user:'我',text:'好羡慕啊！'}] },
-            { title: '许我半夏', content: '读书是一种享受 📚', time: '2天前', date: '2025.11.10', images: ['https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400','https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400'], likes: ['许我半夏','小春春'], comments: [] }
-        ];
+    // 后端加载失败时的备用静态数据
+    var FALLBACK_MOMENTS = [
+        { title: '许我半夏', content: '今天天气真好，和朋友们一起去爬山，心情超级棒！🏔️', time: '10分钟前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400','https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=400','https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400'], likes: ['小春春','许我半夏'], comments: [{user:'小春春',text:'风景真美！'},{user:'许我半夏',replyTo:'小春春',text:'是啊'}] },
+        { title: '许我半夏', content: '周末的咖啡时光☕️', time: '1小时前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400'], likes: ['许我半夏','小春春'], comments: [] },
+        { title: '许我半夏', content: '人生就像一杯茶，不会苦一辈子，但总会苦一阵子。加油！💪', time: '3小时前', date: '2025.11.12', images: [], likes: ['许我半夏','刘浩天','小春春'], comments: [{user:'许我半夏',text:'说得好！'}] },
+        { title: '许我半夏', content: '今天的美食打卡 🍜🍱🍰🍕', time: '5小时前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400','https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400','https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400','https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400'], likes: [], comments: [{user:'小春春',text:'看起来好好吃！'},{user:'许我半夏',replyTo:'小春春',text:'下次一起去吃'}] },
+        { title: '许我半夏', content: '旅行的意义 🌏✈️ 探索未知的世界，遇见更好的自己', time: '昨天', date: '2025.11.11', images: ['https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400','https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400','https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400','https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=400','https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=400','https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400'], likes: ['许我半夏'], comments: [{user:'我',text:'好羡慕啊！'}] },
+        { title: '许我半夏', content: '读书是一种享受 📚', time: '2天前', date: '2025.11.10', images: ['https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400','https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400'], likes: ['许我半夏','小春春'], comments: [] }
+    ];
 
-        // 渲染单条朋友圈
-        function renderMoment(item) {
-            var images = item.images || [];
-            var imageClass = images.length === 1 ? 'single' : images.length === 2 ? 'double' : 'multiple';
-            var imagesHtml = '';
-            if (images.length > 0) {
-                imagesHtml = '<div class="moment-images ' + imageClass + '">';
-                images.forEach(function(src) {
-                    imagesHtml += '<img src="' + src + '" alt="图片" class="moment-image" onclick="showImageModal(this.src)">';
-                });
-                imagesHtml += '</div>';
-            }
-
-            // 点赞列表
-            var likes = item.likes || [];
-            if (typeof item.subtitle === 'string' && item.subtitle) {
-                likes = item.subtitle.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
-            }
-            var likesHtml = '';
-            if (likes.length > 0) {
-                likesHtml = '<div class="likes"><span class="likes-icon">❤️</span><div class="likes-list">';
-                likes.forEach(function(name, i) {
-                    likesHtml += (i > 0 ? '，' : '') + '<span class="like-user">' + name + '</span>';
-                });
-                likesHtml += '</div></div>';
-            }
-
-            // 评论列表
-            var comments = item.comments || item.tags || [];
-            var commentsHtml = '';
-            if (comments.length > 0) {
-                commentsHtml = '<div class="comments">';
-                comments.forEach(function(c) {
-                    if (c.replyTo) {
-                        commentsHtml += '<div class="comment-item"><span class="comment-user">' + c.user + '</span> 回复 <span class="comment-reply-to">' + c.replyTo + '</span>：<span class="comment-text">' + c.text + '</span></div>';
-                    } else {
-                        commentsHtml += '<div class="comment-item"><span class="comment-user">' + c.user + '</span>：<span class="comment-text">' + c.text + '</span></div>';
-                    }
-                });
-                commentsHtml += '</div>';
-            }
-
-            var interactionsHtml = (likesHtml || commentsHtml) ? '<div class="interactions">' + likesHtml + commentsHtml + '</div>' : '';
-
-            return '<div class="moment-item">' +
-                '<div class="moment-header">' +
-                '<img src="' + DEFAULT_AVATAR + '" alt="头像" class="moment-avatar">' +
-                '<div class="moment-content-wrapper">' +
-                '<div class="moment-username">' + (item.title || '许我半夏') + '</div>' +
-                '<div class="moment-text">' + (item.content || '') + '</div>' +
-                imagesHtml +
-                '<div class="moment-footer">' +
-                '<div class="moment-time">' + (item.time || '') + '</div>' +
-                '<div class="moment-actions">' +
-                '<button class="action-btn" onclick="toggleActionMenu(this)">⋯</button>' +
-                '<div class="action-menu">' +
-                '<div class="action-menu-item" onclick="likePost(this)">👍 点赞</div>' +
-                '<div class="action-menu-item" onclick="commentPost(this)">💬 评论</div>' +
-                '</div></div></div>' +
-                interactionsHtml +
-                '</div></div></div>';
-        }
-
-        // 从后端加载朋友圈数据
-        async function loadMoments() {
-            var container = document.getElementById('momentsContainer');
-            try {
-                var res = await fetch(apiUrl('/api/public/wechat'));
-                if (!res.ok) throw new Error('API请求失败');
-                var backendMoments = await res.json();
-                // 后端数据排在前面，静态备用数据追加在后面，避免发布新内容后"清空"原有静态数据
-                var moments = (backendMoments && backendMoments.length > 0)
-                    ? backendMoments.concat(FALLBACK_MOMENTS)
-                    : FALLBACK_MOMENTS;
-                container.innerHTML = moments.map(renderMoment).join('');
-            } catch (err) {
-                console.error('加载朋友圈数据失败:', err);
-                // 加载失败，使用备用静态数据
-                container.innerHTML = FALLBACK_MOMENTS.map(renderMoment).join('');
-            }
-        }
-
-        // 页面加载时从后端加载
-        loadMoments();
-
-        // 切换操作菜单
-        function toggleActionMenu(btn) {
-            const menu = btn.nextElementSibling;
-            const allMenus = document.querySelectorAll('.action-menu');
-            
-            // 关闭其他菜单
-            allMenus.forEach(m => {
-                if (m !== menu) m.classList.remove('show');
+    // 渲染单条朋友圈
+    function renderMoment(item) {
+        var images = item.images || [];
+        var imageClass = images.length === 1 ? 'single' : images.length === 2 ? 'double' : 'multiple';
+        var imagesHtml = '';
+        if (images.length > 0) {
+            imagesHtml = '<div class="moment-images ' + imageClass + '">';
+            images.forEach(function(src) {
+                imagesHtml += '<img src="' + src + '" alt="图片" class="moment-image" onclick="showImageModal(this.src)" loading="lazy">';
             });
-            
-            menu.classList.toggle('show');
-            
-            // 点击其他地方关闭菜单
-            setTimeout(() => {
-                document.addEventListener('click', function closeMenu(e) {
-                    if (!e.target.closest('.moment-actions')) {
-                        menu.classList.remove('show');
-                        document.removeEventListener('click', closeMenu);
-                    }
-                }, 10);
-            });
+            imagesHtml += '</div>';
         }
 
-        // 点赞功能
-        function likePost(element) {
-            const momentItem = element.closest('.moment-item');
-            const contentWrapper = momentItem.querySelector('.moment-content-wrapper');
-            let interactions = contentWrapper.querySelector('.interactions');
-            
-            // 如果没有互动区域，创建一个
-            if (!interactions) {
-                interactions = document.createElement('div');
-                interactions.className = 'interactions';
-                contentWrapper.appendChild(interactions);
-            }
-            
-            let likes = interactions.querySelector('.likes');
-            
-            // 如果没有点赞区域，创建一个
-            if (!likes) {
-                likes = document.createElement('div');
-                likes.className = 'likes';
-                likes.innerHTML = `
-                    <span class="likes-icon">❤️</span>
-                    <div class="likes-list"></div>
-                `;
-                interactions.insertBefore(likes, interactions.firstChild);
-            }
-            
-            const likesList = likes.querySelector('.likes-list');
-            const currentLikes = likesList.innerHTML;
-            
-            if (currentLikes.includes('你')) {
-                alert('你已经点过赞了');
-            } else {
-                if (currentLikes) {
-                    likesList.innerHTML = '<span class="like-user">你</span>，' + currentLikes;
+        // 点赞列表
+        var likes = item.likes || [];
+        if (typeof item.subtitle === 'string' && item.subtitle) {
+            likes = item.subtitle.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+        }
+        var likesHtml = '';
+        if (likes.length > 0) {
+            likesHtml = '<div class="likes"><span class="likes-icon"><i class="fa fa-heart"></i></span><div class="likes-list">';
+            likes.forEach(function(name, i) {
+                likesHtml += (i > 0 ? '，' : '') + '<span class="like-user">' + name + '</span>';
+            });
+            likesHtml += '</div></div>';
+        }
+
+        // 评论列表
+        var comments = item.comments || item.tags || [];
+        var commentsHtml = '';
+        if (comments.length > 0) {
+            commentsHtml = '<div class="comments">';
+            comments.forEach(function(c) {
+                if (c.replyTo) {
+                    commentsHtml += '<div class="comment-item"><span class="comment-user">' + c.user + '</span> 回复 <span class="comment-reply-to">' + c.replyTo + '</span>：<span class="comment-text">' + c.text + '</span></div>';
                 } else {
-                    likesList.innerHTML = '<span class="like-user">你</span>';
+                    commentsHtml += '<div class="comment-item"><span class="comment-user">' + c.user + '</span>：<span class="comment-text">' + c.text + '</span></div>';
                 }
-            }
-            
-            // 关闭菜单
-            element.closest('.action-menu').classList.remove('show');
+            });
+            commentsHtml += '</div>';
         }
 
-        // 评论功能
-        function commentPost(element) {
-            const username = prompt('请输入评论内容：');
-            if (!username) return;
-            
-            const momentItem = element.closest('.moment-item');
-            const contentWrapper = momentItem.querySelector('.moment-content-wrapper');
-            let interactions = contentWrapper.querySelector('.interactions');
-            
-            // 如果没有互动区域，创建一个
-            if (!interactions) {
-                interactions = document.createElement('div');
-                interactions.className = 'interactions';
-                contentWrapper.appendChild(interactions);
-            }
-            
-            let comments = interactions.querySelector('.comments');
-            
-            // 如果没有评论区域，创建一个
-            if (!comments) {
-                comments = document.createElement('div');
-                comments.className = 'comments';
-                interactions.appendChild(comments);
-            }
-            
-            // 添加新评论
-            const newComment = document.createElement('div');
-            newComment.className = 'comment-item';
-            newComment.innerHTML = `<span class="comment-user">你</span>：<span class="comment-text">${username}</span>`;
-            comments.appendChild(newComment);
-            
-            // 关闭菜单
-            element.closest('.action-menu').classList.remove('show');
+        var interactionsHtml = (likesHtml || commentsHtml) ? '<div class="interactions">' + likesHtml + commentsHtml + '</div>' : '';
+
+        return '<div class="moment-item">' +
+            '<div class="moment-header">' +
+            '<img src="' + DEFAULT_AVATAR + '" alt="头像" class="moment-avatar">' +
+            '<div class="moment-content-wrapper">' +
+            '<div class="moment-username">' + (item.title || '许我半夏') + '</div>' +
+            '<div class="moment-text">' + (item.content || '') + '</div>' +
+            imagesHtml +
+            '<div class="moment-footer">' +
+            '<div class="moment-time"><i class="fa fa-clock-o"></i> ' + (item.time || '') + '</div>' +
+            '<div class="moment-actions">' +
+            '<button class="action-btn" onclick="toggleActionMenu(this)"><i class="fa fa-ellipsis-h"></i></button>' +
+            '<div class="action-menu">' +
+            '<div class="action-menu-item" onclick="likePost(this)"><i class="fa fa-thumbs-up"></i> 点赞</div>' +
+            '<div class="action-menu-item" onclick="commentPost(this)"><i class="fa fa-comment"></i> 评论</div>' +
+            '</div></div></div>' +
+            interactionsHtml +
+            '</div></div></div>';
+    }
+
+    // 从后端加载朋友圈数据
+    async function loadMoments() {
+        var container = document.getElementById('momentsContainer');
+        try {
+            var res = await fetch(apiUrl('/api/public/wechat'));
+            if (!res.ok) throw new Error('API请求失败');
+            var backendMoments = await res.json();
+            var moments = (backendMoments && backendMoments.length > 0)
+                ? backendMoments.concat(FALLBACK_MOMENTS)
+                : FALLBACK_MOMENTS;
+            container.innerHTML = moments.map(renderMoment).join('');
+            // 触发淡入动画
+            observeItems();
+        } catch (err) {
+            console.error('加载朋友圈数据失败:', err);
+            container.innerHTML = FALLBACK_MOMENTS.map(renderMoment).join('');
+            observeItems();
+        }
+    }
+
+    // 滚动进入视口时的淡入动画
+    function observeItems() {
+        var items = document.querySelectorAll('.moment-item');
+        if (!('IntersectionObserver' in window)) {
+            items.forEach(function(item) { item.classList.add('show'); });
+            return;
+        }
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    setTimeout(function() {
+                        entry.target.classList.add('show');
+                    }, Array.from(items).indexOf(entry.target) * 80);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+        items.forEach(function(item) { observer.observe(item); });
+    }
+
+    // 页面加载时从后端加载
+    loadMoments();
+
+    // 切换操作菜单
+    function toggleActionMenu(btn) {
+        var menu = btn.nextElementSibling;
+        var allMenus = document.querySelectorAll('.action-menu');
+
+        allMenus.forEach(function(m) {
+            if (m !== menu) m.classList.remove('show');
+        });
+
+        menu.classList.toggle('show');
+
+        setTimeout(function() {
+            document.addEventListener('click', function closeMenu(e) {
+                if (!e.target.closest('.moment-actions')) {
+                    menu.classList.remove('show');
+                    document.removeEventListener('click', closeMenu);
+                }
+            }, 10);
+        });
+    }
+
+    // 点赞功能
+    function likePost(element) {
+        var momentItem = element.closest('.moment-item');
+        var contentWrapper = momentItem.querySelector('.moment-content-wrapper');
+        var interactions = contentWrapper.querySelector('.interactions');
+
+        if (!interactions) {
+            interactions = document.createElement('div');
+            interactions.className = 'interactions';
+            contentWrapper.appendChild(interactions);
         }
 
-        // 显示图片预览
-        function showImageModal(src) {
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-            modalImage.src = src;
-            modal.classList.add('show');
+        var likes = interactions.querySelector('.likes');
+
+        if (!likes) {
+            likes = document.createElement('div');
+            likes.className = 'likes';
+            likes.innerHTML = '<span class="likes-icon"><i class="fa fa-heart"></i></span><div class="likes-list"></div>';
+            interactions.insertBefore(likes, interactions.firstChild);
         }
 
-        // 关闭图片预览
-        function closeImageModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.remove('show');
+        var likesList = likes.querySelector('.likes-list');
+        var currentLikes = likesList.innerHTML;
+
+        if (currentLikes.includes('你')) {
+            alert('你已经点过赞了');
+        } else {
+            if (currentLikes) {
+                likesList.innerHTML = '<span class="like-user">你</span>，' + currentLikes;
+            } else {
+                likesList.innerHTML = '<span class="like-user">你</span>';
+            }
         }
-    </script>
+
+        element.closest('.action-menu').classList.remove('show');
+    }
+
+    // 评论功能
+    function commentPost(element) {
+        var text = prompt('请输入评论内容：');
+        if (!text) return;
+
+        var momentItem = element.closest('.moment-item');
+        var contentWrapper = momentItem.querySelector('.moment-content-wrapper');
+        var interactions = contentWrapper.querySelector('.interactions');
+
+        if (!interactions) {
+            interactions = document.createElement('div');
+            interactions.className = 'interactions';
+            contentWrapper.appendChild(interactions);
+        }
+
+        var comments = interactions.querySelector('.comments');
+
+        if (!comments) {
+            comments = document.createElement('div');
+            comments.className = 'comments';
+            interactions.appendChild(comments);
+        }
+
+        var newComment = document.createElement('div');
+        newComment.className = 'comment-item';
+        newComment.innerHTML = '<span class="comment-user">你</span>：<span class="comment-text">' + text + '</span>';
+        comments.appendChild(newComment);
+
+        element.closest('.action-menu').classList.remove('show');
+    }
+
+    // 显示图片预览
+    function showImageModal(src) {
+        var modal = document.getElementById('imageModal');
+        var modalImage = document.getElementById('modalImage');
+        modalImage.src = src;
+        modal.classList.add('show');
+    }
+
+    // 关闭图片预览
+    function closeImageModal() {
+        var modal = document.getElementById('imageModal');
+        modal.classList.remove('show');
+    }
+</script>
 </body>
 </html>
