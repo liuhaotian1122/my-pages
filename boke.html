@@ -40,6 +40,50 @@
             background: #333;
         }
 
+        /* 页面加载遮罩层 - 防止 Live2D 加载闪烁 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0s 0.5s;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(225, 101, 47, 0.2);
+            border-top-color: #e1652f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
         /* 顶部横幅优化 - 高级效果 */
         .am-container > .am-img-responsive {
             border-radius: 16px;
@@ -887,22 +931,6 @@
         }
         footer a{color:#ddd;}
         footer a:hover{color:#fff;}
-
-        /* 看板娘样式优化 */
-        #live2d-widget {
-            z-index: 9999 !important;
-            transition: all 0.3s ease;
-        }
-        #live2d-widget:hover {
-            transform: scale(1.05);
-        }
-        /* 移动端看板娘优化 */
-        @media (max-width: 768px) {
-            #live2d-widget {
-                transform: scale(0.7);
-                transform-origin: bottom left;
-            }
-        }
         </style>
 
     <!-- 非关键CSS异步加载 -->
@@ -915,6 +943,14 @@
 </head>
 
 <body>
+<!-- 页面加载遮罩层 -->
+<div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">页面加载中...</div>
+    </div>
+</div>
+
 <!-- 共享导航栏 -->
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/amazeui.min.js"></script>
@@ -1030,74 +1066,39 @@ loadScript('js/public.js');
 
 // 延迟加载非关键功能
 window.addEventListener('load', () => {
-    // 看板娘模型列表（随机展示）
-    const live2dModels = [
-        {
-            name: 'shizuku (雫)',
-            jsonPath: 'https://unpkg.com/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json'
-        },
-        {
-            name: 'koharu (小春)',
-            jsonPath: 'https://unpkg.com/live2d-widget-model-koharu@1.0.5/assets/koharu.model.json'
-        },
-        {
-            name: 'haruto (春人)',
-            jsonPath: 'https://unpkg.com/live2d-widget-model-haruto@1.0.5/assets/haruto.model.json'
-        },
-        {
-            name: 'miku (初音)',
-            jsonPath: 'https://unpkg.com/live2d-widget-model-miku@1.0.5/assets/miku.model.json'
-        },
-        {
-            name: 'hijiki (海老)',
-            jsonPath: 'https://unpkg.com/live2d-widget-model-hijiki@1.0.5/assets/hijiki.model.json'
-        },
-        {
-            name: 'tororo (猫猫)',
-            jsonPath: 'https://unpkg.com/live2d-widget-model-tororo@1.0.5/assets/tororo.model.json'
-        }
-    ];
+    // 页面主要内容加载完成，先隐藏遮罩层（Live2D稍后加载）
+    const loader = document.getElementById('pageLoader');
+    if (loader) {
+        setTimeout(() => {
+            loader.classList.add('hidden');
+            // 动画结束后移除DOM
+            setTimeout(() => {
+                if (loader.parentNode) {
+                    loader.parentNode.removeChild(loader);
+                }
+            }, 500);
+        }, 300); // 短暂延迟确保渲染完成
+    }
 
-    // 随机选择一个模型
-    const randomModel = live2dModels[Math.floor(Math.random() * live2dModels.length)];
-    console.log(`🎀 今日看板娘: ${randomModel.name}`);
-
-    // 加载新的看板娘（使用 live2d-widget，更轻量级）
+    // 延迟加载Live2D（页面可见后再加载，避免闪烁）
     setTimeout(() => {
-        loadScript('https://cdn.jsdelivr.net/npm/live2d-widget@3.x/lib/L2Dwidget.min.js', () => {
-            if (typeof L2Dwidget !== 'undefined') {
-                L2Dwidget.init({
-                    pluginRootPath: 'https://cdn.jsdelivr.net/npm/live2d-widget@3.x/',
-                    pluginJsPath: 'lib/',
-                    pluginModelPath: 'assets/',
-                    tagMode: false,
-                    debug: false,
-                    model: {
-                        scale: 1,
-                        hHeadPos: 0.5,
-                        vHeadPos: 0.618,
-                        jsonPath: randomModel.jsonPath  // 使用随机选择的模型
-                    },
-                    display: {
-                        superSample: 2,
-                        width: 150,
-                        height: 300,
-                        position: 'left',
-                        hOffset: 20,
-                        vOffset: 0
-                    },
-                    mobile: {
-                        show: true,
-                        scale: 0.5
-                    },
-                    react: {
-                        opacityDefault: 0.9,
-                        opacityOnHover: 1
-                    }
-                });
-            }
+        loadScript('js/L2Dwidget.0.min.js', () => {
+            loadScript('js/L2Dwidget.min.js', () => {
+                if (typeof L2Dwidget !== 'undefined') {
+                    L2Dwidget.init({
+                        "display": {
+                            "superSample": 2,
+                            "width": 160,
+                            "height": 240,
+                            "position": "left",
+                            "hOffset": 0,
+                            "vOffset": 0
+                        }
+                    });
+                }
+            });
         });
-    }, 1000);
+    }, 2500); // 在遮罩层消失后加载Live2D
 });
 
 // 博客数据
