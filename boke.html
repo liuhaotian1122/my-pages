@@ -33,6 +33,15 @@
     <style>
         html,body{margin:0 auto;width:100%;overflow-x:hidden;}
 
+        /* 防止 FOUC：导航栏默认透明，Amaze UI JS 初始化后淡入 */
+        .am-topbar-collapse {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .am-topbar-collapse.am-ready {
+            opacity: 1;
+        }
+
         /* 顶部横幅优化 - 高级效果 */
         .am-container > .am-img-responsive {
             border-radius: 16px;
@@ -992,7 +1001,20 @@ const loadScript = (src, callback) => {
 
 // 立即加载jQuery
 loadScript('assets/js/jquery.min.js', () => {
-    loadScript('assets/js/amazeui.min.js');
+    loadScript('assets/js/amazeui.min.js', () => {
+        // Amaze UI 初始化完成，平滑显示导航栏
+        const collapse = document.getElementById('collapse-head');
+        if (collapse) {
+            // 用 requestAnimationFrame 确保在下一帧渲染，避免闪烁
+            requestAnimationFrame(() => {
+                collapse.classList.add('am-ready');
+            });
+        }
+        // 触发 Amaze UI 组件初始化（特别是 dropdown）
+        if (typeof $.fn.amUI !== 'undefined') {
+            $.fn.amUI();
+        }
+    });
     loadScript('js/public.js');
     
     // 延迟加载Live2D

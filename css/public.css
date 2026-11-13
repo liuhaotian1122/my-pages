@@ -5,14 +5,20 @@ html,body{
     overflow-x: hidden;
 }
 
-/* 统一 header 导航栏字体样式，与 content-manager.html 保持一致 */
+/* 统一 header 导航栏字体样式，与 content-manager.html 后台保持一致 */
 .am-topbar,
 .am-topbar a,
 .am-topbar button,
 .am-topbar .am-topbar-brand,
 .am-topbar .am-nav > li > a,
-.am-topbar .am-topbar-btn {
-    font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+.am-topbar .am-topbar-btn,
+.am-topbar .am-dropdown-toggle,
+.am-topbar .am-dropdown-content li a,
+.am-topbar .am-topbar-right .am-btn {
+    font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif !important;
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* header 二级菜单（dropdown）统一样式，与全局橙色主题保持一致 */
