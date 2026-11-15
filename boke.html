@@ -1044,7 +1044,16 @@ loadScript('assets/js/jquery.min.js', () => {
         loadScript('js/L2Dwidget.0.min.js', () => {
             loadScript('js/L2Dwidget.min.js', () => {
                 if (typeof L2Dwidget !== 'undefined') {
+                    // 每次刷新随机选择一个看板娘模型（尺寸、位置由 display 参数固定，不受影响）
+                    const live2dModels = [
+                        'shizuku', 'miku', 'haruto', 'hibiki', 'koharu',
+                        'nico', 'tororo', 'tsumiki', 'unitychan', 'wanko', 'z16'
+                    ];
+                    const pickedModel = live2dModels[Math.floor(Math.random() * live2dModels.length)];
                     L2Dwidget.init({
+                        "model": {
+                            "jsonPath": "https://unpkg.com/live2d-widget-model-" + pickedModel + "@1.0.5/assets/" + pickedModel + ".model.json"
+                        },
                         "display": {
                             "superSample": 2,
                             "width": 160,
