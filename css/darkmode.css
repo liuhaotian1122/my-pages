@@ -1,0 +1,439 @@
+/* ============================================================
+   全站深色模式（一套 CSS 变量，html[data-theme] 切换）
+   - data-theme 由 js/darkmode.js 与各页 head 内联防闪脚本设置
+   - 取值：localStorage('site-theme') 优先，否则跟随系统
+   - 浅色模式 = 页面默认样式，无需额外规则（年度报告页除外）
+   ============================================================ */
+
+:root {
+    --dm-bg: #12161d;
+    --dm-surface: #1c2430;
+    --dm-surface-2: #263040;
+    --dm-hover: #2c3745;
+    --dm-border: #35404f;
+    --dm-text: #e6e9ef;
+    --dm-sub: #a9b3c0;
+    --dm-brand: #e1652f;
+}
+
+/* ---------- 切换按钮（浮动，左下角，所有页面通用） ---------- */
+#dm-toggle {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 9999;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 19px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(28, 36, 48, 0.92);
+    color: #ffd28f;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+#dm-toggle:hover {
+    transform: scale(1.12);
+}
+#dm-toggle:active {
+    transform: scale(0.95);
+}
+html[data-theme="light"] #dm-toggle {
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--dm-brand);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+/* 切换瞬间的柔和过渡（由 js 短暂挂到 html 上） */
+html.dm-anim,
+html.dm-anim body,
+html.dm-anim .am-topbar,
+html.dm-anim footer,
+html.dm-anim .am-gallery-item,
+html.dm-anim .card,
+html.dm-anim .work-info,
+html.dm-anim .suosui-info,
+html.dm-anim .moment-item,
+html.dm-anim .main-card {
+    transition: background-color 0.3s ease, background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ================ 深色模式覆盖 ================ */
+
+/* ---------- 基础 ---------- */
+html[data-theme="dark"] {
+    color-scheme: dark;
+    background: var(--dm-bg);
+}
+html[data-theme="dark"] body {
+    background: var(--dm-bg) !important;
+    color: var(--dm-text) !important;
+}
+/* 年度报告页自带深色渐变设计（body.theme-keep-dark），深色下保持原样 */
+html[data-theme="dark"] body.theme-keep-dark {
+    background: linear-gradient(160deg, #1d2733 0%, #2c3e50 60%, #1d2733 100%) !important;
+    background-attachment: fixed;
+    color: #fff !important;
+}
+html[data-theme="dark"] a {
+    color: #8ab4dd;
+}
+html[data-theme="dark"] a:hover {
+    color: var(--dm-brand);
+}
+
+/* ---------- 顶部导航 ---------- */
+html[data-theme="dark"] .am-topbar {
+    background: #1a212c !important;
+    border-bottom-color: var(--dm-border);
+}
+html[data-theme="dark"] .am-topbar a,
+html[data-theme="dark"] .am-topbar .am-nav > li > a {
+    color: #d7dce3 !important;
+}
+html[data-theme="dark"] .am-topbar .am-nav > li > a:hover,
+html[data-theme="dark"] .am-topbar .am-nav > li.am-active > a {
+    color: #ffb27a !important;
+    background: transparent !important;
+}
+html[data-theme="dark"] .am-topbar .am-dropdown-content {
+    background: var(--dm-surface) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+html[data-theme="dark"] .am-topbar .am-dropdown-content:after {
+    border-bottom-color: var(--dm-surface) !important;
+}
+html[data-theme="dark"] .am-topbar .am-dropdown-content > li > a {
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .am-topbar .am-dropdown-content > li > a:hover {
+    background-color: var(--dm-brand) !important;
+    color: #fff !important;
+}
+html[data-theme="dark"] .am-topbar .am-topbar-toggle {
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+/* ---------- 页脚 ---------- */
+html[data-theme="dark"] footer {
+    background-color: #0e1218 !important;
+    border-top: 1px solid var(--dm-border);
+}
+html[data-theme="dark"] footer a {
+    color: #9aa4b1 !important;
+}
+html[data-theme="dark"] footer a:hover {
+    color: #ffb27a !important;
+}
+
+/* ---------- AmazeUI 通用组件 ---------- */
+html[data-theme="dark"] .am-panel,
+html[data-theme="dark"] .am-panel-default > .am-panel-hd,
+html[data-theme="dark"] .am-modal,
+html[data-theme="dark"] .am-modal-dialog {
+    background: var(--dm-surface) !important;
+    color: var(--dm-text) !important;
+    border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] .am-panel-default > .am-panel-hd {
+    border-bottom-color: var(--dm-border);
+}
+html[data-theme="dark"] .am-list > li,
+html[data-theme="dark"] .am-list-static > li {
+    background: var(--dm-surface) !important;
+    border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] .am-list-item-hd,
+html[data-theme="dark"] .am-list-news-bd .am-list-item-hd {
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .am-list-item-text {
+    color: var(--dm-sub) !important;
+}
+html[data-theme="dark"] .am-gallery-item {
+    background: var(--dm-surface) !important;
+}
+html[data-theme="dark"] .am-gallery-title {
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .am-gallery-desc {
+    color: var(--dm-sub) !important;
+}
+html[data-theme="dark"] .am-titlebar {
+    background: var(--dm-surface) !important;
+    border-color: var(--dm-border);
+}
+html[data-theme="dark"] .am-titlebar .am-titlebar-title {
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .am-titlebar .am-titlebar-nav a {
+    color: var(--dm-brand) !important;
+}
+html[data-theme="dark"] .am-pagination > li > a,
+html[data-theme="dark"] .am-btn-default,
+html[data-theme="dark"] .am-btn-secondary {
+    background: var(--dm-surface-2) !important;
+    color: var(--dm-text) !important;
+    border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] .am-gotop-icon {
+    background: var(--dm-surface) !important;
+    color: var(--dm-text) !important;
+}
+/* 表单控件（下拉框、输入框、文本域全站统一） */
+html[data-theme="dark"] input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]),
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea {
+    background: var(--dm-surface-2) !important;
+    color: var(--dm-text) !important;
+    border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] select option {
+    background: var(--dm-surface);
+    color: var(--dm-text);
+}
+html[data-theme="dark"] ::placeholder {
+    color: #7b8593;
+}
+/* AmazeUI 表格 */
+html[data-theme="dark"] .am-table {
+    background: transparent;
+    color: var(--dm-text);
+}
+html[data-theme="dark"] .am-table > thead > tr > th,
+html[data-theme="dark"] .am-table > tbody > tr > td {
+    border-bottom-color: var(--dm-border);
+}
+html[data-theme="dark"] .am-table > tbody > tr:hover {
+    background: var(--dm-hover);
+}
+
+/* ---------- css/public.css 中的浅色组件 ---------- */
+html[data-theme="dark"] .star span {
+    background-color: var(--dm-bg) !important;
+}
+html[data-theme="dark"] .right-bg,
+html[data-theme="dark"] .right-bg .am-list > li {
+    background-color: var(--dm-surface) !important;
+}
+html[data-theme="dark"] .newatype a,
+html[data-theme="dark"] .newshui a,
+html[data-theme="dark"] .events a,
+html[data-theme="dark"] #cattit .active-none a {
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .newatype a:hover,
+html[data-theme="dark"] .newshui a:hover,
+html[data-theme="dark"] .events a:hover,
+html[data-theme="dark"] #cattit .active-none a:hover {
+    color: var(--dm-brand) !important;
+}
+html[data-theme="dark"] .newshui,
+html[data-theme="dark"] .tag,
+html[data-theme="dark"] .bgtag {
+    background-color: var(--dm-surface) !important;
+}
+html[data-theme="dark"] .newshui .am-list li {
+    background-color: var(--dm-surface) !important;
+    border-bottom-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] .newshui .am-list li:hover {
+    background-color: var(--dm-hover) !important;
+}
+html[data-theme="dark"] .tag li {
+    background-color: var(--dm-surface-2) !important;
+    color: var(--dm-text);
+}
+html[data-theme="dark"] #hdxq {
+    background-color: var(--dm-surface) !important;
+}
+html[data-theme="dark"] #baoming {
+    border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] .cattlist_0 {
+    border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] .cattlist_1 {
+    background-color: var(--dm-surface-2) !important;
+}
+html[data-theme="dark"] .note-info {
+    background-color: rgba(12, 134, 222, 0.15);
+}
+
+/* ---------- 各页面专属（列表/卡片类页面共用模式） ---------- */
+/* work / food / jingli */
+html[data-theme="dark"] .work-info {
+    background: var(--dm-surface) !important;
+}
+html[data-theme="dark"] .pagination .disabled,
+html[data-theme="dark"] .pagination .disabled:hover {
+    background-color: var(--dm-surface-2) !important;
+    color: #6b7684 !important;
+}
+/* suosui / my wedding */
+html[data-theme="dark"] .suosui-info {
+    background: var(--dm-surface) !important;
+}
+/* 排序/翻页按钮（白底橙字） */
+html[data-theme="dark"] .sort-btn {
+    background: var(--dm-surface) !important;
+    color: var(--dm-brand) !important;
+}
+/* boke 博客卡片 */
+html[data-theme="dark"] .am-gallery-item {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* index — AI 聊天窗 */
+html[data-theme="dark"] .ai-chat-window {
+    background: var(--dm-surface) !important;
+    border-color: rgba(123, 97, 255, 0.35) !important;
+}
+html[data-theme="dark"] .ai-chat-input-area {
+    background: var(--dm-surface) !important;
+}
+html[data-theme="dark"] .ai-chat-input {
+    background: var(--dm-surface-2) !important;
+    border-color: var(--dm-border) !important;
+    color: var(--dm-text) !important;
+}
+/* index — 右侧「关于我」等渐变白卡片（行内 style 与高优先级选择器） */
+html[data-theme="dark"] .am-list-news .am-list-item-thumbed {
+    background: var(--dm-surface) !important;
+}
+
+/* blog-detail */
+html[data-theme="dark"] .blog-detail-content {
+    background: var(--dm-surface) !important;
+}
+html[data-theme="dark"] .blog-detail-content code {
+    background: var(--dm-surface-2) !important;
+    color: #ffcf9e !important;
+}
+html[data-theme="dark"] .blog-detail-content blockquote {
+    background: var(--dm-surface-2) !important;
+    color: var(--dm-sub) !important;
+}
+
+/* Wechat 朋友圈 */
+html[data-theme="dark"] .moment-item {
+    background: var(--dm-surface) !important;
+}
+html[data-theme="dark"] .interactions {
+    background-color: var(--dm-surface-2) !important;
+}
+html[data-theme="dark"] .moment-menu {
+    background: var(--dm-surface) !important;
+}
+
+/* hotnews */
+html[data-theme="dark"] body #main .contant .box {
+    background-color: var(--dm-surface) !important;
+}
+
+/* update — 弹幕墙 + 更新列表 */
+html[data-theme="dark"] .qiehuan {
+    background-color: var(--dm-surface) !important;
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .container li {
+    background: var(--dm-surface) !important;
+}
+
+/* content-manager 后台 */
+html[data-theme="dark"] .main-card,
+html[data-theme="dark"] .login-box,
+html[data-theme="dark"] .modal-content {
+    background: var(--dm-surface) !important;
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .tab-nav,
+html[data-theme="dark"] .toolbar {
+    background: var(--dm-surface-2) !important;
+}
+html[data-theme="dark"] .tab-button {
+    background: var(--dm-surface-2) !important;
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .tab-button.active,
+html[data-theme="dark"] .tab-button.active:hover {
+    background: var(--dm-hover) !important;
+    color: #ffb27a !important;
+}
+
+/* camera */
+html[data-theme="dark"] .audio-box {
+    background: var(--dm-surface) !important;
+}
+
+/* ---------- Tailwind 工具类页面（tigoo 等） ---------- */
+html[data-theme="dark"] .bg-white {
+    background-color: var(--dm-surface) !important;
+}
+html[data-theme="dark"] body.bg-gray-50,
+html[data-theme="dark"] .bg-gray-50,
+html[data-theme="dark"] .bg-gray-100 {
+    background-color: var(--dm-bg) !important;
+}
+html[data-theme="dark"] .text-gray-900,
+html[data-theme="dark"] .text-gray-800,
+html[data-theme="dark"] .text-gray-700,
+html[data-theme="dark"] .text-gray-600 {
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .text-gray-500,
+html[data-theme="dark"] .text-gray-400 {
+    color: var(--dm-sub) !important;
+}
+html[data-theme="dark"] .border-gray-100,
+html[data-theme="dark"] .border-gray-200,
+html[data-theme="dark"] .border-gray-300 {
+    border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] .bg-gray-200,
+html[data-theme="dark"] .bg-gray-50\/50 {
+    background-color: var(--dm-surface-2) !important;
+}
+
+/* ================ 年度报告页的浅色模式 ================ */
+/* 该页默认按深色设计，选浅色主题时做反向覆盖 */
+html[data-theme="light"] body.theme-keep-dark {
+    background: linear-gradient(160deg, #f2f4f7 0%, #e6ebf1 60%, #f2f4f7 100%) !important;
+    background-attachment: fixed;
+    color: #3a4450 !important;
+}
+html[data-theme="light"] body.theme-keep-dark .hero-sub,
+html[data-theme="light"] body.theme-keep-dark .chart .bar-year,
+html[data-theme="light"] body.theme-keep-dark .type-item .name,
+html[data-theme="light"] body.theme-keep-dark .sum-item .name {
+    color: rgba(0, 0, 0, 0.55) !important;
+}
+html[data-theme="light"] body.theme-keep-dark .hero-badge {
+    color: #c65a26 !important;
+    border-color: rgba(225, 101, 47, 0.5) !important;
+}
+html[data-theme="light"] body.theme-keep-dark .card {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border-color: rgba(0, 0, 0, 0.08) !important;
+}
+html[data-theme="light"] body.theme-keep-dark .card h3 {
+    color: #d4541f !important;
+}
+html[data-theme="light"] body.theme-keep-dark .type-item,
+html[data-theme="light"] body.theme-keep-dark .sum-item {
+    background: rgba(0, 0, 0, 0.04) !important;
+}
+html[data-theme="light"] body.theme-keep-dark .type-item .num,
+html[data-theme="light"] body.theme-keep-dark .sum-item .num,
+html[data-theme="light"] body.theme-keep-dark .chart .bar-num {
+    color: #e1652f !important;
+}
+html[data-theme="light"] body.theme-keep-dark .loading-tip {
+    color: rgba(0, 0, 0, 0.5) !important;
+}

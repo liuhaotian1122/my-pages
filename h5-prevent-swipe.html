@@ -46,6 +46,9 @@
     <![endif]-->
     <script src="assets/js/amazeui.min.js"></script>
     <script src="js/public.js"></script>
+    <!-- 深色模式：防闪脚本 + 主题样式 -->
+    <script>(function(){try{var t=localStorage.getItem('site-theme');if(t!=='dark'&&t!=='light'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+    <link rel="stylesheet" href="css/darkmode.css">
 </head>
 <body>
 
@@ -131,6 +134,7 @@ head.appendChild(script);
 </div>
 
 <script src="js/footer.js"></script>
+<script src="js/darkmode.js"></script>
 </body>
 
 </html>

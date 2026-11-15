@@ -322,6 +322,9 @@
         <link rel="stylesheet" href="assets/css/amazeui.min.css">
         <link rel="stylesheet" href="css/public.css">
     </noscript>
+    <!-- 深色模式：防闪脚本 + 主题样式 -->
+    <script>(function(){try{var t=localStorage.getItem('site-theme');if(t!=='dark'&&t!=='light'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+    <link rel="stylesheet" href="css/darkmode.css">
 </head>
 <body>
 
@@ -790,6 +793,7 @@ new SuosuiPagination();
 $(function () {$("img[src$=jpg],img[src$=gif],img[src$=png],img[src$=jpeg]").addClass("spotlight").each(function () {this.onclick = function () {return hs.expand(this)}});})
 </script>
 
+<script src="js/darkmode.js"></script>
 </body>
 </html>
 

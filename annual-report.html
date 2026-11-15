@@ -1,0 +1,468 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://api.liuhaotian.cc.cd" crossorigin>
+    <link rel="dns-prefetch" href="https://api.liuhaotian.cc.cd">
+    <link rel="icon" type="image/png" href="images/i/favicon.png">
+    <title>年度报告</title>
+
+    <link rel="preload" href="assets/css/amazeui.min.css" as="style">
+    <link rel="preload" href="css/public.css" as="style">
+    <link rel="stylesheet" href="assets/css/amazeui.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="css/public.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="assets/css/amazeui.min.css">
+        <link rel="stylesheet" href="css/public.css">
+    </noscript>
+
+    <style>
+        html, body {
+            margin: 0 auto;
+            width: 100%;
+            overflow-x: hidden;
+            background: linear-gradient(160deg, #1d2733 0%, #2c3e50 60%, #1d2733 100%);
+            background-attachment: fixed;
+            color: #fff;
+            font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+
+        .am-topbar { background: #333; }
+
+        .report-wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 16px 40px;
+        }
+
+        /* ===== 英雄区 ===== */
+        .hero {
+            text-align: center;
+            padding: 60px 16px 40px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 18px;
+            border: 1px solid rgba(225, 101, 47, 0.7);
+            color: #ff9d6b;
+            border-radius: 20px;
+            font-size: 14px;
+            letter-spacing: 3px;
+            margin-bottom: 18px;
+        }
+
+        .hero-title {
+            margin: 0;
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1.25;
+            background: linear-gradient(120deg, #ffb27a, #e1652f 55%, #ffcf9e);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-sub {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 15px;
+            margin-top: 14px;
+        }
+
+        /* ===== 大数字卡片 ===== */
+        .big-stat {
+            background: linear-gradient(135deg, #e1652f, #d4541f);
+            border-radius: 22px;
+            padding: 40px 30px;
+            text-align: center;
+            box-shadow: 0 14px 40px rgba(225, 101, 47, 0.35);
+            margin: 10px 0 26px;
+        }
+
+        .big-stat .num {
+            font-size: 76px;
+            font-weight: 800;
+            line-height: 1;
+            text-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .big-stat .label {
+            margin-top: 12px;
+            font-size: 17px;
+            opacity: 0.92;
+        }
+
+        /* ===== 通用卡片 ===== */
+        .card {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 18px;
+            padding: 26px 26px 22px;
+            margin-bottom: 22px;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.6s ease;
+        }
+
+        .card.show { opacity: 1; transform: translateY(0); }
+
+        .card h3 {
+            margin: 0 0 18px;
+            font-size: 18px;
+            color: #ffcf9e;
+        }
+
+        /* ===== 分类网格 ===== */
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+        }
+
+        .type-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 18px 6px;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .type-item:hover { transform: translateY(-4px); background: rgba(225, 101, 47, 0.18); }
+
+        .type-item .num {
+            font-size: 30px;
+            font-weight: 700;
+            color: #ffb27a;
+        }
+
+        .type-item .name { margin-top: 6px; font-size: 13px; color: rgba(255, 255, 255, 0.7); }
+
+        /* ===== 历年柱状图 ===== */
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            height: 180px;
+            padding: 6px 4px 0;
+        }
+
+        .chart .bar-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            height: 100%;
+            gap: 6px;
+        }
+
+        .chart .bar {
+            width: 100%;
+            max-width: 52px;
+            border-radius: 8px 8px 3px 3px;
+            background: linear-gradient(180deg, #ffb27a, #e1652f);
+            min-height: 4px;
+            height: 0;
+            transition: height 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .chart .bar.peak {
+            background: linear-gradient(180deg, #ffd9a0, #ff8f4d);
+            box-shadow: 0 0 14px rgba(255, 143, 77, 0.5);
+        }
+
+        .chart .bar-num { font-size: 13px; font-weight: 600; color: #ffb27a; }
+        .chart .bar-year { font-size: 12px; color: rgba(255, 255, 255, 0.55); }
+
+        /* ===== 汇总三格 ===== */
+        .sum-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .sum-item { text-align: center; background: rgba(255, 255, 255, 0.05); border-radius: 14px; padding: 20px 6px; }
+        .sum-item .num { font-size: 26px; font-weight: 700; color: #ffcf9e; }
+        .sum-item .name { margin-top: 6px; font-size: 13px; color: rgba(255, 255, 255, 0.65); }
+
+        /* ===== 分享卡片 ===== */
+        .share-area { text-align: center; }
+
+        #shareCanvas {
+            max-width: 100%;
+            width: 340px;
+            height: auto;
+            border-radius: 14px;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        .save-btn {
+            margin-top: 18px;
+            padding: 11px 34px;
+            border: none;
+            border-radius: 24px;
+            background: #e1652f;
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .save-btn:hover { background: #d4541f; transform: translateY(-2px); }
+
+        .loading-tip { text-align: center; color: rgba(255, 255, 255, 0.5); padding: 60px 0; }
+
+        footer {
+            background-color: #222;
+            color: #fff;
+            padding: 15px 0 2px;
+            text-align: center;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        footer a { color: #ddd; }
+        footer a:hover { color: #fff; }
+
+        @media (max-width: 640px) {
+            .hero-title { font-size: 32px; }
+            .hero { padding: 40px 12px 26px; }
+            .big-stat .num { font-size: 56px; }
+            .type-grid { grid-template-columns: repeat(3, 1fr); }
+            .sum-grid { grid-template-columns: repeat(3, 1fr); }
+            .card { padding: 20px 16px 16px; }
+        }
+    </style>
+    <!-- 深色模式：防闪脚本 + 主题样式 -->
+    <script>(function(){try{var t=localStorage.getItem('site-theme');if(t!=='dark'&&t!=='light'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+    <link rel="stylesheet" href="css/darkmode.css">
+</head>
+<body class="theme-keep-dark">
+
+<script src="js/api-config.js"></script>
+<script src="js/header.js"></script>
+
+<div class="report-wrap" id="reportWrap">
+    <div class="loading-tip" id="loadingTip">正在生成本年度报告...</div>
+
+    <div id="reportBody" style="display:none;">
+        <div class="hero">
+            <div class="hero-badge">ANNUAL REPORT</div>
+            <h1 class="hero-title"><span id="heroYear">2026</span> · 浩天的年度报告</h1>
+            <div class="hero-sub">liuhaotian.cc.cd · 每一条记录，都是这一年的注脚</div>
+        </div>
+
+        <div class="big-stat">
+            <div class="num" id="bigTotal">0</div>
+            <div class="label">条内容在这一年诞生</div>
+        </div>
+
+        <div class="card" id="typeCard">
+            <h3>📌 这一年，我记录了什么</h3>
+            <div class="type-grid" id="typeGrid"></div>
+        </div>
+
+        <div class="card" id="chartCard">
+            <h3>📈 历年发布足迹</h3>
+            <div class="chart" id="yearChart"></div>
+        </div>
+
+        <div class="card" id="sumCard">
+            <h3>🔭 站点的更远角落</h3>
+            <div class="sum-grid">
+                <div class="sum-item"><div class="num" id="sumDays">0</div><div class="name">累计运营天数</div></div>
+                <div class="sum-item"><div class="num" id="sumAll">0</div><div class="name">全部内容总数</div></div>
+                <div class="sum-item"><div class="num" id="sumDanmaku">0</div><div class="name">弹幕墙互动（条）</div></div>
+            </div>
+        </div>
+
+        <div class="card share-area" id="shareCardBox">
+            <h3>🎁 生成你的年度分享卡片</h3>
+            <canvas id="shareCanvas" width="680" height="880"></canvas>
+            <br>
+            <button class="save-btn" id="saveBtn">💾 保存分享卡片</button>
+        </div>
+    </div>
+</div>
+
+<div data-am-widget="gotop" class="am-gotop am-gotop-fixed">
+    <a href="#top" title="回到顶部">
+        <span class="am-gotop-title">回到顶部</span>
+        <i class="am-gotop-icon am-icon-chevron-up"></i>
+    </a>
+</div>
+
+<script src="js/footer.js"></script>
+
+<script>
+(function () {
+    var TYPE_NAMES = {
+        blog: '博客', suosui: '碎碎念', food: '美食相册', work: '工作',
+        experience: '经历', update: '更新', game: '游戏', wechat: '朋友圈'
+    };
+
+    var report = null;
+
+    function animateNum(el, target, duration) {
+        var start = null;
+        function step(ts) {
+            if (!start) start = ts;
+            var p = Math.min(1, (ts - start) / (duration || 1200));
+            p = 1 - Math.pow(1 - p, 3); // easeOutCubic
+            el.textContent = Math.round(target * p);
+            if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    function render() {
+        document.getElementById('heroYear').textContent = report.year;
+        document.getElementById('loadingTip').style.display = 'none';
+        document.getElementById('reportBody').style.display = 'block';
+
+        animateNum(document.getElementById('bigTotal'), report.totalYear, 1400);
+
+        // 分类网格：全类型展示，0 的排后面
+        var names = Object.keys(TYPE_NAMES);
+        names.sort(function (a, b) { return (report.byType[b] || 0) - (report.byType[a] || 0); });
+        var gridHtml = names.map(function (t) {
+            return '<div class="type-item"><div class="num">' + (report.byType[t] || 0) + '</div><div class="name">' + TYPE_NAMES[t] + '</div></div>';
+        }).join('');
+        document.getElementById('typeGrid').innerHTML = gridHtml;
+
+        // 历年柱状图
+        var years = Object.keys(report.byYear).sort();
+        var maxCount = 1;
+        var peakYear = '';
+        years.forEach(function (y) {
+            if (report.byYear[y] > maxCount) { maxCount = report.byYear[y]; peakYear = y; }
+        });
+        var chartHtml = years.map(function (y) {
+            var h = Math.round(report.byYear[y] / maxCount * 130);
+            var peak = (y === peakYear || report.byYear[y] === maxCount) ? ' peak' : '';
+            return '<div class="bar-col"><div class="bar-num">' + report.byYear[y] + '</div>' +
+                '<div class="bar' + peak + '" data-h="' + h + '"></div>' +
+                '<div class="bar-year">' + y + '</div></div>';
+        }).join('');
+        document.getElementById('yearChart').innerHTML = chartHtml;
+
+        animateNum(document.getElementById('sumDays'), report.days, 1600);
+        animateNum(document.getElementById('sumAll'), report.totalAll, 1400);
+        animateNum(document.getElementById('sumDanmaku'), report.danmakuAll, 1200);
+
+        // 卡片入场动画
+        var cards = document.querySelectorAll('.card');
+        Array.prototype.forEach.call(cards, function (c, i) {
+            setTimeout(function () { c.classList.add('show'); }, 150 + i * 180);
+        });
+        // 柱状图生长
+        setTimeout(function () {
+            Array.prototype.forEach.call(document.querySelectorAll('#yearChart .bar'), function (b) {
+                b.style.height = b.getAttribute('data-h') + 'px';
+            });
+        }, 500);
+
+        drawShareCard();
+    }
+
+    function drawShareCard() {
+        var canvas = document.getElementById('shareCanvas');
+        var ctx = canvas.getContext('2d');
+        var W = canvas.width, H = canvas.height;
+
+        // 背景渐变
+        var bg = ctx.createLinearGradient(0, 0, W, H);
+        bg.addColorStop(0, '#1d2733');
+        bg.addColorStop(0.55, '#2c3e50');
+        bg.addColorStop(1, '#1d2733');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
+
+        // 顶部橙带
+        var band = ctx.createLinearGradient(0, 0, W, 0);
+        band.addColorStop(0, '#d4541f');
+        band.addColorStop(1, '#e1652f');
+        ctx.fillStyle = band;
+        ctx.fillRect(0, 0, W, 14);
+
+        ctx.textAlign = 'center';
+
+        ctx.fillStyle = '#ffcf9e';
+        ctx.font = '22px sans-serif';
+        ctx.fillText('A N N U A L   R E P O R T', W / 2, 96);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 64px sans-serif';
+        ctx.fillText(report.year + ' · 浩天的年度报告', W / 2, 178);
+
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.font = '20px sans-serif';
+        ctx.fillText('liuhaotian.cc.cd', W / 2, 216);
+
+        // 中间大数字
+        ctx.fillStyle = '#ffb27a';
+        ctx.font = 'bold 150px sans-serif';
+        ctx.fillText(String(report.totalYear), W / 2, 400);
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.font = '24px sans-serif';
+        ctx.fillText('条内容在这一年诞生', W / 2, 448);
+
+        // 分类摘要（取前 4 名）
+        var names = Object.keys(TYPE_NAMES).sort(function (a, b) {
+            return (report.byType[b] || 0) - (report.byType[a] || 0);
+        }).slice(0, 4);
+        ctx.font = '24px sans-serif';
+        names.forEach(function (t, i) {
+            var y = 520 + i * 46;
+            ctx.textAlign = 'left';
+            ctx.fillStyle = 'rgba(255,255,255,0.75)';
+            ctx.fillText(TYPE_NAMES[t], 150, y);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#ffcf9e';
+            ctx.fillText((report.byType[t] || 0) + ' 条', W - 150, y);
+        });
+
+        // 底部汇总
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.font = '20px sans-serif';
+        ctx.fillText('累计运营 ' + report.days + ' 天 · 全部内容 ' + report.totalAll + ' 条 · 弹幕互动 ' + report.danmakuAll + ' 条', W / 2, 760);
+
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.font = '17px sans-serif';
+        ctx.fillText('—— 每一条记录，都是这一年的注脚 ——', W / 2, 810);
+    }
+
+    function load() {
+        fetch(apiUrl('/api/public/annual-report'))
+            .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+            .then(function (data) {
+                report = data;
+                render();
+            })
+            .catch(function () {
+                document.getElementById('loadingTip').textContent = '报告生成失败，请稍后刷新重试';
+            });
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', function () {
+        if (!report) return;
+        var a = document.createElement('a');
+        a.download = '年度报告-' + report.year + '.png';
+        a.href = document.getElementById('shareCanvas').toDataURL('image/png');
+        a.click();
+    });
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', load);
+    } else {
+        load();
+    }
+})();
+</script>
+
+<script src="js/darkmode.js"></script>
+</body>
+</html>
