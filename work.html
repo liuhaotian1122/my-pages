@@ -7,6 +7,8 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://api.liuhaotian.cc.cd" crossorigin>
+    <link rel="dns-prefetch" href="https://api.liuhaotian.cc.cd">
     <title>工作</title>
 
     <!--360 browser -->
@@ -1407,7 +1409,7 @@
                         <div class="image-gallery" data-gallery="work${exp.id}">
                             ${exp.images.map((img, index) => `
                                 <div class="gallery-img-container loading" data-index="${index + 1}">
-                                    <img src="${img}" class="gallery-img" alt="照片${index + 1}"
+                                    <img src="${img}" class="gallery-img" alt="照片${index + 1}" loading="lazy" decoding="async"
                                          data-title="${exp.title} - 照片${index + 1}" data-date="${exp.time}"
                                          onload="handleImageLoad(this)" onerror="handleImageError(this)">
                                     <div class="image-index">${index + 1}</div>
