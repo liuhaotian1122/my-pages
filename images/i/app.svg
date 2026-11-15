@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 站点应用图标：橙底白星 + 轨道环（呼应 images/star.png 的星星元素） -->
+  <rect width="512" height="512" fill="#e1652f"/>
+  <ellipse cx="256" cy="280" rx="212" ry="70" transform="rotate(-18 256 280)"
+           fill="none" stroke="#ffffff" stroke-width="14" opacity="0.9"/>
+  <polygon fill="#ffffff"
+           points="256,130 291.3,231.5 398.7,233.7 313.1,298.5 344.2,401.4 256,340 167.8,401.4 198.9,298.5 113.3,233.7 220.7,231.5"/>
+</svg>

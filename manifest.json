@@ -1,0 +1,26 @@
+{
+  "name": "浩天的个人站",
+  "short_name": "浩天",
+  "description": "浩天的博客与生活记录",
+  "lang": "zh-CN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#e1652f",
+  "background_color": "#12161d",
+  "icons": [
+    {
+      "src": "images/i/app.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "images/i/app.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
