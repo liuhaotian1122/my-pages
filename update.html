@@ -65,107 +65,6 @@
             transform: translateY(2px);
         }
 
-        .shizhong {
-            position: relative;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-        }
-
-        .shizhong .zhongxindian {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            width: 10px;
-            height: 10px;
-            background-color: skyblue;
-        }
-
-        .zhongxindian::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-            width: 5px;
-            height: 5px;
-            background-color: #fff;
-        }
-
-        .zhizhendaxiao {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            height: 60px;
-            width: 3px;
-            background-color: #000;
-            transform-origin: bottom center;
-            transition: all .4s linear;
-        }
-
-        .zhizhendaxiao.hour {
-            transform: translate(-50%, -100%) rotate(0deg);
-            background-color: #fff;
-        }
-
-        .zhizhendaxiao.minute {
-            height: 80px;
-            transform: translate(-50%, -100%) rotate(0deg);
-            background-color: #fff;
-        }
-
-        .zhizhendaxiao.seconds {
-            height: 90px;
-            transform: translate(-50%, -100%) rotate(0deg);
-            background-color: #e74c3f;
-        }
-
-        .time {
-            display: flex;
-            flex-direction: row;
-            background-color: #eeeded;
-            font-size: 25px;
-            border-radius: 5px;
-            margin-top: 10px;
-            padding: 10px 10px;
-            box-shadow: 0 3px 3px #ccc;
-        }
-
-        .shijian {
-            margin-right: 10px;
-        }
-
-        .data {
-            color: #aaa;
-            font-size: 12px;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-            margin-top: 10px;
-        }
-
-        .data .circle {
-            border-radius: 50%;
-            height: 18px;
-            width: 18px;
-            background-color: #000;
-            color: #fff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 18px;
-            transition: all 0.5s ease-in;
-            font-size: 12px;
-        }
-
-        .beijingqiehuan {
-            background-color: #000;
-            color: #fff;
-            transition: all .4s linear;
-        }
-
         .container ul {
             list-style: none;
             padding: 20px;
@@ -379,6 +278,143 @@
             border-color: #e1652f;
         }
 
+        /* ==================== 弹幕墙 ==================== */
+        .danmaku-section {
+            width: 90%;
+            max-width: 1100px;
+            margin: 25px auto 0;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        .danmaku-wall {
+            position: relative;
+            height: 280px;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+            background: linear-gradient(135deg, #2b3a4a 0%, #34495e 55%, #2c3e50 100%);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+        }
+
+        .danmaku-stage {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .danmaku-item {
+            position: absolute;
+            left: 100%;
+            white-space: nowrap;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1;
+            padding: 7px 14px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+            will-change: transform;
+            animation: danmaku-move linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes danmaku-move {
+            from { transform: translateX(0); }
+            to   { transform: translateX(calc(-100% - 100vw)); }
+        }
+
+        .danmaku-wall.paused .danmaku-item {
+            animation-play-state: paused;
+        }
+
+        .danmaku-hint {
+            position: absolute;
+            right: 14px;
+            bottom: 10px;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 12px;
+            pointer-events: none;
+        }
+
+        .danmaku-paused-badge {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 15px;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 8px 18px;
+            border-radius: 20px;
+            display: none;
+            pointer-events: none;
+        }
+
+        .danmaku-wall.paused .danmaku-paused-badge { display: block; }
+
+        .danmaku-input-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .danmaku-input-bar input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 22px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .danmaku-input-bar input:focus { border-color: #e1652f; }
+
+        .danmaku-colors {
+            display: flex;
+            gap: 6px;
+        }
+
+        .danmaku-colors span {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .danmaku-colors span:hover { transform: scale(1.2); }
+        .danmaku-colors span.active { border-color: #fff; transform: scale(1.15); }
+
+        .danmaku-input-bar button {
+            padding: 9px 22px;
+            border: none;
+            border-radius: 22px;
+            background: #e1652f;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .danmaku-input-bar button:hover { background: #d4541f; transform: translateY(-1px); }
+        .danmaku-input-bar button:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+        .danmaku-msg {
+            width: 100%;
+            text-align: center;
+            color: #d9534f;
+            font-size: 13px;
+            min-height: 18px;
+            line-height: 18px;
+        }
+
         /* 响应式设计 */
         @media (max-width: 768px) {
             .stats-grid {
@@ -397,6 +433,9 @@
             .filter-controls select {
                 width: 100%;
             }
+
+            .danmaku-wall { height: 200px; }
+            .danmaku-item { font-size: 13px; padding: 6px 10px; }
         }
 
         footer {
@@ -429,19 +468,19 @@
 <body>
 <script src="js/header.js"></script>
 
-    <!-- 时钟组件 -->
-    <div class="shizhong beijingqiehuan">
-        <div class="zhongxindian"></div>
-        <div class="hour zhizhendaxiao"></div>
-        <div class="minute zhizhendaxiao"></div>
-        <div class="seconds zhizhendaxiao"></div>
-    </div>
-    <a href="Secret Base.html"><div class="time">
-        <div class="shijian"></div>
-        <div class="shijianduan"></div>
-    </div></a>
-    <div class="data">
-        <span class="circle"></span>
+    <!-- 弹幕墙（原时钟位置） -->
+    <div class="danmaku-section">
+        <div class="danmaku-wall" id="danmakuWall" title="点击暂停 / 继续播放">
+            <div class="danmaku-stage" id="danmakuStage"></div>
+            <div class="danmaku-paused-badge">⏸ 弹幕已暂停，点击继续</div>
+            <div class="danmaku-hint">💬 碎碎念弹幕墙 · 点击暂停</div>
+        </div>
+        <div class="danmaku-input-bar">
+            <input type="text" id="danmakuInput" maxlength="60" placeholder="留下你此刻的碎碎念（最多 60 字）...">
+            <div class="danmaku-colors" id="danmakuColors"></div>
+            <button type="button" id="danmakuSendBtn">🚀 发射</button>
+            <div class="danmaku-msg" id="danmakuMsg"></div>
+        </div>
     </div>
 
     <!-- 更新统计卡片 -->
@@ -765,6 +804,190 @@
     <script src="js/footer.js"></script>
     <script src="js/api-config.js"></script>
 
+    <script>
+    // ==================== 弹幕墙 ====================
+    // 数据：D1 danmaku 表（/api/public/danmaku），30 秒轮询增量拉取新弹幕；
+    // 投递：匿名 POST，同一 IP 60 秒内最多 2 条（后端限制）。
+    (function () {
+        var DANMAKU_FALLBACK = [
+            { id: -1, text: '欢迎来到弹幕墙，留下你此刻的想法吧～', color: '#e1652f' },
+            { id: -2, text: '今天也要元气满满哦！', color: '#5cb85c' },
+            { id: -3, text: '祝看到这条弹幕的人天天开心', color: '#f0ad4e' },
+            { id: -4, text: '站长的碎碎念都在这里啦', color: '#5bc0de' },
+            { id: -5, text: '弹幕一时爽，一直弹一直爽', color: '#9b59b6' },
+            { id: -6, text: '记得常回来看看呀', color: '#e74c3c' }
+        ];
+        var DANMAKU_COLORS = ['#e1652f', '#5cb85c', '#f0ad4e', '#5bc0de', '#9b59b6', '#e74c3c'];
+
+        var stage, wall, input, sendBtn, msgEl;
+        var allItems = [];
+        var queue = [];
+        var seenIds = {};
+        var laneCursor = 0;
+        var paused = false;
+        var selectedColor = DANMAKU_COLORS[0];
+        var sendCooldown = false;
+
+        function $(id) { return document.getElementById(id); }
+
+        function showMsg(text, color) {
+            msgEl.textContent = text || '';
+            msgEl.style.color = color || '#d9534f';
+            if (text) setTimeout(function () { if (msgEl.textContent === text) msgEl.textContent = ''; }, 3000);
+        }
+
+        function markSeen(items) {
+            items.forEach(function (it) { seenIds[it.id] = true; });
+        }
+
+        function loadDanmaku(initial) {
+            return fetch(apiUrl('/api/public/danmaku'))
+                .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+                .then(function (items) {
+                    if (!Array.isArray(items) || items.length === 0) throw new Error('empty');
+                    allItems = items;
+                    if (initial) {
+                        // 旧弹幕先上场（倒序：最早的先发，最新的压轴）
+                        markSeen(items);
+                        queue = items.slice().reverse().slice(0, 30);
+                    } else {
+                        // 轮询：只把没见过的新弹幕加入队列，保持"实时"效果
+                        var fresh = items.filter(function (it) { return !seenIds[it.id]; });
+                        if (fresh.length) {
+                            markSeen(fresh);
+                            fresh.forEach(function (it) { queue.push(it); });
+                        }
+                    }
+                })
+                .catch(function () {
+                    if (initial) {
+                        allItems = DANMAKU_FALLBACK;
+                        markSeen(allItems);
+                        queue = allItems.slice();
+                    }
+                });
+        }
+
+        function pickLane() {
+            var laneCount = Math.max(4, Math.floor(stage.clientHeight / 36));
+            laneCursor = (laneCursor + 1) % laneCount;
+            return laneCursor;
+        }
+
+        function spawn(item) {
+            // 防堆积：活动弹幕过多时跳过
+            if (stage.children.length > 50) return;
+            var el = document.createElement('div');
+            el.className = 'danmaku-item';
+            el.textContent = item.text; // textContent 防 XSS
+            el.style.color = item.color || '#e1652f';
+            el.style.top = (pickLane() * 36 + 10) + 'px';
+            // 时长随文字长度变化：9 ~ 18 秒
+            var duration = Math.min(18, 9 + (item.text || '').length * 0.15);
+            el.style.animationDuration = duration + 's';
+            el.addEventListener('animationend', function () { el.remove(); });
+            stage.appendChild(el);
+        }
+
+        function startSpawner() {
+            setInterval(function () {
+                if (paused) return;
+                var item = queue.shift();
+                if (!item) {
+                    // 队列空了就循环播放已有弹幕（随机顺序）
+                    if (allItems.length) {
+                        var pool = allItems.slice();
+                        for (var i = pool.length - 1; i > 0; i--) {
+                            var j = Math.floor(Math.random() * (i + 1));
+                            var t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+                        }
+                        queue = pool.slice(0, 10);
+                        item = queue.shift();
+                    }
+                }
+                if (item) spawn(item);
+            }, 1200);
+        }
+
+        function buildColorSwatches() {
+            DANMAKU_COLORS.forEach(function (color, idx) {
+                var dot = document.createElement('span');
+                dot.style.background = color;
+                if (idx === 0) dot.classList.add('active');
+                dot.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    selectedColor = color;
+                    Array.prototype.forEach.call(document.querySelectorAll('#danmakuColors span'), function (s) { s.classList.remove('active'); });
+                    dot.classList.add('active');
+                });
+                document.getElementById('danmakuColors').appendChild(dot);
+            });
+        }
+
+        function sendDanmaku() {
+            var text = input.value.trim();
+            if (!text) { showMsg('先写点什么再发射吧～'); return; }
+            if (sendCooldown) { showMsg('发射太快啦，稍等一下下'); return; }
+
+            sendBtn.disabled = true;
+            fetch(apiUrl('/api/public/danmaku'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: text, color: selectedColor })
+            })
+                .then(function (res) {
+                    return res.json().then(function (data) {
+                        if (!res.ok) throw new Error(data.error || '发送失败');
+                        return data;
+                    });
+                })
+                .then(function (row) {
+                    input.value = '';
+                    showMsg('发射成功！', '#5cb85c');
+                    if (row && row.id) {
+                        seenIds[row.id] = true;
+                        allItems.unshift(row);
+                        spawn(row); // 自己的弹幕立即上墙
+                    }
+                    sendCooldown = true;
+                    setTimeout(function () { sendCooldown = false; sendBtn.disabled = false; }, 5000);
+                })
+                .catch(function (err) {
+                    showMsg(err.message || '网络异常，稍后再试');
+                    sendBtn.disabled = false;
+                });
+        }
+
+        function initDanmakuWall() {
+            stage = $('danmakuStage');
+            wall = $('danmakuWall');
+            input = $('danmakuInput');
+            sendBtn = $('danmakuSendBtn');
+            msgEl = $('danmakuMsg');
+
+            buildColorSwatches();
+
+            wall.addEventListener('click', function () {
+                paused = !paused;
+                wall.classList.toggle('paused', paused);
+            });
+
+            sendBtn.addEventListener('click', sendDanmaku);
+            input.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendDanmaku(); });
+
+            loadDanmaku(true).then(startSpawner);
+            // 实时增量：每 30 秒拉一次新弹幕
+            setInterval(function () { loadDanmaku(false); }, 30000);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initDanmakuWall);
+        } else {
+            initDanmakuWall();
+        }
+    })();
+    </script>
+
     <!-- 延迟加载JavaScript -->
     <script>
         // 关键JS立即加载
@@ -776,69 +999,11 @@
             document.head.appendChild(script);
         };
 
-        // 立即加载jQuery和时钟功能
+        // 立即加载jQuery和页面功能
         loadScript('assets/js/jquery.min.js', () => {
             // jQuery加载完成后加载其他依赖
             loadScript('assets/js/amazeui.min.js');
             loadScript('js/public.js');
-
-            // 时钟功能
-            const days = ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
-            const months = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
-
-            const hourEl = document.querySelector('.hour');
-            const minuteEl = document.querySelector('.minute');
-            const secondsEl = document.querySelector('.seconds');
-            const shijianduan = document.querySelector('.shijianduan');
-            const shijian = document.querySelector('.shijian');
-            const dataEl = document.querySelector('.data');
-
-            let showTime = (hour) => {
-                if (hour > 3 && hour <= 6) {
-                    shijianduan.innerHTML = '凌晨';
-                } else if (hour > 6 && hour <= 8) {
-                    shijianduan.innerHTML = '早晨';
-                } else if (hour > 8 && hour <= 11) {
-                    shijianduan.innerHTML = '上午';
-                } else if (hour > 11 && hour <= 13) {
-                    shijianduan.innerHTML = '中午';
-                } else if (hour > 13 && hour <= 17) {
-                    shijianduan.innerHTML = '下午';
-                } else if (hour > 17 && hour <= 19) {
-                    shijianduan.innerHTML = '傍晚';
-                } else if (hour > 19 && hour <= 23) {
-                    shijianduan.innerHTML = '晚上';
-                } else if (hour > 23 && hour <= 3) {
-                    shijianduan.innerHTML = '深夜';
-                }
-            }
-
-            let setDate = () => {
-                const date = new Date();
-                const month = date.getMonth();
-                const weeks = date.getDay();
-                const day = date.getDate();
-                let hour = date.getHours();
-                hour = hour < 10 ? '0' + hour : hour;
-                let minute = date.getMinutes();
-                minute = minute < 10 ? '0' + minute : minute;
-                let secondes = date.getSeconds();
-                secondes = secondes < 10 ? '0' + secondes : secondes;
-
-                if (hourEl) hourEl.style.transform = `translate(-50%, -100%) rotate(${scale(hour, 0, 12, 0, 360)}deg)`;
-                if (minuteEl) minuteEl.style.transform = `translate(-50%, -100%) rotate(${minute * 6}deg)`;
-                if (secondsEl) secondsEl.style.transform = `translate(-50%, -100%) rotate(${secondes * 6}deg)`;
-                if (shijian) shijian.innerHTML = `${hour}:${minute}`;
-                if (dataEl) dataEl.innerHTML = `${days[weeks]}, ${months[month]} <span class="circle">${day}</span>`;
-                showTime(hour);
-            }
-
-            const scale = (num, in_min, in_max, out_min, out_max) => {
-                return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-            }
-
-            setDate();
-            setInterval(setDate, 1000);
 
             // 从后端加载动态更新记录，然后排序并初始化功能
             loadDynamicUpdates().then(() => {
