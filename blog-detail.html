@@ -67,6 +67,64 @@
             flex-wrap: wrap;
         }
 
+        /* 点赞按钮 */
+        .blog-like-wrap {
+            margin-top: 24px;
+        }
+
+        .blog-like-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 30px;
+            border: 2px solid #e1652f;
+            border-radius: 999px;
+            background: transparent;
+            color: #e1652f;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .blog-like-btn:hover {
+            background: rgba(225, 101, 47, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(225, 101, 47, 0.18);
+        }
+
+        .blog-like-btn.liked {
+            background: #e1652f;
+            color: #fff;
+        }
+
+        .blog-like-btn .like-count {
+            font-weight: 700;
+        }
+
+        .blog-like-btn.pop i {
+            animation: like-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes like-pop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.5) rotate(-12deg); }
+            100% { transform: scale(1); }
+        }
+
+        html[data-theme="dark"] #blogViews {
+            color: var(--dm-sub);
+        }
+
+        html[data-theme="dark"] .blog-like-btn {
+            border-color: var(--dm-brand);
+            color: var(--dm-brand);
+        }
+
+        html[data-theme="dark"] .blog-like-btn.liked {
+            background: var(--dm-brand);
+            color: #fff;
+        }
+
         .blog-detail-tag {
             display: inline-block;
             padding: 5px 14px;
@@ -256,8 +314,16 @@
             <div class="blog-detail-meta">
                 <span id="blogDate"></span>
                 <span id="blogLocation"></span>
+                <span id="blogViews"></span>
             </div>
             <div class="blog-detail-tags" id="blogTags"></div>
+            <div class="blog-like-wrap">
+                <button type="button" class="blog-like-btn" id="blogLikeBtn" style="display:none;">
+                    <i class="am-icon-heart-o"></i>
+                    <span id="blogLikeText">点赞</span>
+                    <span class="like-count" id="blogLikeCount">0</span>
+                </button>
+            </div>
         </div>
         <div class="blog-detail-content" id="blogContent"></div>
         <div style="text-align: center; margin-top: 30px;">
@@ -312,11 +378,93 @@
             // 显示
             document.getElementById('blogLoading').style.display = 'none';
             document.getElementById('blogDetail').style.display = 'block';
+
+            // ---------- 热度：浏览计数 + 统计展示 + 点赞 ----------
+            initLikeButton(blog.id);
+            const views = await countView(blog.id);
+            const stats = await loadStats(blog.id);
+            if (stats) {
+                if (views !== null) stats.views = views; // 用本次上报后的最新值
+                renderStats(stats, blog.id);
+            }
         } catch (err) {
             console.error('加载博客详情失败:', err);
             document.getElementById('blogLoading').style.display = 'none';
             document.getElementById('blogError').style.display = 'block';
         }
+    }
+
+    // ==================== 热度（浏览量 / 点赞）====================
+
+    const LIKED_KEY = 'blog_liked_ids'; // localStorage：已点赞的文章 id 列表
+
+    function getLikedIds() {
+        try { return JSON.parse(localStorage.getItem(LIKED_KEY)) || []; } catch { return []; }
+    }
+
+    async function loadStats(blogId) {
+        try {
+            const res = await fetch(apiUrl('/api/public/blog/stats'));
+            if (!res.ok) return null;
+            const map = await res.json();
+            return map[String(blogId)] || { views: 0, likes: 0 };
+        } catch { return null; }
+    }
+
+    /** 浏览上报：每个浏览器会话只计一次；返回最新浏览量，未上报返回 null */
+    async function countView(blogId) {
+        if (sessionStorage.getItem('viewed_' + blogId)) return null;
+        sessionStorage.setItem('viewed_' + blogId, '1');
+        try {
+            const res = await fetch(apiUrl('/api/public/blog/stats/view'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: blogId })
+            });
+            if (!res.ok) return null;
+            return (await res.json()).views;
+        } catch { return null; }
+    }
+
+    function renderStats(stats, blogId) {
+        document.getElementById('blogViews').innerHTML = '<i class="am-icon-eye"></i> ' + stats.views + ' 次浏览';
+
+        const btn = document.getElementById('blogLikeBtn');
+        btn.style.display = 'inline-flex';
+        const liked = getLikedIds().includes(Number(blogId));
+        btn.classList.toggle('liked', liked);
+        btn.querySelector('i').className = liked ? 'am-icon-heart' : 'am-icon-heart-o';
+        document.getElementById('blogLikeText').textContent = liked ? '已赞' : '点赞';
+        document.getElementById('blogLikeCount').textContent = stats.likes;
+    }
+
+    function initLikeButton(blogId) {
+        document.getElementById('blogLikeBtn').addEventListener('click', async function () {
+            const ids = getLikedIds();
+            const liked = !ids.includes(blogId);
+            try {
+                const res = await fetch(apiUrl('/api/public/blog/stats/like'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: blogId, liked })
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+
+                localStorage.setItem(LIKED_KEY, JSON.stringify(
+                    liked ? ids.concat(blogId) : ids.filter(x => x !== blogId)
+                ));
+                this.classList.toggle('liked', liked);
+                this.querySelector('i').className = liked ? 'am-icon-heart' : 'am-icon-heart-o';
+                document.getElementById('blogLikeText').textContent = liked ? '已赞' : '点赞';
+                document.getElementById('blogLikeCount').textContent = data.likes;
+
+                // 心跳动画
+                this.classList.remove('pop');
+                void this.offsetWidth;
+                this.classList.add('pop');
+            } catch { /* 网络异常时静默，不打断阅读 */ }
+        });
     }
 
     loadBlogDetail();

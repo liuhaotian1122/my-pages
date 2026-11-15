@@ -221,6 +221,28 @@
             position: relative;
             transition: all 0.3s ease;
         }
+
+        /* 博客热度（浏览量 / 点赞） */
+        .blog-heat {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: #888;
+            margin-right: 14px;
+        }
+        .blog-heat span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .blog-heat em {
+            font-style: normal;
+            font-weight: 600;
+            min-width: 14px;
+        }
+        .blog-heat .heat-views { color: #e1652f; }
+        .blog-heat .heat-likes { color: #e05c7a; }
         
         /* 底部信息悬停效果 */
         .am-gallery-item:hover .am-gallery-desc {
@@ -1317,6 +1339,10 @@ class BlogPagination {
                         ${blog.tags.map(tag => `<span class="blog-tag"><i class="fa fa-tag" style="font-size: 10px; margin-right: 4px;"></i>${tag}</span>`).join('')}
                     </div>
                     <div class="am-gallery-desc fee">
+                        ${blog.id ? '<div class="am-fl blog-heat" data-heat-id="' + blog.id + '">'
+                            + '<span><i class="fa fa-eye heat-views"></i><em class="heat-views-num">-</em></span>'
+                            + '<span><i class="fa fa-heart heat-likes"></i><em class="heat-likes-num">-</em></span>'
+                            + '</div>' : ''}
                         <div class="am-fl">
                             <i class="fa fa-map-marker" style="margin-right: 5px; opacity: 0.7;"></i>
                             ${blog.location}
@@ -1331,7 +1357,10 @@ class BlogPagination {
         `).join('');
         
         this.blogList.innerHTML = blogHTML;
-        
+
+        // 填充卡片热度（浏览量 / 点赞）
+        this.fillHeat();
+
         // 添加动画效果
         setTimeout(() => {
             const blogItems = this.blogList.querySelectorAll('.blog-item');
@@ -1341,6 +1370,17 @@ class BlogPagination {
                 }, index * 100);
             });
         }, 50);
+    }
+
+    /** 从缓存的统计数据中填充当前卡片的热度数字 */
+    async fillHeat() {
+        const stats = await fetchBlogStats();
+        this.blogList.querySelectorAll('[data-heat-id]').forEach(el => {
+            const s = stats[el.dataset.heatId];
+            if (!s) return;
+            el.querySelector('.heat-views-num').textContent = s.views;
+            el.querySelector('.heat-likes-num').textContent = s.likes;
+        });
     }
     
     renderPagination() {
@@ -1472,6 +1512,17 @@ class BlogPagination {
             });
         });
     }
+}
+
+// 博客热度统计：页面生命周期内只请求一次（后端另有 KV 缓存）
+let blogStatsCache = null;
+function fetchBlogStats() {
+    if (!blogStatsCache) {
+        blogStatsCache = fetch(apiUrl('/api/public/blog/stats'))
+            .then(r => r.ok ? r.json() : {})
+            .catch(() => ({}));
+    }
+    return blogStatsCache;
 }
 
 // 页面加载完成后初始化分页

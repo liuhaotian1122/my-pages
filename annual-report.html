@@ -28,7 +28,7 @@
             font-family: "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
         }
 
-        .am-topbar { background: #333; }
+        /* 导航栏颜色跟随全站主题（amazeui 定制主题的橙色），不做覆盖 */
 
         .report-wrap {
             max-width: 900px;
@@ -372,40 +372,63 @@
         var ctx = canvas.getContext('2d');
         var W = canvas.width, H = canvas.height;
 
+        // 配色跟随当前主题，与页面布局保持一致
+        var light = document.documentElement.getAttribute('data-theme') !== 'dark';
+        var C = light ? {
+            bg0: '#f7f8fa', bg1: '#e8edf3', band0: '#d4541f', band1: '#e1652f',
+            eyebrow: '#c65a26', title: '#3a4450', sub: 'rgba(58, 68, 80, 0.55)',
+            num: '#e1652f', numLabel: 'rgba(58, 68, 80, 0.8)',
+            rowName: 'rgba(58, 68, 80, 0.75)', rowNum: '#d4541f',
+            summary: 'rgba(58, 68, 80, 0.6)', footer: 'rgba(58, 68, 80, 0.35)'
+        } : {
+            bg0: '#1d2733', bg1: '#2c3e50', band0: '#d4541f', band1: '#e1652f',
+            eyebrow: '#ffcf9e', title: '#ffffff', sub: 'rgba(255, 255, 255, 0.55)',
+            num: '#ffb27a', numLabel: 'rgba(255, 255, 255, 0.8)',
+            rowName: 'rgba(255, 255, 255, 0.75)', rowNum: '#ffcf9e',
+            summary: 'rgba(255, 255, 255, 0.6)', footer: 'rgba(255, 255, 255, 0.35)'
+        };
+
         // 背景渐变
         var bg = ctx.createLinearGradient(0, 0, W, H);
-        bg.addColorStop(0, '#1d2733');
-        bg.addColorStop(0.55, '#2c3e50');
-        bg.addColorStop(1, '#1d2733');
+        bg.addColorStop(0, C.bg0);
+        bg.addColorStop(0.55, C.bg1);
+        bg.addColorStop(1, C.bg0);
         ctx.fillStyle = bg;
         ctx.fillRect(0, 0, W, H);
 
         // 顶部橙带
         var band = ctx.createLinearGradient(0, 0, W, 0);
-        band.addColorStop(0, '#d4541f');
-        band.addColorStop(1, '#e1652f');
+        band.addColorStop(0, C.band0);
+        band.addColorStop(1, C.band1);
         ctx.fillStyle = band;
         ctx.fillRect(0, 0, W, 14);
 
         ctx.textAlign = 'center';
 
-        ctx.fillStyle = '#ffcf9e';
+        ctx.fillStyle = C.eyebrow;
         ctx.font = '22px sans-serif';
         ctx.fillText('A N N U A L   R E P O R T', W / 2, 96);
 
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 64px sans-serif';
-        ctx.fillText(report.year + ' · 浩天的年度报告', W / 2, 178);
+        // 标题自动缩放，避免超出画布被裁切
+        var title = report.year + ' · 浩天的年度报告';
+        var size = 64;
+        ctx.font = 'bold ' + size + 'px sans-serif';
+        while (size > 28 && ctx.measureText(title).width > W - 70) {
+            size -= 2;
+            ctx.font = 'bold ' + size + 'px sans-serif';
+        }
+        ctx.fillStyle = C.title;
+        ctx.fillText(title, W / 2, 178);
 
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.fillStyle = C.sub;
         ctx.font = '20px sans-serif';
         ctx.fillText('liuhaotian.cc.cd', W / 2, 216);
 
         // 中间大数字
-        ctx.fillStyle = '#ffb27a';
+        ctx.fillStyle = C.num;
         ctx.font = 'bold 150px sans-serif';
         ctx.fillText(String(report.totalYear), W / 2, 400);
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.fillStyle = C.numLabel;
         ctx.font = '24px sans-serif';
         ctx.fillText('条内容在这一年诞生', W / 2, 448);
 
@@ -417,20 +440,20 @@
         names.forEach(function (t, i) {
             var y = 520 + i * 46;
             ctx.textAlign = 'left';
-            ctx.fillStyle = 'rgba(255,255,255,0.75)';
+            ctx.fillStyle = C.rowName;
             ctx.fillText(TYPE_NAMES[t], 150, y);
             ctx.textAlign = 'right';
-            ctx.fillStyle = '#ffcf9e';
+            ctx.fillStyle = C.rowNum;
             ctx.fillText((report.byType[t] || 0) + ' 条', W - 150, y);
         });
 
         // 底部汇总
         ctx.textAlign = 'center';
-        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.fillStyle = C.summary;
         ctx.font = '20px sans-serif';
         ctx.fillText('累计运营 ' + report.days + ' 天 · 全部内容 ' + report.totalAll + ' 条 · 弹幕互动 ' + report.danmakuAll + ' 条', W / 2, 760);
 
-        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.fillStyle = C.footer;
         ctx.font = '17px sans-serif';
         ctx.fillText('—— 每一条记录，都是这一年的注脚 ——', W / 2, 810);
     }
@@ -454,6 +477,13 @@
         a.href = document.getElementById('shareCanvas').toDataURL('image/png');
         a.click();
     });
+
+    // 主题切换时同步重绘分享卡片，保持与页面配色一致
+    if (window.MutationObserver) {
+        new MutationObserver(function () {
+            if (report) drawShareCard();
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    }
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', load);

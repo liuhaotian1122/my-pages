@@ -289,6 +289,16 @@ html[data-theme="dark"] .sort-btn {
 html[data-theme="dark"] .am-gallery-item {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45) !important;
 }
+/* boke 卡片热度（浏览量 / 点赞） */
+html[data-theme="dark"] .blog-heat {
+    color: var(--dm-sub) !important;
+}
+html[data-theme="dark"] .blog-heat .heat-views {
+    color: var(--dm-brand) !important;
+}
+html[data-theme="dark"] .blog-heat .heat-likes {
+    color: #e77b95 !important;
+}
 
 /* index — AI 聊天窗 */
 html[data-theme="dark"] .ai-chat-window {
