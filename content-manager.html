@@ -2116,6 +2116,155 @@
     </script>
 <script src="js/darkmode.js"></script>
 <script src="js/pwa.js"></script>
+<script>
+    // ==================== 图片本地上传（R2）+ 回显预览 ====================
+    // 保留原有「手动填链接」模式：上传成功后自动把 R2 链接追加进输入框，输入框内任意链接都会回显缩略图。
+    (function () {
+        // 注入样式
+        var css = document.createElement('style');
+        css.textContent = [
+            '.cm-upload-toolbar{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap;}',
+            '.cm-upload-btn{padding:6px 14px;font-size:13px;border:1px dashed #e1652f;color:#e1652f;',
+            'background:rgba(225,101,47,.06);border-radius:8px;cursor:pointer;transition:all .3s;}',
+            '.cm-upload-btn:hover{background:#e1652f;color:#fff;}',
+            '.cm-upload-btn.uploading{opacity:.6;pointer-events:none;}',
+            '.cm-upload-hint{font-size:12px;color:#999;}',
+            '.cm-upload-previews{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}',
+            '.cm-upload-previews:empty{display:none;}',
+            '.cm-thumb{position:relative;width:64px;height:64px;border-radius:8px;overflow:hidden;',
+            'box-shadow:0 2px 6px rgba(0,0,0,.12);cursor:pointer;}',
+            '.cm-thumb img{width:100%;height:100%;object-fit:cover;display:block;}',
+            '.cm-thumb .del{position:absolute;top:0;right:0;width:18px;height:18px;line-height:16px;',
+            'text-align:center;font-size:12px;color:#fff;background:rgba(0,0,0,.55);border-radius:0 0 0 6px;}'
+        ].join('');
+        document.head.appendChild(css);
+
+        // 五个模块的图片字段
+        var FIELDS = [
+            { el: 'workImages', multi: true },        // 工作管理
+            { el: 'experienceImages', multi: true },  // 经历管理
+            { el: 'foodImages', multi: true },        // 美食管理
+            { el: 'gameIcon', multi: false },         // 游戏管理（单个图标）
+            { el: 'wechatImages', multi: true }       // 朋友圈管理
+        ];
+        var HINT_DEFAULT = '支持 jpg/png/gif/webp，单张 ≤10MB，上传后自动填入链接，点击缩略图可删除';
+
+        function getUrls(field) {
+            var v = field.el.value || '';
+            return field.multi
+                ? v.split('\n').map(function (s) { return s.trim(); }).filter(Boolean)
+                : (v.trim() ? [v.trim()] : []);
+        }
+
+        function setUrls(field, urls) {
+            field.el.value = field.multi ? urls.join('\n') : (urls[0] || '');
+        }
+
+        function renderPreviews(field) {
+            var urls = getUrls(field);
+            field.previews.innerHTML = urls.map(function (u, i) {
+                return '<div class="cm-thumb" data-i="' + i + '" title="点击删除该链接">'
+                    + '<img src="' + u + '" loading="lazy" alt="">'
+                    + '<span class="del">×</span></div>';
+            }).join('');
+            Array.prototype.forEach.call(field.previews.querySelectorAll('.cm-thumb'), function (thumb) {
+                thumb.addEventListener('click', function () {
+                    if (!confirm('确定删除这张图片的链接吗？（仅从表单移除，不删除 R2 文件）')) return;
+                    var list = getUrls(field);
+                    list.splice(parseInt(thumb.dataset.i, 10), 1);
+                    setUrls(field, list);
+                    renderPreviews(field);
+                });
+            });
+        }
+
+        function doUpload(field, files) {
+            field.btn.classList.add('uploading');
+            field.hint.textContent = '上传中...';
+            var form = new FormData();
+            if (field.multi) {
+                files.forEach(function (file) { form.append('images', file); });
+            } else {
+                form.append('image', files[0]);
+            }
+            fetch(apiUrl(field.multi ? '/api/upload/multiple' : '/api/upload'), {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + authToken },
+                body: form
+            }).then(function (res) {
+                return res.json().then(function (data) { return { ok: res.ok, data: data }; });
+            }).then(function (r) {
+                if (!r.ok) throw new Error(r.data.error || '上传失败');
+                var urls = getUrls(field);
+                var added = field.multi
+                    ? (r.data.files || []).map(function (x) { return x.url; })
+                    : [r.data.url];
+                added.forEach(function (u) { if (urls.indexOf(u) === -1) urls.push(u); });
+                setUrls(field, urls);
+                renderPreviews(field);
+                field.hint.textContent = '上传成功 ' + added.length + ' 张';
+            }).catch(function (err) {
+                var msg = (err && err.message) || '上传失败';
+                field.hint.textContent = msg;
+                if (String(msg).indexOf('令牌') !== -1) alert('登录已过期，请刷新页面重新登录');
+            }).finally(function () {
+                field.btn.classList.remove('uploading');
+                setTimeout(function () { field.hint.textContent = HINT_DEFAULT; }, 4000);
+            });
+        }
+
+        FIELDS.forEach(function (f) {
+            var el = document.getElementById(f.el);
+            if (!el) return;
+            f.el = el;
+
+            // 拦截程序化赋值（点「编辑」回填数据时同步刷新缩略图预览）
+            var valueDesc = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(el), 'value');
+            if (valueDesc && valueDesc.set) {
+                Object.defineProperty(el, 'value', {
+                    get: function () { return valueDesc.get.call(el); },
+                    set: function (v) { valueDesc.set.call(el, v); renderPreviews(f); }
+                });
+            }
+
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            if (f.multi) input.multiple = true;
+            input.style.display = 'none';
+
+            f.btn = document.createElement('button');
+            f.btn.type = 'button';
+            f.btn.className = 'cm-upload-btn';
+            f.btn.textContent = f.multi ? '📷 本地上传（可多选）' : '📷 上传图标';
+
+            f.hint = document.createElement('span');
+            f.hint.className = 'cm-upload-hint';
+            f.hint.textContent = HINT_DEFAULT;
+
+            f.previews = document.createElement('div');
+            f.previews.className = 'cm-upload-previews';
+
+            var ui = document.createElement('div');
+            ui.appendChild(input);
+            ui.appendChild(f.btn);
+            ui.appendChild(f.hint);
+            ui.appendChild(f.previews);
+            el.parentNode.appendChild(ui); // 追加到同一 form-group 内
+
+            f.btn.addEventListener('click', function () { input.click(); });
+            input.addEventListener('change', function () {
+                var files = Array.prototype.slice.call(input.files || []);
+                input.value = '';
+                if (!files.length) return;
+                if (f.multi) files = files.slice(0, 10);
+                doUpload(f, files);
+            });
+            el.addEventListener('input', function () { renderPreviews(f); });
+            renderPreviews(f);
+        });
+    })();
+</script>
 </body>
 
 </html>
