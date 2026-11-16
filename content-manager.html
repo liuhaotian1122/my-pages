@@ -224,6 +224,48 @@
             cursor: wait;
         }
 
+        /* AI 标签/摘要生成按钮行 */
+        .ai-meta-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .ai-meta-row input {
+            flex: 1 1 auto;
+            width: auto;
+            min-width: 0;
+        }
+
+        /* AI 站点周报卡片 */
+        .ai-weekly-card {
+            background: linear-gradient(135deg, #fff7f0 0%, #ffefe4 100%);
+            border: 1px solid rgba(225, 101, 47, 0.25);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(225, 101, 47, 0.12);
+        }
+
+        .ai-weekly-head {
+            font-weight: 700;
+            color: #e1652f;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .ai-weekly-text {
+            color: #7a4a2b;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .ai-weekly-stats {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #b06a3f;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -751,6 +793,12 @@
             <h1>📝 内容管理系统</h1>
             <p>统一管理工作、经历、美食、琐碎内容（数据已同步到后端数据库）</p>
         </div>
+        <!-- AI 站点周报 -->
+        <div class="ai-weekly-card" id="aiWeeklyCard" style="display:none">
+            <div class="ai-weekly-head">🍊 小橙 · AI 站点周报</div>
+            <div class="ai-weekly-text" id="aiWeeklyText">正在生成本周小结…</div>
+            <div class="ai-weekly-stats" id="aiWeeklyStats"></div>
+        </div>
         <div class="main-card">
             <div class="stats-bar">
                 <div class="stat-item">
@@ -947,10 +995,18 @@
                         <div class="form-group"><label>地点</label><input type="text" id="blogLocation"
                                 placeholder="例如：宁夏-银川"></div>
                     </div>
-                    <div class="form-group"><label>摘要描述</label><input type="text" id="blogDescription"
-                            placeholder="一句话描述博客内容"></div>
-                    <div class="form-group"><label>标签</label><input type="text" id="blogTags"
-                            placeholder="多个标签用逗号分隔，例如：技术,前端,CSS"></div>
+                    <div class="form-group"><label>摘要描述</label>
+                        <div class="ai-meta-row">
+                            <input type="text" id="blogDescription" placeholder="一句话描述博客内容">
+                            <button type="button" class="ai-write-btn" id="aiDescBtn" onclick="aiGenerateMeta('desc')">🤖 AI 生成摘要</button>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>标签</label>
+                        <div class="ai-meta-row">
+                            <input type="text" id="blogTags" placeholder="多个标签用逗号分隔，例如：技术,前端,CSS">
+                            <button type="button" class="ai-write-btn" id="aiTagsBtn" onclick="aiGenerateMeta('tags')">🤖 AI 生成标签</button>
+                        </div>
+                    </div>
                     <div class="form-group"><label>正文内容</label>
                         <div class="editor-toolbar">
                             <button type="button" onclick="execEdit('bold')" title="加粗"><b>B</b></button>
@@ -1222,6 +1278,7 @@
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('adminPanel').style.display = 'block';
             document.getElementById('userDisplay').textContent = '👤 ' + username;
+            loadAiWeeklyReport();
         }
 
         /**
@@ -2176,6 +2233,68 @@
             const modal = document.getElementById('codeModal');
             if (event.target === modal) {
                 closeCodeModal();
+            }
+        }
+
+        // ==================== AI 自动标签 / 摘要（博客发布）====================
+        // 走后端代理 /api/admin/ai/meta（需登录），从标题 + 正文纯文本一键生成
+        async function aiGenerateMeta(action) {
+            if (!authToken) { showNotification('请先登录，再使用 AI 生成～', 'error'); return; }
+            const title = document.getElementById('blogTitle').value.trim();
+            const contentEl = document.getElementById('blogContent');
+            const text = (contentEl ? (contentEl.innerText || contentEl.textContent || '') : '').trim();
+            if (!title && !text) { showNotification('请先填写标题或正文，AI 才能生成～', 'error'); return; }
+
+            const btn = document.getElementById(action === 'tags' ? 'aiTagsBtn' : 'aiDescBtn');
+            const original = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = '⏳ AI 生成中…';
+            try {
+                const res = await fetch(apiUrl('/api/admin/ai/meta'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+                    body: JSON.stringify({ action: action, title: title, text: text })
+                });
+                const result = await res.json();
+                if (!res.ok) throw new Error(result.error || 'AI 服务暂时不可用，请稍后再试');
+                if (action === 'tags') {
+                    document.getElementById('blogTags').value = result.tags.join(', ');
+                    showNotification('标签已生成，可自行增删～', 'success');
+                } else {
+                    document.getElementById('blogDescription').value = result.desc;
+                    showNotification('摘要已生成，可自行修改～', 'success');
+                }
+            } catch (err) {
+                showNotification('✨ ' + ((err && err.message) || 'AI 生成失败，请稍后再试'), 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = original;
+            }
+        }
+
+        // ==================== AI 站点周报 ====================
+        // 登录后加载 /api/admin/ai/weekly，失败静默隐藏（不打扰后台使用）
+        async function loadAiWeeklyReport() {
+            if (!authToken) return;
+            const card = document.getElementById('aiWeeklyCard');
+            const textEl = document.getElementById('aiWeeklyText');
+            const statsEl = document.getElementById('aiWeeklyStats');
+            if (!card || !textEl) return;
+            card.style.display = 'block';
+            textEl.textContent = '正在生成本周小结…';
+            statsEl.textContent = '';
+            try {
+                const res = await fetch(apiUrl('/api/admin/ai/weekly'), {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+                const result = await res.json();
+                if (!res.ok) throw new Error(result.error || 'AI 服务暂时不可用');
+                textEl.textContent = result.text;
+                const s = result.stats || {};
+                statsEl.textContent = '本周发布 ' + (s.contents || 0) + ' 条 · PV ' + (s.pv || 0)
+                    + ' · UV ' + (s.uv || 0) + ' · 弹幕 ' + (s.danmaku || 0);
+            } catch (err) {
+                card.style.display = 'none';
             }
         }
 

@@ -524,3 +524,30 @@ html[data-theme="light"] body.theme-keep-dark .ai-comment-text {
 html[data-theme="light"] body.theme-keep-dark .ai-comment-foot {
     color: rgba(0, 0, 0, 0.4) !important;
 }
+
+/* index — 🔍 站内搜索结果卡片 */
+html[data-theme="dark"] .ai-search-item {
+    background: var(--dm-surface-2) !important;
+    border-color: rgba(225, 101, 47, 0.4) !important;
+    color: #ff9d6b !important;
+}
+html[data-theme="dark"] .ai-search-item:hover {
+    box-shadow: 0 3px 10px rgba(225, 101, 47, 0.25) !important;
+    color: #ffb08a !important;
+}
+
+/* content-manager — AI 站点周报卡片 */
+html[data-theme="dark"] .ai-weekly-card {
+    background: var(--dm-surface) !important;
+    border-color: rgba(225, 101, 47, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+html[data-theme="dark"] .ai-weekly-head {
+    color: #ff9d6b !important;
+}
+html[data-theme="dark"] .ai-weekly-text {
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .ai-weekly-stats {
+    color: var(--dm-sub) !important;
+}

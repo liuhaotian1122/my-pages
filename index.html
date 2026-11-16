@@ -1206,6 +1206,39 @@
         .quick-reply-btn:active {
             transform: translateY(0px);
         }
+
+        /* 智能搜索结果列表（🔍 找文章） */
+        .ai-search-results {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .ai-search-item {
+            display: block;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #fff7f0 0%, #ffefe4 100%);
+            border: 1px solid #ffd9be;
+            border-radius: 10px;
+            color: #e1652f;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            line-height: 1.4;
+            transition: all 0.25s ease;
+        }
+
+        .ai-search-item:hover {
+            transform: translateX(3px);
+            box-shadow: 0 3px 10px rgba(225, 101, 47, 0.18);
+            color: #d4551f;
+        }
+
+        .ai-search-item small {
+            font-weight: 400;
+            margin-top: 2px;
+        }
     </style>
     <!-- 深色模式：防闪脚本 + 主题样式 -->
     <script>(function(){try{var t=localStorage.getItem('site-theme');if(t!=='dark'&&t!=='light'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
@@ -1727,6 +1760,7 @@
                     可以让我播报新博客、送节日祝福，也可以随便聊！
                     <div class="quick-replies">
                         <button class="quick-reply-btn" onclick="sendQuickReply('播报一下最新的博客文章！')">📢 播报新博客</button>
+                        <button class="quick-reply-btn" onclick="startArticleSearch()">🔍 找文章</button>
                         <button class="quick-reply-btn" onclick="sendQuickReply('今天有什么节日吗？')">🎉 节日问候</button>
                         <button class="quick-reply-btn" onclick="sendQuickReply('介绍一下这个网站吧')">✨ 介绍网站</button>
                     </div>
@@ -2061,6 +2095,25 @@
                 const message = chatInput.value.trim();
                 if (message === '') return;
 
+                // 🔍 找文章模式：下一条消息走站内搜索
+                if (searchMode) {
+                    searchMode = false;
+                    chatInput.placeholder = '输入您的问题...';
+                    addMessage(escapeChatHtml(message), 'user');
+                    chatInput.value = '';
+                    showTypingIndicator();
+                    try {
+                        const data = await searchArticles(message);
+                        hideTypingIndicator();
+                        addMessage(renderSearchResults(data), 'ai');
+                    } catch (error) {
+                        console.error('站内搜索失败:', error);
+                        hideTypingIndicator();
+                        addMessage('😅 ' + escapeChatHtml((error && error.message) || '搜索失败，请稍后再试'), 'ai');
+                    }
+                    return;
+                }
+
                 // 添加用户消息
                 addMessage(message, 'user');
                 chatInput.value = '';
@@ -2166,6 +2219,52 @@
                 chatInput.value = text;
                 sendMessage();
             };
+
+            // ---------- 智能站内搜索（🔍 找文章）----------
+            let searchMode = false;
+
+            // 点「🔍 找文章」进入搜索模式，下一句输入当作搜索词
+            window.startArticleSearch = function() {
+                searchMode = true;
+                chatWindow.classList.add('active');
+                chatInput.placeholder = '🔍 输入想找的文章主题，回车搜索…';
+                chatInput.focus();
+                addMessage('告诉我你想找什么吧～比如「有没有关于旅行的文章」，我来帮你翻全站 📖', 'ai');
+            };
+
+            // 聊天窗内渲染用的转义（用户输入的搜索词会回显）
+            function escapeChatHtml(text) {
+                return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+
+            // 调后端 AI 站内搜索
+            async function searchArticles(query) {
+                const res = await fetch(apiUrl('/api/public/ai/search'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: query })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.error || '搜索服务开小差了，请稍后再试');
+                }
+                return data;
+            }
+
+            // 渲染搜索结果：开场白 + 文章链接卡片列表
+            function renderSearchResults(data) {
+                let html = renderReply(data.reply || '');
+                if (Array.isArray(data.matches) && data.matches.length) {
+                    html += '<div class="ai-search-results">' + data.matches.map(function(m) {
+                        const reason = m.reason
+                            ? '<small style="color:#999;display:block">' + escapeChatHtml(m.reason) + '</small>'
+                            : '';
+                        return '<a class="ai-search-item" href="blog-detail.html?id=' + encodeURIComponent(m.id)
+                            + '" target="_blank" rel="noopener">《' + escapeChatHtml(m.title) + '》' + reason + '</a>';
+                    }).join('') + '</div>';
+                }
+                return html;
+            }
 
             // 发送按钮点击事件
             chatSend.addEventListener('click', sendMessage);
