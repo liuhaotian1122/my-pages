@@ -212,6 +212,35 @@
 
         .save-btn:hover { background: #d4541f; transform: translateY(-2px); }
 
+        /* ===== 小橙年终点评 ===== */
+        .ai-comment-card {
+            background: linear-gradient(135deg, rgba(225, 101, 47, 0.18), rgba(255, 138, 76, 0.10));
+            border: 1px solid rgba(225, 101, 47, 0.45);
+            border-radius: 18px;
+            padding: 26px 26px 22px;
+            margin-bottom: 22px;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: all 0.6s ease;
+        }
+
+        .ai-comment-card.show { opacity: 1; transform: translateY(0); }
+
+        .ai-comment-card h3 { margin: 0 0 14px; font-size: 18px; color: #ffcf9e; }
+
+        .ai-comment-text {
+            line-height: 2;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.85);
+            white-space: pre-wrap;
+        }
+
+        .ai-comment-foot {
+            margin-top: 14px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
         .loading-tip { text-align: center; color: rgba(255, 255, 255, 0.5); padding: 60px 0; }
 
         footer {
@@ -276,6 +305,13 @@
                 <div class="sum-item"><div class="num" id="sumAll">0</div><div class="name">全部内容总数</div></div>
                 <div class="sum-item"><div class="num" id="sumDanmaku">0</div><div class="name">弹幕墙互动（条）</div></div>
             </div>
+        </div>
+
+        <!-- 小橙的年终点评（AI 生成失败时自动隐藏） -->
+        <div class="ai-comment-card" id="aiCommentCard" style="display:none;">
+            <h3>🍊 小橙的年终点评</h3>
+            <div class="ai-comment-text" id="aiCommentText"></div>
+            <div class="ai-comment-foot">—— 由网站 AI 管家「小橙」根据本页真实数据生成</div>
         </div>
 
         <div class="card share-area" id="shareCardBox">
@@ -365,6 +401,23 @@
         }, 500);
 
         drawShareCard();
+        loadAiComment(report.year);
+    }
+
+    // ==================== 小橙年终点评 ====================
+
+    /** 拉取 AI 年终点评（后端按年 KV 缓存一天）；失败时静默隐藏卡片 */
+    function loadAiComment(year) {
+        fetch(apiUrl('/api/public/ai/annual-comment?year=' + year))
+            .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+            .then(function (data) {
+                if (!data || !data.text) return;
+                document.getElementById('aiCommentText').textContent = data.text;
+                var card = document.getElementById('aiCommentCard');
+                card.style.display = 'block';
+                setTimeout(function () { card.classList.add('show'); }, 1200);
+            })
+            .catch(function () { /* 点评生成失败不影响报告主体 */ });
     }
 
     function drawShareCard() {

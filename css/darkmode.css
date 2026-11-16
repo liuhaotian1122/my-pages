@@ -471,3 +471,56 @@ html[data-theme="light"] body.theme-keep-dark .chart .bar-num {
 html[data-theme="light"] body.theme-keep-dark .loading-tip {
     color: rgba(0, 0, 0, 0.5) !important;
 }
+
+/* ================ 小橙 AI 新增元素 ================ */
+/* index — 每日欢迎语气泡 + 麦克风按钮 */
+html[data-theme="dark"] .ai-greeting-bubble {
+    background: var(--dm-surface) !important;
+    border-color: rgba(225, 101, 47, 0.5) !important;
+    color: var(--dm-text) !important;
+}
+html[data-theme="dark"] .ai-greeting-close {
+    color: var(--dm-sub) !important;
+}
+html[data-theme="dark"] .ai-greeting-close:hover {
+    color: var(--dm-brand) !important;
+}
+html[data-theme="dark"] .ai-mic-btn {
+    background: var(--dm-surface-2) !important;
+    border-color: var(--dm-border) !important;
+    color: var(--dm-brand) !important;
+}
+html[data-theme="dark"] .ai-mic-btn:hover {
+    background: var(--dm-hover) !important;
+}
+html[data-theme="dark"] .ai-mic-btn.recording {
+    background: linear-gradient(135deg, #ff9a56 0%, #ff5722 100%) !important;
+    border-color: transparent !important;
+    color: #fff !important;
+}
+
+/* content-manager — AI 帮写按钮 */
+html[data-theme="dark"] .ai-write-btn {
+    border-color: rgba(225, 101, 47, 0.5) !important;
+    background: rgba(225, 101, 47, 0.1) !important;
+    color: #ff9d6b !important;
+}
+html[data-theme="dark"] .ai-write-btn:hover {
+    background: var(--dm-brand) !important;
+    color: #fff !important;
+}
+
+/* annual-report — 小橙年终点评（该页深色为默认；浅色主题反向覆盖） */
+html[data-theme="light"] body.theme-keep-dark .ai-comment-card {
+    background: rgba(225, 101, 47, 0.08) !important;
+    border-color: rgba(225, 101, 47, 0.4) !important;
+}
+html[data-theme="light"] body.theme-keep-dark .ai-comment-card h3 {
+    color: #d4541f !important;
+}
+html[data-theme="light"] body.theme-keep-dark .ai-comment-text {
+    color: rgba(0, 0, 0, 0.75) !important;
+}
+html[data-theme="light"] body.theme-keep-dark .ai-comment-foot {
+    color: rgba(0, 0, 0, 0.4) !important;
+}

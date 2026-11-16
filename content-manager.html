@@ -195,6 +195,35 @@
             background: white;
         }
 
+        /* AI 帮写按钮条 */
+        .ai-write-bar {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ai-write-btn {
+            padding: 4px 14px;
+            font-size: 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            border: 1px solid rgba(225, 101, 47, 0.45);
+            background: rgba(225, 101, 47, 0.06);
+            color: #e1652f;
+            transition: all 0.2s ease;
+        }
+
+        .ai-write-btn:hover {
+            background: #e1652f;
+            color: #fff;
+        }
+
+        .ai-write-btn:disabled {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -778,7 +807,13 @@
                                 placeholder="宁夏-银川"></div>
                     </div>
                     <div class="form-group"><label>详细内容</label><textarea id="workContent" rows="3"
-                            placeholder="详细描述工作内容"></textarea></div>
+                            placeholder="详细描述工作内容"></textarea>
+                        <div class="ai-write-bar" data-target="workContent" data-type="work" data-title="workTitle">
+                            <button type="button" class="ai-write-btn" data-action="polish">✨ AI 润色</button>
+                            <button type="button" class="ai-write-btn" data-action="expand">📝 AI 扩写</button>
+                            <button type="button" class="ai-write-btn" data-action="draft">🪄 AI 起草</button>
+                        </div>
+                    </div>
                     <div class="form-group"><label>图片链接</label><textarea id="workImages" rows="2"
                             placeholder="输入图片链接，每行一个链接，例如：&#10;images/w1.jpg&#10;images/w2.jpg&#10;images/w3.jpg"></textarea>
                     </div>
@@ -801,7 +836,13 @@
                                 placeholder="宁夏-银川"></div>
                     </div>
                     <div class="form-group"><label>详细内容</label><textarea id="experienceContent" rows="3"
-                            placeholder="详细描述这次经历"></textarea></div>
+                            placeholder="详细描述这次经历"></textarea>
+                        <div class="ai-write-bar" data-target="experienceContent" data-type="experience" data-title="experienceTitle">
+                            <button type="button" class="ai-write-btn" data-action="polish">✨ AI 润色</button>
+                            <button type="button" class="ai-write-btn" data-action="expand">📝 AI 扩写</button>
+                            <button type="button" class="ai-write-btn" data-action="draft">🪄 AI 起草</button>
+                        </div>
+                    </div>
                     <div class="form-group"><label>图片链接</label><textarea id="experienceImages" rows="2"
                             placeholder="输入图片链接，每行一个链接，例如：&#10;images/jd1.jpg&#10;images/jd2.jpg&#10;images/jd3.jpg"></textarea>
                     </div>
@@ -824,7 +865,13 @@
                                 placeholder="宁夏-银川"></div>
                     </div>
                     <div class="form-group"><label>详细内容</label><textarea id="foodContent" rows="3"
-                            placeholder="详细描述美食体验"></textarea></div>
+                            placeholder="详细描述美食体验"></textarea>
+                        <div class="ai-write-bar" data-target="foodContent" data-type="food" data-title="foodTitle">
+                            <button type="button" class="ai-write-btn" data-action="polish">✨ AI 润色</button>
+                            <button type="button" class="ai-write-btn" data-action="expand">📝 AI 扩写</button>
+                            <button type="button" class="ai-write-btn" data-action="draft">🪄 AI 起草</button>
+                        </div>
+                    </div>
                     <div class="form-group"><label>图片链接</label><textarea id="foodImages" rows="2"
                             placeholder="输入图片链接，每行一个链接，例如：&#10;https://i.postimg.cc/yJrMYkFG/IMG-20200819-205634.jpg&#10;https://i.postimg.cc/6qckQbhZ/2832080519158827362.jpg"></textarea>
                     </div>
@@ -847,7 +894,13 @@
                                 placeholder="例如：2021-08-15" required></div>
                     </div>
                     <div class="form-group"><label>描述</label><textarea id="suosuiDescription" rows="3"
-                            placeholder="详细描述内容"></textarea></div>
+                            placeholder="详细描述内容"></textarea>
+                        <div class="ai-write-bar" data-target="suosuiDescription" data-type="suosui" data-title="suosuiTitle">
+                            <button type="button" class="ai-write-btn" data-action="polish">✨ AI 润色</button>
+                            <button type="button" class="ai-write-btn" data-action="expand">📝 AI 扩写</button>
+                            <button type="button" class="ai-write-btn" data-action="draft">🪄 AI 起草</button>
+                        </div>
+                    </div>
                     <div class="form-group"><label>视频URL</label><input type="url" id="suosuiVideoUrl"
                             placeholder="B站嵌入代码URL"></div>
                     <div class="btn-group">
@@ -869,7 +922,13 @@
                                 placeholder="例如：功能更新"></div>
                     </div>
                     <div class="form-group"><label>更新内容</label><textarea id="updateContent" rows="3"
-                            placeholder="详细描述更新内容"></textarea></div>
+                            placeholder="详细描述更新内容"></textarea>
+                        <div class="ai-write-bar" data-target="updateContent" data-type="update" data-title="updateTitle">
+                            <button type="button" class="ai-write-btn" data-action="polish">✨ AI 润色</button>
+                            <button type="button" class="ai-write-btn" data-action="expand">📝 AI 扩写</button>
+                            <button type="button" class="ai-write-btn" data-action="draft">🪄 AI 起草</button>
+                        </div>
+                    </div>
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加更新记录</button>
                         <button type="button" class="btn btn-success" onclick="generateCode('update')">生成代码</button>
@@ -925,7 +984,12 @@
                         <div class="form-group"><label>游戏链接</label><input type="url" id="gameUrl" placeholder="例如：https://www.yikm.net/play?id=3501" required></div>
                         <div class="form-group"><label>图标链接</label><input type="text" id="gameIcon" placeholder="游戏图标图片链接"></div>
                     </div>
-                    <div class="form-group"><label>游戏描述</label><textarea id="gameDescription" rows="2" placeholder="简要描述游戏内容"></textarea></div>
+                    <div class="form-group"><label>游戏描述</label><textarea id="gameDescription" rows="2" placeholder="简要描述游戏内容"></textarea>
+                        <div class="ai-write-bar" data-target="gameDescription" data-type="game">
+                            <button type="button" class="ai-write-btn" data-action="polish">✨ AI 润色</button>
+                            <button type="button" class="ai-write-btn" data-action="expand">📝 AI 扩写</button>
+                        </div>
+                    </div>
                     <div class="btn-group">
                         <button type="submit" class="btn btn-primary">添加游戏记录</button>
                         <button type="button" class="btn btn-success" onclick="generateCode('game')">生成代码</button>
@@ -941,7 +1005,13 @@
                         <div class="form-group"><label>发布时间</label><input type="text" id="wechatTime" placeholder="例如：10分钟前" required></div>
                         <div class="form-group"><label>日期</label><input type="text" id="wechatDate" placeholder="例如：2026.11.12" required></div>
                     </div>
-                    <div class="form-group"><label>动态内容</label><textarea id="wechatContent" rows="3" placeholder="输入朋友圈文字内容"></textarea></div>
+                    <div class="form-group"><label>动态内容</label><textarea id="wechatContent" rows="3" placeholder="输入朋友圈文字内容"></textarea>
+                        <div class="ai-write-bar" data-target="wechatContent" data-type="wechat">
+                            <button type="button" class="ai-write-btn" data-action="polish">✨ AI 润色</button>
+                            <button type="button" class="ai-write-btn" data-action="expand">📝 AI 扩写</button>
+                            <button type="button" class="ai-write-btn" data-action="draft">🪄 AI 起草</button>
+                        </div>
+                    </div>
                     <div class="form-group"><label>图片链接</label><textarea id="wechatImages" rows="2" placeholder="输入图片链接，每行一个链接"></textarea></div>
                     <div class="form-group"><label>点赞用户</label><input type="text" id="wechatLikes" placeholder="多个用户用逗号分隔，例如：小春春,许我半夏"></div>
                     <div class="form-group"><label>评论内容</label><textarea id="wechatComments" rows="3" placeholder="每行一条评论，格式：用户名:评论内容 或 用户名回复用户名:评论内容"></textarea></div>
@@ -2114,6 +2184,69 @@
             checkAuth();
         });
     </script>
+<script>
+    // ==================== AI 帮写（润色 / 扩写 / 起草）====================
+    // 走后端代理 /api/admin/ai/write（需登录），密钥存在 Cloudflare 环境变量，不进浏览器。
+    document.addEventListener('click', async function (e) {
+        const btn = e.target.closest('.ai-write-btn');
+        if (!btn) return;
+        const bar = btn.closest('.ai-write-bar');
+        const ta = document.getElementById(bar.dataset.target);
+        if (!ta) return;
+
+        // 未登录先提示（与页面其他接口的鉴权逻辑一致）
+        if (!authToken) {
+            alert('请先登录，再使用 AI 帮写～');
+            return;
+        }
+
+        const action = btn.dataset.action;
+        const text = ta.value.trim();
+        const titleInput = bar.dataset.title ? document.getElementById(bar.dataset.title) : null;
+        const title = titleInput ? titleInput.value.trim() : '';
+
+        if (action === 'draft') {
+            if (!title && !text) { alert('请先填写标题，AI 根据主题帮你起草～'); return; }
+        } else if (!text) {
+            alert(action === 'polish' ? '请先输入一些内容，再让 AI 润色～' : '请先输入一些内容，再让 AI 扩写～');
+            return;
+        }
+
+        btn.disabled = true;
+        const original = btn.textContent;
+        btn.textContent = '⏳ AI 写作中…';
+        try {
+            const res = await fetch(apiUrl('/api/admin/ai/write'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+                body: JSON.stringify({
+                    action: action,
+                    type: bar.dataset.type,
+                    text: action === 'draft' ? (title || text) : text
+                })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'AI 服务暂时不可用，请稍后再试');
+
+            if (action === 'draft') {
+                ta.value = data.text;
+            } else if (action === 'expand') {
+                if (confirm('AI 扩写完成，追加到已有内容后面吗？（取消则不改动）')) {
+                    ta.value = text + '\n\n' + data.text;
+                }
+            } else {
+                if (confirm('AI 润色完成，替换输入框里的内容吗？（取消则不改动）')) {
+                    ta.value = data.text;
+                }
+            }
+        } catch (err) {
+            alert('✨ ' + ((err && err.message) || 'AI 帮写失败，请稍后再试'));
+        } finally {
+            btn.disabled = false;
+            btn.textContent = original;
+        }
+    });
+</script>
 <script src="js/darkmode.js"></script>
 <script src="js/pwa.js"></script>
 <script>

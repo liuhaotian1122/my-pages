@@ -222,6 +222,61 @@
             font-family: 'Consolas', 'Monaco', monospace;
         }
 
+        /* 小橙 AI 摘要卡 */
+        .ai-summary-card {
+            background: linear-gradient(135deg, rgba(225, 101, 47, 0.06), rgba(255, 138, 76, 0.10));
+            border: 1px solid rgba(225, 101, 47, 0.25);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 25px;
+        }
+
+        .ai-summary-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #e1652f;
+            margin-bottom: 10px;
+        }
+
+        .ai-summary-text {
+            color: #555;
+            line-height: 1.9;
+            font-size: 15px;
+        }
+
+        .ai-summary-keywords {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ai-summary-chip {
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: white;
+            color: #e1652f;
+            border: 1px solid rgba(225, 101, 47, 0.35);
+        }
+
+        html[data-theme="dark"] .ai-summary-card {
+            background: rgba(225, 101, 47, 0.08);
+            border-color: rgba(225, 101, 47, 0.35);
+        }
+
+        html[data-theme="dark"] .ai-summary-text {
+            color: var(--dm-text);
+        }
+
+        html[data-theme="dark"] .ai-summary-chip {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--dm-brand);
+        }
+
         .blog-loading {
             text-align: center;
             padding: 80px 20px;
@@ -325,6 +380,12 @@
                 </button>
             </div>
         </div>
+        <!-- 小橙 AI 摘要卡（摘要生成失败或未配置 AI 时自动隐藏） -->
+        <div class="ai-summary-card" id="aiSummaryCard" style="display:none;">
+            <div class="ai-summary-badge">🍊 小橙速读 · AI 摘要</div>
+            <div class="ai-summary-text" id="aiSummaryText"></div>
+            <div class="ai-summary-keywords" id="aiSummaryKeywords"></div>
+        </div>
         <div class="blog-detail-content" id="blogContent"></div>
         <div style="text-align: center; margin-top: 30px;">
             <a href="boke.html" class="blog-back-btn">返回博客列表</a>
@@ -387,6 +448,9 @@
                 if (views !== null) stats.views = views; // 用本次上报后的最新值
                 renderStats(stats, blog.id);
             }
+
+            // ---------- 小橙 AI 摘要（不阻塞正文阅读）----------
+            loadSummary(blog.id);
         } catch (err) {
             console.error('加载博客详情失败:', err);
             document.getElementById('blogLoading').style.display = 'none';
@@ -465,6 +529,23 @@
                 this.classList.add('pop');
             } catch { /* 网络异常时静默，不打断阅读 */ }
         });
+    }
+
+    // ==================== 小橙 AI 摘要 ====================
+
+    /** 拉取 AI 摘要（后端 D1 永久缓存，生成一次终身复用）；失败时静默隐藏卡片 */
+    async function loadSummary(blogId) {
+        const card = document.getElementById('aiSummaryCard');
+        try {
+            const res = await fetch(apiUrl('/api/public/blog/summary/' + blogId));
+            if (!res.ok) return;
+            const data = await res.json();
+            if (!data || !data.summary) return;
+            document.getElementById('aiSummaryText').textContent = data.summary;
+            document.getElementById('aiSummaryKeywords').innerHTML =
+                (data.keywords || []).map(k => '<span class="ai-summary-chip">' + k + '</span>').join('');
+            card.style.display = 'block';
+        } catch { /* 摘要生成失败不影响正文阅读 */ }
     }
 
     loadBlogDetail();
