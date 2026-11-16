@@ -1569,9 +1569,9 @@
     <div class="ai-chat-window" id="aiChatWindow">
         <div class="ai-chat-header">
             <div class="ai-chat-header-left">
-                <div class="ai-chat-avatar">🤖</div>
+                <div class="ai-chat-avatar">🍊</div>
                 <div class="ai-chat-info">
-                    <h3>智能客服</h3>
+                    <h3>小橙 · AI 管家</h3>
                     <p>在线为您服务</p>
                 </div>
             </div>
@@ -1585,14 +1585,14 @@
 
         <div class="ai-chat-messages" id="aiChatMessages">
             <div class="ai-message">
-                <div class="message-avatar">🤖</div>
+                <div class="message-avatar">🍊</div>
                 <div class="message-content">
-                    您好！我是浩天的AI智能助手 😊<br>
-                    我可以帮您了解网站内容、推荐功能、解答问题！
+                    嗨～我是小橙，浩天站的 AI 管家 🍊<br>
+                    可以让我播报新博客、送节日祝福，也可以随便聊！
                     <div class="quick-replies">
-                        <button class="quick-reply-btn" onclick="sendQuickReply('网站有哪些功能？')">网站功能</button>
-                        <button class="quick-reply-btn" onclick="sendQuickReply('推荐一些内容')">内容推荐</button>
-                        <button class="quick-reply-btn" onclick="sendQuickReply('如何联系站长？')">联系方式</button>
+                        <button class="quick-reply-btn" onclick="sendQuickReply('播报一下最新的博客文章！')">📢 播报新博客</button>
+                        <button class="quick-reply-btn" onclick="sendQuickReply('今天有什么节日吗？')">🎉 节日问候</button>
+                        <button class="quick-reply-btn" onclick="sendQuickReply('介绍一下这个网站吧')">✨ 介绍网站</button>
                     </div>
                     <small style="color:#999;display:block;margin-top:8px">💡 试试随便聊点什么吧～</small>
                 </div>
@@ -1620,6 +1620,7 @@
 <script src="assets/js/amazeui.ie8polyfill.min.js"></script>
 <![endif]-->
     <script src="assets/js/amazeui.min.js"></script>
+    <script src="js/api-config.js"></script>
     <script src="js/public.js"></script>
 
     <!-- 异步加载第三方脚本 -->
@@ -1858,36 +1859,8 @@
             }, 2500);
         });
 
-        // ============================================
-        // AI客服配置 - 免费大模型接入
-        // ============================================
-        const AI_CONFIG = {
-            // 是否启用AI大模型（false则只使用智能回复）
-            enableAI: true,
-            
-            // DeepSeek API配置（中国免费AI）
-            // 注册地址: https://platform.deepseek.com/
-            deepseek: {
-                enabled: true, // 设置为true并填入apiKey后启用
-                apiKey: 'sk-cab019635d8f4f7bb17e373bda5', // 填入您的API密钥
-                apiUrl: 'https://api.x-aio.com/v1/chat/completions',
-				model: 'DeepSeek-V3.2-Thinking'
-            },
-            
-            // 智谱AI配置（GLM-4-Flash免费版）
-            // 注册地址: https://open.bigmodel.cn/
-            glm: {
-                enabled: true, // 设置为true并填入apiKey后启用
-                apiKey: 'sk-72f1c49c267940f0850f0b00b01', // 填入您的API密钥
-                apiUrl: 'https://api.x-aio.com/v1/chat/completions',
-                model: 'deepseek-v3.1'
-            },
-            
-            // 对话设置
-            maxTokens: 700,
-            temperature: 0.7,
-            maxHistory: 6 // 保留最近几轮对话
-        };
+        // AI 助手（小橙）已改为后端代理：前端只调 /api/public/ai/chat，
+        // 密钥存 Cloudflare 环境变量 AI_API_KEY / AI_BASE_URL / AI_MODEL，不进浏览器。
         
         // AI客服功能
         (function() {
@@ -1964,7 +1937,7 @@
                 } catch (error) {
                     console.error('消息发送失败:', error);
                     hideTypingIndicator();
-                    addMessage('抱歉，我遇到了一些问题 😅<br>请稍后再试，或者<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">访问论坛</a>获取帮助！', 'ai');
+                    addMessage('😅 ' + ((error && error.message) || '服务开小差了，请稍后再试') + '<br><small style="color:#999">稍后重试，或到弹幕页留言告诉站长～</small>', 'ai');
                 }
             }
 
@@ -1975,7 +1948,7 @@
 
                 const avatar = document.createElement('div');
                 avatar.className = 'message-avatar';
-                avatar.textContent = sender === 'user' ? '👤' : '🤖';
+                avatar.textContent = sender === 'user' ? '👤' : '🍊';
 
                 const content = document.createElement('div');
                 content.className = 'message-content';
@@ -1994,7 +1967,7 @@
                 const typingDiv = document.createElement('div');
                 typingDiv.className = 'ai-message typing-message';
                 typingDiv.innerHTML = `
-                    <div class="message-avatar">🤖</div>
+                    <div class="message-avatar">🍊</div>
                     <div class="message-content typing-indicator active">
                         <span class="typing-dot"></span>
                         <span class="typing-dot"></span>
@@ -2016,176 +1989,29 @@
             // 对话历史记录
             let conversationHistory = [];
             
-            // AI回复逻辑 - 接入免费大模型
+            // AI 回复逻辑 —— 走后端代理 /api/public/ai/chat，API 密钥保存在 Cloudflare 环境变量
             async function getAIResponse(message) {
-                const lowerMessage = message.toLowerCase();
-                
-                // 添加到对话历史
-                conversationHistory.push({
-                    role: 'user',
-                    content: message
+                // 记入对话历史（后端只取最近 8 条作为上下文）
+                conversationHistory.push({ role: 'user', content: message });
+                const res = await fetch(apiUrl('/api/public/ai/chat'), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ messages: conversationHistory.slice(-8) })
                 });
-
-                // 优先检查网站相关的关键词
-                const websiteKeywords = {
-                    '你好': '您好！我是浩天的AI助手，很高兴为您服务！有什么可以帮助您的吗？😊',
-                    '功能': '本站主要功能包括：<br>📝 博客文章<br>🎮 小游戏<br>🎵 音乐VIP<br>📺 热剧推荐<br>🙏 电子木鱼<br>还有更多精彩内容等您探索！',
-                    '联系': '您可以通过以下方式联系站长：<br>📧 查看"关于我"页面<br>💬 访问<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">论坛</a>留言<br>🌐 关注<a href="https://weibo.com/u/5603126701" target="_blank" style="color:#ff9a56">微博</a>动态',
-                    '推荐': '为您推荐：<br>✨ 记录日常 - 工作、经历、美食、琐碎<br>📖 博客文章 - 最新思考与分享<br>🎮 小游戏 - 休闲娱乐放松心情',
-                    '游戏': '我们提供多款小游戏供您娱乐！🎮<br>点击导航栏的"<a href="game.html" style="color:#ff9a56">游戏</a>"即可体验，祝您玩得开心！',
-                    '博客': '博客栏目包含站长的心得体会和技术分享 📝<br>欢迎点击导航栏"<a href="boke.html" style="color:#ff9a56">博客</a>"查看最新文章！',
-                    '音乐': '我们提供免费音乐VIP服务！🎵<br>在快捷入口中点击"听音乐VIP"即可免费畅听！',
-                    '更新': '想了解最新更新？点击导航栏的"<a href="最近更新.html" style="color:#ff9a56">更新</a>"查看网站最新动态！✨',
-                };
-
-                // 检查是否是网站相关问题
-                for (let key in websiteKeywords) {
-                    if (lowerMessage.includes(key)) {
-                        return websiteKeywords[key];
-                    }
+                const data = await res.json();
+                if (!res.ok || !data.reply) {
+                    throw new Error(data.error || 'AI 服务繁忙，请稍后再试');
                 }
-
-                // 尝试调用免费AI API
-                try {
-                    const aiResponse = await callFreeAI(message);
-                    if (aiResponse) {
-                        conversationHistory.push({
-                            role: 'assistant',
-                            content: aiResponse
-                        });
-                        return aiResponse;
-                    }
-                } catch (error) {
-                    console.log('AI API调用失败，使用智能回复', error);
-                }
-
-                // 智能降级回复
-                return getSmartFallbackResponse(message);
+                conversationHistory.push({ role: 'assistant', content: data.reply });
+                return renderReply(data.reply);
             }
 
-            // 调用免费AI API（支持多个免费模型）
-            async function callFreeAI(message) {
-                // 如果未启用AI，直接返回
-                if (!AI_CONFIG.enableAI) {
-                    return null;
-                }
-
-                // 准备系统提示词
-                const systemPrompt = `你是浩天个人站的AI智能助手。这是一个个人博客网站，包含以下内容：
-- 博客文章（技术分享和生活感悟）
-- 小游戏（休闲娱乐）
-- 音乐VIP（免费音乐服务）
-- 热剧推荐
-- 电子木鱼
-- 记录日常（工作、经历、美食、琐碎）
-
-请用友好、专业的态度回答用户问题。回答要简洁明了（100字以内），适当使用emoji表情。如果用户问题与网站内容相关，请提供具体的引导。`;
-
-                // 方案1: DeepSeek API
-                if (AI_CONFIG.deepseek.enabled && AI_CONFIG.deepseek.apiKey) {
-                    try {
-                        const response = await fetch(AI_CONFIG.deepseek.apiUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${AI_CONFIG.deepseek.apiKey}`
-                            },
-                            body: JSON.stringify({
-                                model: AI_CONFIG.deepseek.model,
-                                messages: [
-                                    { role: 'system', content: systemPrompt },
-                                    ...conversationHistory.slice(-AI_CONFIG.maxHistory)
-                                ],
-                                max_tokens: AI_CONFIG.maxTokens,
-                                temperature: AI_CONFIG.temperature
-                            }),
-                            timeout: 10000 // 10秒超时
-                        });
-
-                        if (response.ok) {
-                            const data = await response.json();
-                            const aiReply = data.choices[0].message.content;
-                            console.log('✅ DeepSeek API调用成功');
-                            return aiReply;
-                        }
-                    } catch (error) {
-                        console.log('❌ DeepSeek API失败:', error.message);
-                    }
-                }
-
-                // 方案2: 智谱AI GLM
-                if (AI_CONFIG.glm.enabled && AI_CONFIG.glm.apiKey) {
-                    try {
-                        const response = await fetch(AI_CONFIG.glm.apiUrl, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${AI_CONFIG.glm.apiKey}`
-                            },
-                            body: JSON.stringify({
-                                model: AI_CONFIG.glm.model,
-                                messages: [
-                                    { role: 'system', content: systemPrompt },
-                                    ...conversationHistory.slice(-AI_CONFIG.maxHistory)
-                                ],
-                                max_tokens: AI_CONFIG.maxTokens,
-                                temperature: AI_CONFIG.temperature
-                            }),
-                            timeout: 10000
-                        });
-
-                        if (response.ok) {
-                            const data = await response.json();
-                            const aiReply = data.choices[0].message.content;
-                            console.log('✅ 智谱AI调用成功');
-                            return aiReply;
-                        }
-                    } catch (error) {
-                        console.log('❌ 智谱AI调用失败:', error.message);
-                    }
-                }
-
-                console.log('💡 未配置AI API或调用失败，使用智能降级回复');
-                return null;
-            }
-
-            // 智能降级回复
-            function getSmartFallbackResponse(message) {
-                const lowerMessage = message.toLowerCase();
-
-                // 问候语识别
-                if (lowerMessage.match(/^(hi|hello|嗨|哈喽|您好)/)) {
-                    return '您好呀！👋 我是AI智能助手，有什么可以帮您的吗？<br><small style="color:#999">提示：您可以问我关于网站功能、内容推荐等问题</small>';
-                }
-
-                // 感谢回复
-                if (lowerMessage.includes('谢谢') || lowerMessage.includes('感谢') || lowerMessage.includes('thanks')) {
-                    return '不客气！很高兴能帮到您！😊 还有其他问题随时问我哦～';
-                }
-
-                // 问题类型识别
-                if (lowerMessage.includes('怎么') || lowerMessage.includes('如何') || lowerMessage.includes('怎样')) {
-                    return '关于"<strong>' + message + '</strong>"这个问题：<br>📌 您可以浏览网站导航栏查找相关内容<br>📌 查看<a href="boke.html" style="color:#ff9a56">博客文章</a>可能有详细说明<br>📌 或在<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">论坛</a>发帖询问<br><small style="color:#999">💡 AI助手正在学习中，暂时无法回答所有问题</small>';
-                }
-
-                // 什么是类型
-                if (lowerMessage.includes('什么是') || lowerMessage.includes('是什么')) {
-                    return '这是个好问题！关于"<strong>' + message + '</strong>"：<br>🔍 建议您在网站中搜索相关内容<br>📖 <a href="boke.html" style="color:#ff9a56">博客栏目</a>可能有相关文章<br>💬 也欢迎在<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">论坛</a>与大家交流讨论';
-                }
-
-                // 推荐类型
-                if (lowerMessage.includes('推荐') || lowerMessage.includes('建议') || lowerMessage.includes('有什么')) {
-                    return '为您推荐本站精彩内容：<br>📝 <a href="boke.html" style="color:#ff9a56">博客</a> - 技术分享与生活感悟<br>🎮 <a href="game.html" style="color:#ff9a56">小游戏</a> - 轻松娱乐<br>🎵 <a href="http://www.78497.com/" target="_blank" style="color:#ff9a56">音乐VIP</a> - 免费畅听<br>📺 <a href="https://fanwantv.com/" target="_blank" style="color:#ff9a56">热剧</a> - 追剧必备<br>✨ 记录日常 - 工作、美食、生活点滴';
-                }
-
-                // 默认智能回复
-                const smartReplies = [
-                    '我理解您的问题！本站内容丰富：<br>🏠 <a href="index.html" style="color:#ff9a56">首页</a> - 了解网站概况<br>📖 <a href="boke.html" style="color:#ff9a56">博客</a> - 精彩文章<br>🎮 <a href="game.html" style="color:#ff9a56">游戏</a> - 休闲娱乐<br>🔄 <a href="最近更新.html" style="color:#ff9a56">更新</a> - 最新动态<br><small style="color:#999">💡 也可以问我：网站功能、内容推荐、如何联系等</small>',
-                    '关于"<strong>' + message + '</strong>"这个话题很有意思！<br>💭 虽然我还在学习中，但您可以：<br>• 在<a href="boke.html" style="color:#ff9a56">博客</a>中查找相关文章<br>• 访问<a href="https://support.qq.com/product/374554" target="_blank" style="color:#ff9a56">论坛</a>与大家讨论<br>• 关注<a href="https://weibo.com/u/5603126701" target="_blank" style="color:#ff9a56">微博</a>获取更多动态',
-                    '感谢您的提问！🤔<br>我可以为您介绍：<br>✨ <strong>网站功能</strong> - 了解本站特色<br>🎯 <strong>内容推荐</strong> - 发现精彩内容<br>📞 <strong>联系方式</strong> - 与站长互动<br>🔧 <strong>使用指南</strong> - 快速上手<br><small style="color:#999">直接说出您感兴趣的内容，我会详细介绍～</small>'
-                ];
-
-                return smartReplies[Math.floor(Math.random() * smartReplies.length)];
+            // AI 回复渲染：先转义防 XSS，再把 Markdown 链接变成可点击 <a>（小橙的博客播报就靠它）
+            function renderReply(text) {
+                const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                return escaped
+                    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener" style="color:#ff9a56">$1</a>')
+                    .replace(/\n/g, '<br>');
             }
 
             // 快捷回复
@@ -2219,70 +2045,9 @@
             });
         })();
 
-        // ============================================
-        // 🎯 AI客服配置指南
-        // ============================================
-        /*
-        
-        【当前状态】
-        ✅ AI助手已启用智能降级回复系统
-        ⚙️ 大模型API未配置（使用规则匹配回复）
-        
-        【如何接入免费AI大模型】
-        
-        方案1：DeepSeek（推荐 - 国产免费AI）
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        1. 访问: https://platform.deepseek.com/
-        2. 注册账号并获取API密钥
-        3. 在上面的AI_CONFIG中配置:
-           - 将 deepseek.enabled 改为 true
-           - 填入 deepseek.apiKey
-        4. 刷新页面即可使用！
-        
-        特点：
-        • 完全免费（有额度限制）
-        • 中文理解能力强
-        • 响应速度快
-        • 适合个人网站使用
-        
-        方案2：智谱AI GLM-4-Flash（国产免费）
-        ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        1. 访问: https://open.bigmodel.cn/
-        2. 注册并获取API密钥
-        3. 在AI_CONFIG中配置:
-           - 将 glm.enabled 改为 true
-           - 填入 glm.apiKey
-        4. 刷新页面即可使用！
-        
-        特点：
-        • 免费版本可用
-        • 智能问答能力强
-        • 支持上下文记忆
-        
-        【注意事项】
-        ⚠️ API密钥安全：
-           - 建议使用后端代理，避免前端暴露密钥
-           - 定期更换API密钥
-           - 设置请求频率限制
-        
-        💡 优化建议：
-           - 可以同时配置多个AI，实现自动降级
-           - 调整maxTokens和temperature参数优化回复
-           - 增加conversationHistory保持更长对话记忆
-        
-        📚 更多AI服务商：
-           - 阿里通义千问: https://dashscope.aliyuncs.com/
-           - 百度文心一言: https://cloud.baidu.com/product/wenxinworkshop
-           - 讯飞星火: https://xinghuo.xfyun.cn/
-           - Moonshot AI: https://platform.moonshot.cn/
-        
-        【测试建议】
-        1. 先不配置API，测试智能降级回复是否正常
-        2. 配置API后，打开浏览器控制台查看调用日志
-        3. 测试各种问题类型，优化系统提示词
-        
-        祝使用愉快！ 🎉
-        */
+        // 配置指南：Cloudflare 控制台 → Pages 项目 → Settings → Environment variables
+        // 添加 AI_API_KEY（必填）、AI_BASE_URL（可选，默认 https://api.x-aio.com/v1）、AI_MODEL（可选，默认 deepseek-v3.1）
+        // 小橙的系统提示词由后端动态拼装：站点介绍 + 最新 5 篇博客（供播报）+ 今天日期与节日（供祝福）
     </script>
 <script src="js/darkmode.js"></script>
 <script src="js/pwa.js"></script>

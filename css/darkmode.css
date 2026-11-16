@@ -313,6 +313,30 @@ html[data-theme="dark"] .ai-chat-input {
     border-color: var(--dm-border) !important;
     color: var(--dm-text) !important;
 }
+html[data-theme="dark"] .ai-chat-header {
+    background: linear-gradient(135deg, #b3541e 0%, #cc4e1a 100%) !important;
+}
+html[data-theme="dark"] .ai-chat-messages {
+    background: linear-gradient(180deg, #1d1d20 0%, #161618 100%) !important;
+}
+html[data-theme="dark"] .ai-message .message-content {
+    background: linear-gradient(135deg, #2a2a2e 0%, #232326 100%) !important;
+    color: var(--dm-text) !important;
+    border-color: var(--dm-border) !important;
+}
+html[data-theme="dark"] .ai-message.user .message-content {
+    color: #fff !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+html[data-theme="dark"] .quick-reply-btn {
+    background: linear-gradient(135deg, #2a2a2e 0%, #232326 100%) !important;
+    border-color: var(--dm-brand) !important;
+    color: var(--dm-brand) !important;
+}
+html[data-theme="dark"] .quick-reply-btn:hover {
+    background: var(--dm-brand) !important;
+    color: #fff !important;
+}
 /* index — 右侧「关于我」等渐变白卡片（行内 style 与高优先级选择器） */
 html[data-theme="dark"] .am-list-news .am-list-item-thumbed {
     background: var(--dm-surface) !important;
