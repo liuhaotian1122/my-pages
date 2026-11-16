@@ -761,6 +761,26 @@
             stroke: #ff5722;
         }
 
+        /* header 清空聊天记录按钮（样式与朗读开关一致） */
+        .ai-chat-clear-btn {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.75;
+        }
+
+        .ai-chat-clear-btn:hover {
+            background: rgba(255, 87, 34, 0.85);
+            opacity: 1;
+            color: #fff;
+        }
+
         /* 输入区麦克风按钮 */
         .ai-mic-btn {
             width: 45px;
@@ -1736,6 +1756,12 @@
                 </div>
             </div>
             <div class="ai-chat-header-right">
+                <div class="ai-chat-clear-btn" id="aiChatClear" title="清空聊天记录" style="display:none">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                </div>
                 <div class="ai-chat-speak-btn" id="aiSpeakToggle" title="朗读小橙的回复" style="display:none">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
@@ -2139,7 +2165,7 @@
             }
 
             // 添加消息到聊天窗口
-            function addMessage(text, sender) {
+            function addMessage(text, sender, opts) {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'ai-message' + (sender === 'user' ? ' user' : '');
 
@@ -2158,8 +2184,8 @@
                 // 滚动到底部
                 chatMessages.scrollTop = chatMessages.scrollHeight;
 
-                // 朗读开关打开时，读出小橙的回复
-                if (sender !== 'user') speakText(text);
+                // 朗读开关打开时，读出小橙的回复（恢复历史记录时静默）
+                if (sender !== 'user' && !(opts && opts.silent)) speakText(text);
             }
 
             // 显示输入中状态
@@ -2203,6 +2229,7 @@
                     throw new Error(data.error || 'AI 服务繁忙，请稍后再试');
                 }
                 conversationHistory.push({ role: 'assistant', content: data.reply });
+                saveChatHistory();
                 return renderReply(data.reply);
             }
 
@@ -2421,6 +2448,58 @@
                 };
             } else if (micBtn) {
                 micBtn.style.display = 'none';
+            }
+
+            // ---------- 聊天记忆：localStorage 持久化，刷新后小橙接着聊 ----------
+            const HISTORY_KEY = 'aiChatHistory';
+            const HISTORY_MAX = 16; // 本地最多存 16 条；发给后端时只取最近 8 条作上下文
+
+            function saveChatHistory() {
+                try {
+                    localStorage.setItem(HISTORY_KEY, JSON.stringify(conversationHistory.slice(-HISTORY_MAX)));
+                } catch { /* 隐私模式等存储失败不影响聊天 */ }
+            }
+
+            function loadChatHistory() {
+                try {
+                    const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+                    if (!Array.isArray(saved)) return [];
+                    return saved
+                        .filter(function(m) {
+                            return m && (m.role === 'user' || m.role === 'assistant')
+                                && typeof m.content === 'string' && m.content.trim();
+                        })
+                        .slice(-HISTORY_MAX);
+                } catch { return []; }
+            }
+
+            const clearChatBtn = document.getElementById('aiChatClear');
+            if (clearChatBtn) {
+                // 初始欢迎气泡（含快捷按钮），清空后原样放回
+                const welcomeHTML = chatMessages.innerHTML;
+
+                clearChatBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (!confirm('清空和小橙的聊天记录？清空后 Ta 就不记得之前聊过什么啦～')) return;
+                    conversationHistory = [];
+                    try { localStorage.removeItem(HISTORY_KEY); } catch {}
+                    chatMessages.innerHTML = welcomeHTML;
+                    clearChatBtn.style.display = 'none';
+                });
+
+                // 启动时恢复上一轮对话（回显消息，静默不朗读；放在朗读初始化之后避免变量未就绪）
+                const restored = loadChatHistory();
+                if (restored.length) {
+                    conversationHistory = restored;
+                    restored.forEach(function(m) {
+                        if (m.role === 'user') {
+                            addMessage(escapeChatHtml(m.content), 'user', { silent: true });
+                        } else {
+                            addMessage(renderReply(m.content), 'ai', { silent: true });
+                        }
+                    });
+                    clearChatBtn.style.display = 'flex';
+                }
             }
         })();
 
