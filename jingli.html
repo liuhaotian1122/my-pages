@@ -924,6 +924,104 @@
         footer a:hover {
             color: #fff;
         }
+
+        /* ========== 访问足迹 ========== */
+        .visit-footprint {
+            max-width: 1000px;
+            margin: 50px auto 30px;
+            padding: 0 15px;
+        }
+
+        .visit-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .visit-head h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .visit-head h2 i {
+            color: #e1652f;
+            margin-right: 8px;
+        }
+
+        .visit-stats {
+            display: flex;
+            gap: 18px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .visit-stats b {
+            color: #e1652f;
+            font-size: 18px;
+            margin-left: 4px;
+        }
+
+        .visit-map {
+            height: 360px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            background: #1a2029;
+            z-index: 0;
+        }
+
+        .visit-city-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .visit-city {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            background: rgba(225, 101, 47, 0.08);
+            color: #555;
+            transition: all 0.3s ease;
+        }
+
+        .visit-city:hover {
+            transform: translateY(-2px);
+            background: rgba(225, 101, 47, 0.15);
+        }
+
+        .visit-city .cnt {
+            color: #e1652f;
+            font-weight: 700;
+        }
+
+        .visit-note {
+            margin-top: 14px;
+            font-size: 12px;
+            color: #aaa;
+            text-align: center;
+        }
+
+        html[data-theme="dark"] .visit-head h2 {
+            color: var(--dm-text);
+        }
+
+        html[data-theme="dark"] .visit-stats {
+            color: var(--dm-sub);
+        }
+
+        html[data-theme="dark"] .visit-city {
+            color: var(--dm-sub);
+        }
     </style>
 
     <!-- 非关键CSS异步加载 -->
@@ -988,6 +1086,21 @@
         </div>
     </div>
 
+    <!-- 访问足迹地图 -->
+    <div class="visit-footprint" id="visitFootprint">
+        <div class="visit-head">
+            <h2><i class="am-icon-globe"></i>访问足迹</h2>
+            <div class="visit-stats">
+                <span>访问<b id="visitPv">-</b></span>
+                <span>访客<b id="visitUv">-</b></span>
+                <span>城市<b id="visitCityCount">-</b></span>
+            </div>
+        </div>
+        <div id="visitMap" class="visit-map" style="display:none;"></div>
+        <div id="visitCityList" class="visit-city-list"></div>
+        <p class="visit-note">足迹由站点边缘节点自动记录 · 仅统计国家城市与匿名哈希，不收集个人信息</p>
+    </div>
+
     <!-- 图片查看器模态框 -->
     <div class="image-viewer" id="imageViewer">
         <div class="loading" id="imageLoading">
@@ -1022,6 +1135,99 @@
     </div>
 
     <script src="js/footer.js"></script>
+
+    <script>
+        // ==================== 访问足迹 ====================
+        (function () {
+            var API = 'https://api.liuhaotian.cc.cd'; // 与 js/api-config.js 保持一致
+            var mapEl = document.getElementById('visitMap');
+
+            // 国家代码 → 旗帜 emoji
+            function flagOf(cc) {
+                if (!cc || !/^[A-Za-z]{2}$/.test(cc)) return '🌍';
+                return String.fromCodePoint.apply(null,
+                    cc.toUpperCase().split('').map(function (c) { return 0x1F1E6 + c.charCodeAt(0) - 65; }));
+            }
+
+            function render(stats) {
+                document.getElementById('visitPv').textContent = stats.pv;
+                document.getElementById('visitUv').textContent = stats.uv;
+                var cities = (stats.cities || []).filter(function (c) { return c.city && c.city !== '未知'; });
+                document.getElementById('visitCityCount').textContent = cities.length;
+
+                // 城市徽章（最多 12 个）
+                document.getElementById('visitCityList').innerHTML = cities.slice(0, 12).map(function (c) {
+                    return '<span class="visit-city" title="' + (c.region || c.city) + '">'
+                        + flagOf(c.country) + ' ' + c.city
+                        + ' <span class="cnt">' + c.count + '</span></span>';
+                }).join('');
+
+                var pts = cities.filter(function (c) { return c.lat != null && c.lon != null; });
+                if (!pts.length) return;
+                // 地图滚入视口后再加载 Leaflet（首屏不加载 100KB+ 的地图库）
+                if ('IntersectionObserver' in window) {
+                    var io = new IntersectionObserver(function (entries) {
+                        if (entries[0].isIntersecting) {
+                            io.disconnect();
+                            loadLeaflet(function () { drawMap(pts); });
+                        }
+                    }, { rootMargin: '200px' });
+                    io.observe(mapEl);
+                } else {
+                    loadLeaflet(function () { drawMap(pts); });
+                }
+            }
+
+            function loadLeaflet(cb) {
+                if (window.L) return cb();
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = 'https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.css';
+                document.head.appendChild(link);
+                var s = document.createElement('script');
+                s.src = 'https://cdn.bootcdn.net/ajax/libs/leaflet/1.9.4/leaflet.min.js';
+                s.onload = cb;
+                // bootcdn 失败时回退 unpkg；再失败则只显示城市榜，不影响页面
+                s.onerror = function () {
+                    var s2 = document.createElement('script');
+                    s2.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.min.js';
+                    s2.onload = cb;
+                    document.head.appendChild(s2);
+                };
+                document.head.appendChild(s);
+            }
+
+            function drawMap(pts) {
+                if (!window.L || !mapEl) return;
+                mapEl.style.display = 'block';
+                var map = L.map('visitMap', { scrollWheelZoom: false });
+                // 深色底图与站点深色模式气质一致，浅色模式下也协调
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                    subdomains: 'abcd',
+                    maxZoom: 19,
+                    attribution: '&copy; OpenStreetMap &copy; CARTO'
+                }).addTo(map);
+
+                var max = Math.max.apply(null, pts.map(function (p) { return p.count; }));
+                var bounds = [];
+                pts.forEach(function (p) {
+                    var r = 6 + 14 * Math.sqrt(p.count / max);
+                    L.circleMarker([p.lat, p.lon], {
+                        radius: r, color: '#fff', weight: 1,
+                        fillColor: '#e1652f', fillOpacity: 0.9
+                    }).addTo(map)
+                      .bindPopup(flagOf(p.country) + ' ' + p.city + ' · ' + p.count + ' 次访问');
+                    bounds.push([p.lat, p.lon]);
+                });
+                map.fitBounds(bounds, { padding: [30, 30], maxZoom: 8 });
+            }
+
+            fetch(API + '/api/public/visits/summary')
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (stats) { if (stats) render(stats); })
+                .catch(function () { /* 统计不可用时静默 */ });
+        })();
+    </script>
 
     <script>
         // 延迟加载JavaScript
