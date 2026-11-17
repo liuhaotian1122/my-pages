@@ -243,6 +243,58 @@
 
         .loading-tip { text-align: center; color: rgba(255, 255, 255, 0.5); padding: 60px 0; }
 
+    /* 加载动画 */
+    .loading-spinner {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(225, 101, 47, 0.2);
+        border-top-color: #e1652f;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-bottom: 16px;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    /* 错误状态 */
+    .error-tip {
+        text-align: center;
+        padding: 60px 20px;
+        display: none;
+    }
+
+    .error-icon {
+        font-size: 48px;
+        color: rgba(225, 101, 47, 0.6);
+        margin-bottom: 16px;
+    }
+
+    .error-text {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 15px;
+        margin-bottom: 20px;
+    }
+
+    .retry-btn {
+        padding: 10px 28px;
+        border: 2px solid #e1652f;
+        border-radius: 24px;
+        background: transparent;
+        color: #e1652f;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .retry-btn:hover {
+        background: #e1652f;
+        color: white;
+        transform: translateY(-2px);
+    }
+
         footer {
             background-color: #222;
             color: #fff;
@@ -274,7 +326,18 @@
 <script src="js/header.js"></script>
 
 <div class="report-wrap" id="reportWrap">
-    <div class="loading-tip" id="loadingTip">正在生成本年度报告...</div>
+    <!-- 加载状态 -->
+    <div class="loading-tip" id="loadingTip">
+        <div class="loading-spinner"></div>
+        <div>正在生成本年度报告...</div>
+    </div>
+
+    <!-- 错误状态（带重试按钮） -->
+    <div class="error-tip" id="errorTip">
+        <div class="error-icon"><i class="fa fa-exclamation-circle"></i></div>
+        <div class="error-text" id="errorText">报告生成失败，请稍后重试</div>
+        <button class="retry-btn" onclick="retryLoad()"><i class="fa fa-refresh"></i> 重新加载</button>
+    </div>
 
     <div id="reportBody" style="display:none;">
         <div class="hero">
@@ -512,16 +575,43 @@
     }
 
     function load() {
+        // 显示加载状态，隐藏错误状态
+        document.getElementById('loadingTip').style.display = 'block';
+        document.getElementById('errorTip').style.display = 'none';
+
+        // 添加超时保护（15秒）
+        var timeoutId = setTimeout(function() {
+            showError('加载超时，请检查网络后重试');
+        }, 15000);
+
         fetch(apiUrl('/api/public/annual-report'))
-            .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+            .then(function (res) {
+                clearTimeout(timeoutId);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
             .then(function (data) {
                 report = data;
                 render();
             })
-            .catch(function () {
-                document.getElementById('loadingTip').textContent = '报告生成失败，请稍后刷新重试';
+            .catch(function (err) {
+                clearTimeout(timeoutId);
+                console.error('年度报告加载失败:', err);
+                showError('报告生成失败：' + (err.message || '网络异常'));
             });
     }
+
+    /** 显示错误状态 */
+    function showError(message) {
+        document.getElementById('loadingTip').style.display = 'none';
+        document.getElementById('errorTip').style.display = 'block';
+        document.getElementById('errorText').textContent = message || '报告生成失败，请稍后重试';
+    }
+
+    /** 重试加载（用户点击按钮时调用） */
+    window.retryLoad = function() {
+        load();
+    };
 
     document.getElementById('saveBtn').addEventListener('click', function () {
         if (!report) return;

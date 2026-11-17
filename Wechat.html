@@ -852,36 +852,48 @@
             '</div></div></div>';
     }
 
-    // 从后端加载朋友圈数据
-    async function loadMoments() {
+    // 从后端加载朋友圈数据（异步，不阻塞页面渲染）
+    async function loadDynamicMoments() {
         var container = document.getElementById('momentsContainer');
         try {
             var res = await fetch(apiUrl('/api/public/wechat'));
             if (!res.ok) throw new Error('API请求失败');
             var backendMoments = await res.json();
+
             // 拉取点赞 / 评论存储数据，按 content_id 合并进对应动态
             var interactions = null;
             try {
                 var iRes = await fetch(apiUrl('/api/public/wechat/interactions'));
                 if (iRes.ok) interactions = await iRes.json();
             } catch (e) { /* 互动数据拉取失败不影响动态展示 */ }
+
             (backendMoments || []).forEach(function(m) {
                 if (interactions && m.id != null) {
                     m._likes = interactions.likes[String(m.id)] || [];
                     m._comments = interactions.comments[String(m.id)] || [];
                 }
             });
-            var moments = (backendMoments && backendMoments.length > 0)
-                ? backendMoments.concat(FALLBACK_MOMENTS)
-                : FALLBACK_MOMENTS;
-            container.innerHTML = moments.map(renderMoment).join('');
-            // 触发淡入动画
-            observeItems();
+
+            // 只有当后端返回有效数据时才更新（后端数据在前，静态数据在后）
+            if (backendMoments && backendMoments.length > 0) {
+                var moments = backendMoments.concat(FALLBACK_MOMENTS);
+                container.innerHTML = moments.map(renderMoment).join('');
+                // 触发淡入动画
+                observeItems();
+                console.log('✅ 成功加载 ' + backendMoments.length + ' 条动态朋友圈内容');
+            }
         } catch (err) {
-            console.error('加载朋友圈数据失败:', err);
-            container.innerHTML = FALLBACK_MOMENTS.map(renderMoment).join('');
-            observeItems();
+            console.error('加载动态朋友圈数据失败（已显示静态数据）:', err);
+            // 静态数据已经显示，用户无感知
         }
+    }
+
+    // 立即显示静态备用数据（避免用户看到空白）
+    function showStaticMoments() {
+        var container = document.getElementById('momentsContainer');
+        container.innerHTML = FALLBACK_MOMENTS.map(renderMoment).join('');
+        // 触发淡入动画
+        observeItems();
     }
 
     // 滚动进入视口时的淡入动画
@@ -905,8 +917,9 @@
         items.forEach(function(item) { observer.observe(item); });
     }
 
-    // 页面加载时从后端加载
-    loadMoments();
+    // 页面加载时：先立即显示静态数据，再异步加载动态数据
+    showStaticMoments();
+    loadDynamicMoments();
 
     // 切换操作菜单
     function toggleActionMenu(btn) {
