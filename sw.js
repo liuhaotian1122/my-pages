@@ -10,7 +10,7 @@
  * 更新缓存：修改本文件后把 VERSION 号 +1，旧缓存会在 activate 阶段自动清理。
  */
 
-const VERSION = 'v2';
+const VERSION = 'v3';
 const PRECACHE = `my-pages-precache-${VERSION}`;
 const RUNTIME = `my-pages-runtime-${VERSION}`;
 
@@ -23,8 +23,8 @@ const PRECACHE_URLS = [
   './', './index.html', './boke.html', './blog-detail.html', './suosui.html',
   './update.html', './annual-report.html', './food.html', './work.html',
   './jingli.html', './game.html', './Wechat.html',
-  './assets/css/amazeui.min.css', './css/public.css', './css/darkmode.css',
-  './js/api-config.js', './js/header.js', './js/footer.js', './js/darkmode.js', './js/pwa.js',
+  './assets/css/amazeui.min.css', './css/public.css', './css/darkmode.css', './css/xiaocheng.css',
+  './js/api-config.js', './js/header.js', './js/footer.js', './js/darkmode.js', './js/xiaocheng.js', './js/pwa.js',
   './assets/js/jquery.min.js', './assets/js/amazeui.min.js',
   './images/i/app.svg', './images/i/favicon.png', './images/star.png',
 ];

@@ -846,7 +846,7 @@
             </div>
             <div id="work-tab" class="tab-content active">
                 <form id="workForm">
-                    <div class="form-group"><label>工作标题</label><input type="text" id="workTitle" placeholder="输入工作标题"
+                    <div class="form-group"><label>工作标题</label><input type="text" id="workTitle" placeholder="留空自动生成（如：记录工作-1）"
                             required></div>
                     <div class="form-row">
                         <div class="form-group"><label>时间</label><input type="text" id="workTime"
@@ -875,8 +875,7 @@
             </div>
             <div id="experience-tab" class="tab-content">
                 <form id="experienceForm">
-                    <div class="form-group"><label>经历标题</label><input type="text" id="experienceTitle"
-                            placeholder="输入经历标题" required></div>
+                    <div class="form-group"><label>经历标题</label><input type="text" id="experienceTitle" placeholder="留空自动生成（如：记录经历-1）" required></div>
                     <div class="form-row">
                         <div class="form-group"><label>时间</label><input type="text" id="experienceTime"
                                 placeholder="例如：2021.10.4" required></div>
@@ -904,7 +903,7 @@
             </div>
             <div id="food-tab" class="tab-content">
                 <form id="foodForm">
-                    <div class="form-group"><label>美食标题</label><input type="text" id="foodTitle" placeholder="输入美食标题"
+                    <div class="form-group"><label>美食标题</label><input type="text" id="foodTitle" placeholder="留空自动生成（如：记录美食-1）"
                             required></div>
                     <div class="form-row">
                         <div class="form-group"><label>时间</label><input type="text" id="foodTime"
@@ -933,7 +932,7 @@
             </div>
             <div id="suosui-tab" class="tab-content">
                 <form id="suosuiForm">
-                    <div class="form-group"><label>琐碎标题</label><input type="text" id="suosuiTitle" placeholder="输入琐碎标题"
+                    <div class="form-group"><label>琐碎标题</label><input type="text" id="suosuiTitle" placeholder="留空自动生成（如：记录琐碎-1）"
                             required></div>
                     <div class="form-row">
                         <div class="form-group"><label>副标题</label><input type="text" id="suosuiSubtitle"
@@ -1655,10 +1654,51 @@
 
         // ========== 表单提交（调用后端 API） ==========
 
+        // 自动生成标题编码配置
+        const autoTitleConfig = {
+            work: { prefix: '记录工作-', fieldId: 'workTitle' },
+            experience: { prefix: '记录经历-', fieldId: 'experienceTitle' },
+            food: { prefix: '记录美食-', fieldId: 'foodTitle' },
+            suosui: { prefix: '记录琐碎-', fieldId: 'suosuiTitle' }
+        };
+
+        /**
+         * 自动生成标题编码
+         * @param {string} type - 数据类型 (work/experience/food/suosui)
+         * @returns {string} 生成的标题，如 "工作管理-1"、"经历管理-3"
+         */
+        function generateAutoTitle(type) {
+            const config = autoTitleConfig[type];
+            if (!config) return '';
+            
+            // 获取当前数据的最大编号
+            let maxNum = 0;
+            const items = data[type] || [];
+            items.forEach(function(item) {
+                const match = item.title && item.title.match(new RegExp('^' + config.prefix + '(\\d+)$'));
+                if (match) {
+                    const num = parseInt(match[1], 10);
+                    if (num > maxNum) maxNum = num;
+                }
+            });
+            
+            return config.prefix + (maxNum + 1);
+        }
+
+        /**
+         * 获取表单标题值（如果为空则自动生成）
+         */
+        function getFormTitle(type, inputEl) {
+            const value = inputEl.value.trim();
+            if (value) return value; // 用户手动填写了则使用用户填写的
+            return generateAutoTitle(type); // 空则自动生成
+        }
+
         document.getElementById('workForm').addEventListener('submit', async function (e) {
             e.preventDefault();
+            const titleInput = document.getElementById('workTitle');
             const body = {
-                title: document.getElementById('workTitle').value,
+                title: getFormTitle('work', titleInput),
                 time: document.getElementById('workTime').value,
                 location: document.getElementById('workLocation').value,
                 content: document.getElementById('workContent').value,
@@ -1689,8 +1729,9 @@
 
         document.getElementById('experienceForm').addEventListener('submit', async function (e) {
             e.preventDefault();
+            const titleInput = document.getElementById('experienceTitle');
             const body = {
-                title: document.getElementById('experienceTitle').value,
+                title: getFormTitle('experience', titleInput),
                 time: document.getElementById('experienceTime').value,
                 location: document.getElementById('experienceLocation').value,
                 content: document.getElementById('experienceContent').value,
@@ -1719,8 +1760,9 @@
 
         document.getElementById('foodForm').addEventListener('submit', async function (e) {
             e.preventDefault();
+            const titleInput = document.getElementById('foodTitle');
             const body = {
-                title: document.getElementById('foodTitle').value,
+                title: getFormTitle('food', titleInput),
                 time: document.getElementById('foodTime').value,
                 location: document.getElementById('foodLocation').value,
                 content: document.getElementById('foodContent').value,
@@ -1749,8 +1791,9 @@
 
         document.getElementById('suosuiForm').addEventListener('submit', async function (e) {
             e.preventDefault();
+            const titleInput = document.getElementById('suosuiTitle');
             const body = {
-                title: document.getElementById('suosuiTitle').value,
+                title: getFormTitle('suosui', titleInput),
                 subtitle: document.getElementById('suosuiSubtitle').value,
                 date: document.getElementById('suosuiDate').value,
                 content: document.getElementById('suosuiDescription').value,
@@ -2367,6 +2410,7 @@
     });
 </script>
 <script src="js/darkmode.js"></script>
+<script src="js/xiaocheng.js"></script>
 <script src="js/pwa.js"></script>
 <script>
     // ==================== 图片本地上传（R2）+ 回显预览 ====================
