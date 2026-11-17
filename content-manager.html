@@ -1369,22 +1369,22 @@
             const currentDate = getCurrentDate();
             switch (tabName) {
                 case 'work':
-                    document.getElementById('workTitle').value = '工作记录-';
+                    document.getElementById('workTitle').value = generateAutoTitle('work');
                     document.getElementById('workTime').value = currentTime;
                     document.getElementById('workLocation').value = '宁夏-银川';
                     break;
                 case 'experience':
-                    document.getElementById('experienceTitle').value = '经历记录-';
+                    document.getElementById('experienceTitle').value = generateAutoTitle('experience');
                     document.getElementById('experienceTime').value = currentTime;
                     document.getElementById('experienceLocation').value = '宁夏-银川';
                     break;
                 case 'food':
-                    document.getElementById('foodTitle').value = '美食记录-';
+                    document.getElementById('foodTitle').value = generateAutoTitle('food');
                     document.getElementById('foodTime').value = currentTime;
                     document.getElementById('foodLocation').value = '宁夏-银川';
                     break;
                 case 'suosui':
-                    document.getElementById('suosuiTitle').value = '琐碎记录-';
+                    document.getElementById('suosuiTitle').value = generateAutoTitle('suosui');
                     document.getElementById('suosuiDate').value = currentDate;
                     break;
                 case 'update':
@@ -1656,16 +1656,16 @@
 
         // 自动生成标题编码配置
         const autoTitleConfig = {
-            work: { prefix: '记录工作-', fieldId: 'workTitle' },
-            experience: { prefix: '记录经历-', fieldId: 'experienceTitle' },
-            food: { prefix: '记录美食-', fieldId: 'foodTitle' },
-            suosui: { prefix: '记录琐碎-', fieldId: 'suosuiTitle' }
+            work: { prefix: '工作记录-', fieldId: 'workTitle' },
+            experience: { prefix: '经历记录-', fieldId: 'experienceTitle' },
+            food: { prefix: '美食记录-', fieldId: 'foodTitle' },
+            suosui: { prefix: '琐碎记录-', fieldId: 'suosuiTitle' }
         };
 
         /**
          * 自动生成标题编码
          * @param {string} type - 数据类型 (work/experience/food/suosui)
-         * @returns {string} 生成的标题，如 "工作管理-1"、"经历管理-3"
+         * @returns {string} 生成的标题，如 "工作记录-13"、"经历记录-3"
          */
         function generateAutoTitle(type) {
             const config = autoTitleConfig[type];
