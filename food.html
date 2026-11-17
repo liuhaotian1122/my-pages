@@ -1813,59 +1813,31 @@ let experienceData = [...defaultExperienceData];
         }
 
 // 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', async () => {
-// 异步从后端加载数据
-try {
-    const apiData = await loadExperienceData();
-    if (apiData && apiData.length > 0) {
-        experienceData = apiData;
-    }
-} catch (e) {
-    console.error('加载数据异常:', e);
-}
-// 初始化分页功能
-window.experiencePagination = new ExperiencePagination();
+document.addEventListener('DOMContentLoaded', () => {
+    // 立即使用静态数据初始化分页（避免用户看到空白）
+    window.experiencePagination = new ExperiencePagination();
 
-            // 初始化图片查看器
-            window.imageViewer = new ImageViewer();
+    // 初始化图片查看器
+    window.imageViewer = new ImageViewer();
 
-            // 检测是否为移动设备
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            // 添加图片懒加载观察器（仅在非移动设备上使用）
-            if (!isMobile && 'IntersectionObserver' in window) {
-                const imageObserver = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            const img = entry.target;
-                            if (img.dataset.src) {
-                                img.src = img.dataset.src;
-                                img.removeAttribute('data-src');
-                                observer.unobserve(img);
-                            } else if (img.src) {
-                                // 图片已经设置了src，直接触发加载检查
-                                if (img.complete) {
-                                    handleImageLoad(img);
-                                } else {
-                                    img.onload = () => handleImageLoad(img);
-                                    img.onerror = () => handleImageError(img);
-                                }
-                            }
-                        }
-                    });
-                });
+    // 异步从后端加载数据（不阻塞页面渲染）
+    loadDynamicData(window.experiencePagination);
 
-                // 观察所有图片容器
-                document.querySelectorAll('.gallery-img').forEach(img => {
-                    imageObserver.observe(img);
-                });
-            } else {
-                // 移动端或不支持IntersectionObserver的浏览器，直接加载所有图片
-                const images = document.querySelectorAll('.gallery-img');
-                images.forEach(img => {
-                    // 移动端直接加载图片
-                    if (img.src) {
-                        // 触发加载检查
+    // 检测是否为移动设备
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // 添加图片懒加载观察器（仅在非移动设备上使用）
+    if (!isMobile && 'IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                        observer.unobserve(img);
+                    } else if (img.src) {
+                        // 图片已经设置了src，直接触发加载检查
                         if (img.complete) {
                             handleImageLoad(img);
                         } else {
@@ -1873,9 +1845,65 @@ window.experiencePagination = new ExperiencePagination();
                             img.onerror = () => handleImageError(img);
                         }
                     }
-                });
+                }
+            });
+        });
+
+        // 观察所有图片容器
+        document.querySelectorAll('.gallery-img').forEach(img => {
+            imageObserver.observe(img);
+        });
+    } else {
+        // 移动端或不支持IntersectionObserver的浏览器，直接加载所有图片
+        const images = document.querySelectorAll('.gallery-img');
+        images.forEach(img => {
+            // 移动端直接加载图片
+            if (img.src) {
+                // 触发加载检查
+                if (img.complete) {
+                    handleImageLoad(img);
+                } else {
+                    img.onload = () => handleImageLoad(img);
+                    img.onerror = () => handleImageError(img);
+                }
             }
         });
+    }
+});
+
+/**
+ * 异步加载动态数据并更新列表
+ * @param {ExperiencePagination} pagination - 分页实例
+ */
+async function loadDynamicData(pagination) {
+    try {
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.querySelector('p').textContent = '正在加载最新内容...';
+        }
+
+        const apiData = await loadExperienceData();
+        if (apiData && apiData.length > 0) {
+            experienceData = apiData;
+            
+            // 重新渲染分页和列表（回到第一页以显示最新数据）
+            pagination.currentPage = 1;
+            pagination.updateData();
+            pagination.render();
+            pagination.reinitImageViewer();
+            
+            console.log('✅ 成功加载 ' + (apiData.length - defaultExperienceData.length) + ' 条动态美食记录');
+        }
+    } catch (e) {
+        console.error('加载动态美食数据失败（已显示静态数据）:', e);
+        // 静态数据已经显示，用户无感知
+    } finally {
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
+        }
+    }
+}
         
         // 页面完全加载后再次检查图片加载状态
         window.addEventListener('load', () => {

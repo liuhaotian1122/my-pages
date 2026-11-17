@@ -772,19 +772,47 @@ class SuosuiPagination {
     }
 }
 
-// 页面加载完成后初始化分页
-document.addEventListener('DOMContentLoaded', async () => {
-// 异步从后端加载数据
-try {
-    const apiData = await loadSuosuiData();
-    if (apiData && apiData.length > 0) {
-        suosuiData = apiData;
-    }
-} catch (e) {
-    console.error('加载数据异常:', e);
-}
-new SuosuiPagination();
+// 页面加载完成后初始化
+document.addEventListener('DOMContentLoaded', () => {
+    // 立即使用静态数据初始化分页（避免用户看到空白）
+    new SuosuiPagination();
+
+    // 异步从后端加载数据（不阻塞页面渲染）
+    loadDynamicData();
 });
+
+/**
+ * 异步加载动态数据并更新列表
+ */
+async function loadDynamicData() {
+    try {
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.querySelector('p').textContent = '正在加载最新内容...';
+        }
+
+        const apiData = await loadSuosuiData();
+        if (apiData && apiData.length > 0) {
+            suosuiData = apiData;
+            
+            // 重新渲染分页和列表（回到第一页以显示最新数据）
+            const pagination = window.experiencePagination || new SuosuiPagination();
+            pagination.currentPage = 1;
+            pagination.updateData();
+            pagination.render();
+            
+            console.log('✅ 成功加载 ' + (apiData.length - defaultSuosuiData.length) + ' 条动态碎碎念记录');
+        }
+    } catch (e) {
+        console.error('加载动态碎碎念数据失败（已显示静态数据）:', e);
+        // 静态数据已经显示，用户无感知
+    } finally {
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
+        }
+    }
+}
 </script>
 
 <!-- 插件依赖Jquery -->
