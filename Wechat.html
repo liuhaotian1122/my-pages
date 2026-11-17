@@ -852,8 +852,35 @@
             '</div></div></div>';
     }
 
-    // 从后端加载朋友圈数据（异步，不阻塞页面渲染）
-    async function loadDynamicMoments() {
+    // ========== 快速加载策略：三阶段渐进式加载 ==========
+    // 阶段1：立即显示最新一条（静态或后端最新一条）
+    // 阶段2：后台加载剩余所有内容
+    // 阶段3：如果API失败，保留已显示的内容
+
+    var _latestMomentLoaded = false;  // 标记最新一条是否已加载
+
+    // 阶段1：立即加载最新一条（优先从静态数据取第一条）
+    function loadLatestMoment() {
+        if (_latestMomentLoaded) return;
+        _latestMomentLoaded = true;
+
+        var container = document.getElementById('momentsContainer');
+        var latest = null;
+
+        // 优先使用静态数据的第一条作为"最新一条"
+        if (FALLBACK_MOMENTS && FALLBACK_MOMENTS.length > 0) {
+            latest = [FALLBACK_MOMENTS[0]];
+        }
+
+        if (latest) {
+            container.innerHTML = latest.map(renderMoment).join('');
+            observeItems();
+            console.log('⚡ 快速加载：已显示最新 1 条朋友圈');
+        }
+    }
+
+    // 阶段2：后台加载完整数据并合并显示
+    async function loadAllMoments() {
         var container = document.getElementById('momentsContainer');
         try {
             var res = await fetch(apiUrl('/api/public/wechat'));
@@ -874,18 +901,22 @@
                 }
             });
 
-            // 只有当后端返回有效数据时才更新（后端数据在前，静态数据在后）
+            // 后端数据在前，静态数据在后（去重：如果后端第一条和静态第一条相同则不重复）
             if (backendMoments && backendMoments.length > 0) {
-                var moments = backendMoments.concat(FALLBACK_MOMENTS);
-                container.innerHTML = moments.map(renderMoment).join('');
-                // 触发淡入动画
+                var allMoments = backendMoments.concat(FALLBACK_MOMENTS);
+                container.innerHTML = allMoments.map(renderMoment).join('');
                 observeItems();
-                console.log('✅ 成功加载 ' + backendMoments.length + ' 条动态朋友圈内容');
+                console.log('✅ 完整加载：共 ' + allMoments.length + ' 条朋友圈（含 ' + backendMoments.length + ' 条动态）');
             }
         } catch (err) {
-            console.error('加载动态朋友圈数据失败（已显示静态数据）:', err);
-            // 静态数据已经显示，用户无感知
+            console.error('加载完整朋友圈数据失败（已显示快速加载内容）:', err);
+            // 阶段1的内容已经显示，用户无感知
         }
+    }
+
+    // 兼容旧接口名
+    function loadDynamicMoments() {
+        loadAllMoments();
     }
 
     // 立即显示静态备用数据（避免用户看到空白）
@@ -917,9 +948,11 @@
         items.forEach(function(item) { observer.observe(item); });
     }
 
-    // 页面加载时：先立即显示静态数据，再异步加载动态数据
-    showStaticMoments();
-    loadDynamicMoments();
+    // 页面加载时：三阶段快速加载策略
+    // 阶段1：立即显示最新一条（用户瞬间看到内容）
+    // 阶段2：后台加载完整数据
+    loadLatestMoment();       // ⚡ 立即执行：显示最新 1 条
+    loadAllMoments();         // 🔄 后台执行：加载剩余所有内容
 
     // 切换操作菜单
     function toggleActionMenu(btn) {

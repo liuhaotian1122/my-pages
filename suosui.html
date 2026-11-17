@@ -772,45 +772,90 @@ class SuosuiPagination {
     }
 }
 
+// ========== 快速加载策略：三阶段渐进式加载 ==========
+// 阶段1：立即显示最新一条碎碎念记录
+// 阶段2：后台加载完整数据并更新列表
+
+/**
+ * 阶段1：快速加载 - 仅显示最新 1 条碎碎念记录
+ */
+function loadLatestSuosui() {
+    const container = document.getElementById('suosuiContainer');
+    if (!container || !defaultSuosuiData || defaultSuosuiData.length === 0) return;
+
+    // 获取最新的一条（ID最大的）
+    const latest = [...defaultSuosuiData].sort((a, b) => b.id - a.id)[0];
+
+    // 仅渲染这一条
+    const suosuiHTML = `
+        <div class="suosui-item show">
+            <div class="suosui-content">
+                <div class="suosui-title">
+                    <h2>${latest.title}</h2>
+                </div>
+                <div class="suosui-info">
+                    <h2>${latest.subtitle}</h2>
+                    <h2>${latest.description}</h2>
+                    <div style="margin-top: 10px;">
+                        ${latest.tags.map(tag => `<span style="background: #e1652f; color: white; padding: 2px 8px; border-radius: 12px; font-size: 12px; margin-right: 5px;">${tag}</span>`).join('')}
+                    </div>
+                </div>
+                <div class="suosui-video">
+                    <iframe src="${latest.videoUrl}"
+                            scrolling="no" border="0" frameborder="no" framespacing="0"
+                            allowfullscreen="true" loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = suosuiHTML;
+    console.log('⚡ 快速加载：已显示最新 1 条碎碎念记录');
+
+    // 隐藏加载动画和分页（阶段1暂时隐藏，阶段2再显示）
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const paginationContainer = document.getElementById('paginationContainer');
+    if (loadingSpinner) loadingSpinner.style.display = 'none';
+    if (paginationContainer) paginationContainer.style.display = 'none';
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    // 立即使用静态数据初始化分页（避免用户看到空白）
+    // ⚡ 阶段1：立即显示最新一条碎碎念记录（用户瞬间看到内容）
+    loadLatestSuosui();
+
+    // 使用静态数据初始化分页（后台准备）
     new SuosuiPagination();
 
-    // 异步从后端加载数据（不阻塞页面渲染）
+    // 🔄 阶段2：异步从后端加载数据并渲染完整列表（不阻塞页面渲染）
     loadDynamicData();
 });
 
 /**
- * 异步加载动态数据并更新列表
+ * 异步加载动态数据并更新列表（阶段2：完整加载）
  */
 async function loadDynamicData() {
     try {
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.querySelector('p').textContent = '正在加载最新内容...';
-        }
-
         const apiData = await loadSuosuiData();
         if (apiData && apiData.length > 0) {
             suosuiData = apiData;
-            
+
             // 重新渲染分页和列表（回到第一页以显示最新数据）
             const pagination = window.experiencePagination || new SuosuiPagination();
             pagination.currentPage = 1;
             pagination.updateData();
             pagination.render();
-            
-            console.log('✅ 成功加载 ' + (apiData.length - defaultSuosuiData.length) + ' 条动态碎碎念记录');
+
+            // 恢复分页控件显示（阶段1时隐藏的）
+            const paginationContainer = document.getElementById('paginationContainer');
+            if (paginationContainer) paginationContainer.style.display = 'flex';
+
+            console.log('✅ 完整加载：共 ' + apiData.length + ' 条碎碎念记录（含动态数据）');
         }
     } catch (e) {
-        console.error('加载动态碎碎念数据失败（已显示静态数据）:', e);
-        // 静态数据已经显示，用户无感知
-    } finally {
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'none';
-        }
+        console.error('加载完整碎碎念数据失败（已显示快速加载内容）:', e);
+        // 阶段1的内容已经显示，用户无感知
     }
 }
 </script>

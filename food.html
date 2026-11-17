@@ -1812,15 +1812,68 @@ let experienceData = [...defaultExperienceData];
             });
         }
 
+// ========== 快速加载策略：三阶段渐进式加载 ==========
+// 阶段1：立即显示最新一条美食记录
+// 阶段2：后台加载完整数据并更新列表
+
+/**
+ * 阶段1：快速加载 - 仅显示最新 1 条美食记录
+ */
+function loadLatestFood() {
+    const container = document.getElementById('experienceContainer');
+    if (!container || !defaultExperienceData || defaultExperienceData.length === 0) return;
+
+    // 获取最新的一条（ID最大的）
+    const latest = [...defaultExperienceData].sort((a, b) => b.id - a.id)[0];
+
+    // 仅渲染这一条
+    const experienceHTML = `
+        <div class="work-section show">
+            <div class="work-title">
+                <h2>${latest.title}</h2>
+            </div>
+            <div class="work-info">
+                <h2>时间：${latest.time}</h2>
+                <h2>地点：${latest.location}</h2>
+                ${latest.content ? `<h2>内容：${latest.content}</h2>` : ''}
+            </div>
+            <div class="image-gallery" data-gallery="work${latest.id}">
+                ${latest.images.map((img, index) => `
+                    <div class="gallery-img-container loading" data-index="${index + 1}">
+                        <img src="${img}" class="gallery-img" alt="照片${index + 1}" loading="lazy" decoding="async"
+                             data-title="${latest.title} - 照片${index + 1}" data-date="${latest.time}"
+                             onload="handleImageLoad(this)" onerror="handleImageError(this)">
+                        <div class="image-index">${index + 1}</div>
+                        <div class="zoom-icon">🔍</div>
+                        <div class="image-tooltip">${latest.title} - 照片${index + 1}</div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    container.innerHTML = experienceHTML;
+    console.log('⚡ 快速加载：已显示最新 1 条美食记录');
+
+    // 隐藏加载动画和分页（阶段1暂时隐藏，阶段2再显示）
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const paginationContainer = document.getElementById('paginationContainer');
+    if (loadingSpinner) loadingSpinner.style.display = 'none';
+    if (paginationContainer) paginationContainer.style.display = 'none';
+}
+
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    // 立即使用静态数据初始化分页（避免用户看到空白）
-    window.experiencePagination = new ExperiencePagination();
+    // ⚡ 阶段1：立即显示最新一条美食记录（用户瞬间看到内容）
+    loadLatestFood();
 
     // 初始化图片查看器
     window.imageViewer = new ImageViewer();
 
-    // 异步从后端加载数据（不阻塞页面渲染）
+    // 使用静态数据初始化分页（后台准备）
+    window.experiencePagination = new ExperiencePagination();
+
+    // 🔄 阶段2：异步从后端加载数据并渲染完整列表（不阻塞页面渲染）
     loadDynamicData(window.experiencePagination);
 
     // 检测是否为移动设备
@@ -1872,36 +1925,30 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /**
- * 异步加载动态数据并更新列表
+ * 异步加载动态数据并更新列表（阶段2：完整加载）
  * @param {ExperiencePagination} pagination - 分页实例
  */
 async function loadDynamicData(pagination) {
     try {
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.querySelector('p').textContent = '正在加载最新内容...';
-        }
-
         const apiData = await loadExperienceData();
         if (apiData && apiData.length > 0) {
             experienceData = apiData;
-            
+
             // 重新渲染分页和列表（回到第一页以显示最新数据）
             pagination.currentPage = 1;
             pagination.updateData();
             pagination.render();
             pagination.reinitImageViewer();
-            
-            console.log('✅ 成功加载 ' + (apiData.length - defaultExperienceData.length) + ' 条动态美食记录');
+
+            // 恢复分页控件显示（阶段1时隐藏的）
+            const paginationContainer = document.getElementById('paginationContainer');
+            if (paginationContainer) paginationContainer.style.display = 'flex';
+
+            console.log('✅ 完整加载：共 ' + apiData.length + ' 条美食记录（含动态数据）');
         }
     } catch (e) {
-        console.error('加载动态美食数据失败（已显示静态数据）:', e);
-        // 静态数据已经显示，用户无感知
-    } finally {
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'none';
-        }
+        console.error('加载完整美食数据失败（已显示快速加载内容）:', e);
+        // 阶段1的内容已经显示，用户无感知
     }
 }
         
