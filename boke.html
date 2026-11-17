@@ -1526,9 +1526,29 @@ function fetchBlogStats() {
 }
 
 // 页面加载完成后初始化分页
-document.addEventListener('DOMContentLoaded', async () => {
-    // 先从后端加载动态博客数据
+document.addEventListener('DOMContentLoaded', () => {
+    // 立即使用静态数据初始化分页（避免用户看到空白）
+    const blogPagination = new BlogPagination();
+
+    // 初始化高级效果
+    initAdvancedEffects();
+
+    // 异步从后端加载动态博客数据（不阻塞页面渲染）
+    loadDynamicBlogs(blogPagination);
+});
+
+/**
+ * 异步加载动态博客数据并更新列表
+ * @param {BlogPagination} blogPagination - 分页实例
+ */
+async function loadDynamicBlogs(blogPagination) {
     try {
+        // 显示加载提示
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.querySelector('p').textContent = '正在加载最新内容...';
+        }
+
         const res = await fetch(apiUrl('/api/public/blog'));
         if (res.ok) {
             const dynamicBlogs = await res.json();
@@ -1543,19 +1563,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                     url: 'blog-detail.html?id=' + item.id,
                     tags: item.tags || []
                 }));
+
                 // 合并：后端数据在前，原有静态数据在后
                 blogData.unshift(...formatted);
+
+                // 重新渲染分页和列表（回到第一页以显示最新数据）
+                blogPagination.currentPage = 1;
+                blogPagination.updateData();
+                blogPagination.render();
+
+                console.log(`✅ 成功加载 ${formatted.length} 条动态博客`);
             }
         }
     } catch (err) {
         console.error('加载动态博客失败:', err);
+        // 静态数据已经显示，用户无感知，仅在控制台记录错误
+    } finally {
+        // 隐藏加载提示
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        if (loadingSpinner) {
+            loadingSpinner.style.display = 'none';
+        }
     }
-    
-    new BlogPagination();
-    
-    // 初始化高级效果
-    initAdvancedEffects();
-});
+}
 
 // 高级效果初始化（使用事件委托，避免分页后重复绑定）
 function initAdvancedEffects() {
