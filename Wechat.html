@@ -729,6 +729,9 @@
     // 默认头像
     var DEFAULT_AVATAR = 'https://i.postimg.cc/t4Hz1b0j/8536bb2edd3e2142bdb4cb1873074ff.jpg';
 
+    // 各动态的静态点赞昵称（subtitle），点赞后刷新显示时与之合并
+    var STATIC_LIKES = {};
+
     // 后端加载失败时的备用静态数据
     var FALLBACK_MOMENTS = [
         { title: '许我半夏', content: '今天天气真好，和朋友们一起去爬山，心情超级棒！🏔️', time: '10分钟前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400','https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=400','https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400'], likes: ['小春春','许我半夏'], comments: [{user:'小春春',text:'风景真美！'},{user:'许我半夏',replyTo:'小春春',text:'是啊'}] },
@@ -738,6 +741,39 @@
         { title: '许我半夏', content: '旅行的意义 🌏✈️ 探索未知的世界，遇见更好的自己', time: '昨天', date: '2025.11.11', images: ['https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400','https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400','https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400','https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=400','https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=400','https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400'], likes: ['许我半夏'], comments: [{user:'我',text:'好羡慕啊！'}] },
         { title: '许我半夏', content: '读书是一种享受 📚', time: '2天前', date: '2025.11.10', images: ['https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400','https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400'], likes: ['许我半夏','小春春'], comments: [] }
     ];
+
+    // ==================== 访客身份与工具 ====================
+
+    // XSS 转义：点赞昵称、评论内容等用户输入渲染前必须转义
+    function escapeHtml(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function(ch) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+        });
+    }
+
+    // 访客标识（localStorage 生成，点赞按此去重）
+    function getVisitorId() {
+        var vid = localStorage.getItem('wechat_visitor_id');
+        if (!vid) {
+            vid = 'v-' + (crypto.randomUUID ? crypto.randomUUID() : Date.now() + '-' + Math.random().toString(36).slice(2));
+            localStorage.setItem('wechat_visitor_id', vid);
+        }
+        return vid;
+    }
+
+    function getNickname() { return localStorage.getItem('wechat_nickname') || '访客'; }
+
+    // 我点赞过的动态 id 列表（用于显示「取消」和避免重复点赞）
+    function getLikedSet() {
+        try { return JSON.parse(localStorage.getItem('wechat_liked_ids') || '[]'); } catch { return []; }
+    }
+    function setLiked(id, liked) {
+        var set = getLikedSet();
+        var i = set.indexOf(String(id));
+        if (liked && i === -1) { set.push(String(id)); }
+        if (!liked && i > -1) { set.splice(i, 1); }
+        localStorage.setItem('wechat_liked_ids', JSON.stringify(set));
+    }
 
     // 渲染单条朋友圈
     function renderMoment(item) {
@@ -752,30 +788,44 @@
             imagesHtml += '</div>';
         }
 
-        // 点赞列表
-        var likes = item.likes || [];
+        var dbId = item.id != null ? String(item.id) : '';
+
+        // 点赞列表（静态 subtitle 昵称 + 后端存储的点赞）
+        var likes = (item.likes || []).slice();
         if (typeof item.subtitle === 'string' && item.subtitle) {
-            likes = item.subtitle.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+            item.subtitle.split(',').map(function(s) { return s.trim(); }).filter(Boolean).forEach(function(name) {
+                if (likes.indexOf(name) === -1) likes.push(name);
+            });
         }
+        if (Array.isArray(item._likes)) {
+            item._likes.forEach(function(name) {
+                if (likes.indexOf(name) === -1) likes.push(name);
+            });
+        }
+        var liked = dbId && getLikedSet().indexOf(dbId) > -1;
+        if (dbId) STATIC_LIKES[dbId] = likes;
         var likesHtml = '';
         if (likes.length > 0) {
+            var displayLikes = liked ? ['你'].concat(likes.filter(function(n) { return n !== getNickname(); })) : likes;
             likesHtml = '<div class="likes"><span class="likes-icon"><i class="fa fa-heart"></i></span><div class="likes-list">';
-            likes.forEach(function(name, i) {
-                likesHtml += (i > 0 ? '，' : '') + '<span class="like-user">' + name + '</span>';
+            displayLikes.forEach(function(name, i) {
+                likesHtml += (i > 0 ? '，' : '') + '<span class="like-user">' + escapeHtml(name) + '</span>';
             });
             likesHtml += '</div></div>';
         }
 
-        // 评论列表
-        var comments = item.comments || item.tags || [];
+        // 评论列表（后端存储的评论对象，兼容字符串标签）
+        var comments = Array.isArray(item._comments) ? item._comments : (item.comments || item.tags || []);
         var commentsHtml = '';
         if (comments.length > 0) {
             commentsHtml = '<div class="comments">';
             comments.forEach(function(c) {
-                if (c.replyTo) {
-                    commentsHtml += '<div class="comment-item"><span class="comment-user">' + c.user + '</span> 回复 <span class="comment-reply-to">' + c.replyTo + '</span>：<span class="comment-text">' + c.text + '</span></div>';
+                if (typeof c === 'string') {
+                    commentsHtml += '<div class="comment-item"><span class="comment-text">' + escapeHtml(c) + '</span></div>';
+                } else if (c.replyTo) {
+                    commentsHtml += '<div class="comment-item"><span class="comment-user">' + escapeHtml(c.user) + '</span> 回复 <span class="comment-reply-to">' + escapeHtml(c.replyTo) + '</span>：<span class="comment-text">' + escapeHtml(c.text) + '</span></div>';
                 } else {
-                    commentsHtml += '<div class="comment-item"><span class="comment-user">' + c.user + '</span>：<span class="comment-text">' + c.text + '</span></div>';
+                    commentsHtml += '<div class="comment-item"><span class="comment-user">' + escapeHtml(c.user) + '</span>：<span class="comment-text">' + escapeHtml(c.text) + '</span></div>';
                 }
             });
             commentsHtml += '</div>';
@@ -783,19 +833,19 @@
 
         var interactionsHtml = (likesHtml || commentsHtml) ? '<div class="interactions">' + likesHtml + commentsHtml + '</div>' : '';
 
-        return '<div class="moment-item">' +
+        return '<div class="moment-item"' + (dbId ? ' data-id="' + dbId + '"' : '') + '>' +
             '<div class="moment-header">' +
             '<img src="' + DEFAULT_AVATAR + '" alt="头像" class="moment-avatar">' +
             '<div class="moment-content-wrapper">' +
-            '<div class="moment-username">' + (item.title || '许我半夏') + '</div>' +
+            '<div class="moment-username">' + escapeHtml(item.title || '许我半夏') + '</div>' +
             '<div class="moment-text">' + (item.content || '') + '</div>' +
             imagesHtml +
             '<div class="moment-footer">' +
-            '<div class="moment-time"><i class="fa fa-clock-o"></i> ' + (item.time || '') + '</div>' +
+            '<div class="moment-time"><i class="fa fa-clock-o"></i> ' + escapeHtml(item.time || '') + '</div>' +
             '<div class="moment-actions">' +
             '<button class="action-btn" onclick="toggleActionMenu(this)"><i class="fa fa-ellipsis-h"></i></button>' +
             '<div class="action-menu">' +
-            '<div class="action-menu-item" onclick="likePost(this)"><i class="fa fa-thumbs-up"></i> 点赞</div>' +
+            '<div class="action-menu-item action-like" onclick="likePost(this)"><i class="fa fa-thumbs-up"></i> ' + (liked ? '取消' : '点赞') + '</div>' +
             '<div class="action-menu-item" onclick="commentPost(this)"><i class="fa fa-comment"></i> 评论</div>' +
             '</div></div></div>' +
             interactionsHtml +
@@ -809,6 +859,18 @@
             var res = await fetch(apiUrl('/api/public/wechat'));
             if (!res.ok) throw new Error('API请求失败');
             var backendMoments = await res.json();
+            // 拉取点赞 / 评论存储数据，按 content_id 合并进对应动态
+            var interactions = null;
+            try {
+                var iRes = await fetch(apiUrl('/api/public/wechat/interactions'));
+                if (iRes.ok) interactions = await iRes.json();
+            } catch (e) { /* 互动数据拉取失败不影响动态展示 */ }
+            (backendMoments || []).forEach(function(m) {
+                if (interactions && m.id != null) {
+                    m._likes = interactions.likes[String(m.id)] || [];
+                    m._comments = interactions.comments[String(m.id)] || [];
+                }
+            });
             var moments = (backendMoments && backendMoments.length > 0)
                 ? backendMoments.concat(FALLBACK_MOMENTS)
                 : FALLBACK_MOMENTS;
@@ -867,72 +929,148 @@
         });
     }
 
-    // 点赞功能
-    function likePost(element) {
+    // 点赞功能：有后端 id 的动态持久化到数据库，可点赞/取消；兜底数据仅本地展示
+    async function likePost(element) {
         var momentItem = element.closest('.moment-item');
-        var contentWrapper = momentItem.querySelector('.moment-content-wrapper');
-        var interactions = contentWrapper.querySelector('.interactions');
+        var dbId = momentItem.getAttribute('data-id');
+        element.closest('.action-menu').classList.remove('show');
 
-        if (!interactions) {
-            interactions = document.createElement('div');
-            interactions.className = 'interactions';
-            contentWrapper.appendChild(interactions);
+        if (!dbId) { localLike(momentItem); return; }
+
+        var likedSet = getLikedSet();
+        var wantLike = likedSet.indexOf(dbId) === -1;
+        try {
+            var res = await fetch(apiUrl('/api/public/wechat/' + dbId + '/like'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ visitorId: getVisitorId(), nickname: getNickname(), liked: wantLike })
+            });
+            var data = await res.json();
+            if (!res.ok) { alert(data.error || '操作失败，请稍后再试'); return; }
+            setLiked(dbId, data.liked);
+            updateLikesDisplay(momentItem, data.likes, data.liked);
+        } catch (e) {
+            alert('网络异常，稍后再试');
         }
+    }
 
+    // 兜底数据（无后端 id）的本地点赞
+    function localLike(momentItem) {
+        var interactions = ensureInteractions(momentItem);
         var likes = interactions.querySelector('.likes');
-
         if (!likes) {
             likes = document.createElement('div');
             likes.className = 'likes';
             likes.innerHTML = '<span class="likes-icon"><i class="fa fa-heart"></i></span><div class="likes-list"></div>';
             interactions.insertBefore(likes, interactions.firstChild);
         }
-
         var likesList = likes.querySelector('.likes-list');
-        var currentLikes = likesList.innerHTML;
-
-        if (currentLikes.includes('你')) {
+        if (likesList.textContent.indexOf('你') > -1) {
             alert('你已经点过赞了');
         } else {
-            if (currentLikes) {
-                likesList.innerHTML = '<span class="like-user">你</span>，' + currentLikes;
+            likesList.innerHTML = likesList.innerHTML
+                ? '<span class="like-user">你</span>，' + likesList.innerHTML
+                : '<span class="like-user">你</span>';
+        }
+    }
+
+    // 点赞成功后刷新点赞显示（含「取消/点赞」菜单项文案）
+    function updateLikesDisplay(momentItem, serverLikes, liked) {
+        var dbId = momentItem.getAttribute('data-id');
+        // 合并静态昵称（subtitle）与后端点赞
+        var names = (STATIC_LIKES[dbId] || []).slice();
+        var own = getNickname();
+        (serverLikes || []).forEach(function(n) {
+            if (liked && n === own) return; // 自己的赞以「你」显示
+            if (names.indexOf(n) === -1) names.push(n);
+        });
+        STATIC_LIKES[dbId] = names;
+
+        var interactions = ensureInteractions(momentItem);
+        var likes = interactions.querySelector('.likes');
+        if (!names.length && !liked) {
+            if (likes) likes.remove();
+        } else {
+            var displayLikes = liked ? ['你'].concat(names.filter(function(n) { return n !== own; })) : names;
+            var html = '<span class="likes-icon"><i class="fa fa-heart"></i></span><div class="likes-list">';
+            displayLikes.forEach(function(name, i) {
+                html += (i > 0 ? '，' : '') + '<span class="like-user">' + escapeHtml(name) + '</span>';
+            });
+            html += '</div>';
+            if (likes) {
+                likes.innerHTML = html;
             } else {
-                likesList.innerHTML = '<span class="like-user">你</span>';
+                likes = document.createElement('div');
+                likes.className = 'likes';
+                likes.innerHTML = html;
+                interactions.insertBefore(likes, interactions.firstChild);
             }
         }
 
-        element.closest('.action-menu').classList.remove('show');
+        var likeItem = momentItem.querySelector('.action-like');
+        if (likeItem) likeItem.innerHTML = '<i class="fa fa-thumbs-up"></i> ' + (liked ? '取消' : '点赞');
     }
 
-    // 评论功能
-    function commentPost(element) {
-        var text = prompt('请输入评论内容：');
-        if (!text) return;
-
-        var momentItem = element.closest('.moment-item');
+    // 确保动态卡片存在互动区域
+    function ensureInteractions(momentItem) {
         var contentWrapper = momentItem.querySelector('.moment-content-wrapper');
         var interactions = contentWrapper.querySelector('.interactions');
-
         if (!interactions) {
             interactions = document.createElement('div');
             interactions.className = 'interactions';
             contentWrapper.appendChild(interactions);
         }
+        return interactions;
+    }
 
+    // 评论功能：有后端 id 的动态持久化到数据库；兜底数据仅本地展示
+    async function commentPost(element) {
+        var momentItem = element.closest('.moment-item');
+        var dbId = momentItem.getAttribute('data-id');
+        element.closest('.action-menu').classList.remove('show');
+
+        var text = prompt('请输入评论内容（最多 100 字）：');
+        if (!text || !text.trim()) return;
+        text = text.trim().slice(0, 100);
+
+        if (!dbId) { localComment(momentItem, '你', text); return; }
+
+        // 首次评论时询问昵称并记住
+        var nickname = localStorage.getItem('wechat_nickname');
+        if (!nickname) {
+            nickname = prompt('第一次评论，先给自己起个昵称吧（最多 20 字）：', '微信用户');
+            if (nickname === null) return;
+            nickname = nickname.trim().slice(0, 20) || '微信用户';
+            localStorage.setItem('wechat_nickname', nickname);
+        }
+
+        try {
+            var res = await fetch(apiUrl('/api/public/wechat/' + dbId + '/comment'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ visitorId: getVisitorId(), nickname: nickname, text: text })
+            });
+            var data = await res.json();
+            if (!res.ok) { alert(data.error || '评论失败，请稍后再试'); return; }
+            localComment(momentItem, nickname, text);
+        } catch (e) {
+            alert('网络异常，稍后再试');
+        }
+    }
+
+    // 评论成功后追加显示（服务端已校验，本地同样转义展示）
+    function localComment(momentItem, user, text) {
+        var interactions = ensureInteractions(momentItem);
         var comments = interactions.querySelector('.comments');
-
         if (!comments) {
             comments = document.createElement('div');
             comments.className = 'comments';
             interactions.appendChild(comments);
         }
-
         var newComment = document.createElement('div');
         newComment.className = 'comment-item';
-        newComment.innerHTML = '<span class="comment-user">你</span>：<span class="comment-text">' + text + '</span>';
+        newComment.innerHTML = '<span class="comment-user">' + escapeHtml(user) + '</span>：<span class="comment-text">' + escapeHtml(text) + '</span>';
         comments.appendChild(newComment);
-
-        element.closest('.action-menu').classList.remove('show');
     }
 
     // 显示图片预览

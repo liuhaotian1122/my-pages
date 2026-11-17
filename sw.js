@@ -10,7 +10,7 @@
  * 更新缓存：修改本文件后把 VERSION 号 +1，旧缓存会在 activate 阶段自动清理。
  */
 
-const VERSION = 'v3';
+const VERSION = 'v4';
 const PRECACHE = `my-pages-precache-${VERSION}`;
 const RUNTIME = `my-pages-runtime-${VERSION}`;
 
