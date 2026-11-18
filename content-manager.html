@@ -829,11 +829,15 @@
                     <div class="stat-number" id="gameCount">0</div>
                     <div class="stat-label">游戏记录</div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="wechatCount">0</div>
-                    <div class="stat-label">朋友圈</div>
-                </div>
-            </div>
+<div class="stat-item">
+<div class="stat-number" id="wechatCount">0</div>
+<div class="stat-label">朋友圈</div>
+</div>
+<div class="stat-item">
+<div class="stat-number" id="galleryCount">0</div>
+<div class="stat-label">照片墙</div>
+</div>
+</div>
             <div class="tab-nav">
                 <button class="tab-button active" onclick="switchTab('work')">💼 工作管理</button>
                 <button class="tab-button" onclick="switchTab('experience')">🎯 经历管理</button>
@@ -843,6 +847,7 @@
                 <button class="tab-button" onclick="switchTab('blog')">📚 博客管理</button>
                 <button class="tab-button" onclick="switchTab('game')">🎮 游戏管理</button>
                 <button class="tab-button" onclick="switchTab('wechat')">💬 朋友圈管理</button>
+                <button class="tab-button" onclick="switchTab('gallery')">📷 照片墙管理</button>
             </div>
             <div id="work-tab" class="tab-content active">
                 <form id="workForm">
@@ -1077,6 +1082,108 @@
                     </div>
                 </form>
                 <div class="data-list" id="wechatList"></div>
+            </div>
+            <div id="gallery-tab" class="tab-content">
+                <div class="gallery-manage-header">
+                    <h3 style="margin-bottom: 16px; color: #333;">📷 Secret Base 照片墙管理</h3>
+                    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">上传的照片将显示在 Secret Base 页面的照片墙区域</p>
+                </div>
+                <form id="galleryForm">
+                    <div class="form-group"><label>照片标题 <span style="color:#999;font-weight:normal;">（可选，用于描述这张照片）</span></label><input type="text" id="galleryTitle" placeholder="例如：我们的第一次旅行"></div>
+                    <div class="form-group"><label>照片描述 <span style="color:#999;font-weight:normal;">（可选）</span></label><textarea id="galleryContent" rows="2" placeholder="记录这一刻的故事..."></textarea></div>
+                    <div class="form-group">
+                        <label>上传照片</label>
+                        <input type="text" id="galleryImages" placeholder="或手动输入图片链接（每行一个）" style="margin-bottom: 8px;">
+                    </div>
+                    <div class="form-group">
+                        <label>排序权重 <span style="color:#999;font-weight:normal;">（数字越大越靠前，默认0）</span></label>
+                        <input type="number" id="gallerySortOrder" value="0" min="0" max="999" style="width: 120px;">
+                    </div>
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">📷 添加照片</button>
+                        <button type="button" class="btn btn-danger" onclick="clearData('gallery')">清空表单</button>
+                    </div>
+                </form>
+                <div class="gallery-manage-list" id="galleryList"></div>
+
+                <!-- 照片墙预览样式 -->
+                <style>
+                    .gallery-manage-header { margin-bottom: 20px; }
+                    .gallery-manage-list { margin-top: 24px; }
+                    .gallery-item-card {
+                        display: flex;
+                        align-items: center;
+                        gap: 16px;
+                        background: #fafafa;
+                        border-radius: 10px;
+                        padding: 12px 16px;
+                        margin-bottom: 12px;
+                        border: 1px solid #eee;
+                        transition: all 0.2s ease;
+                    }
+                    .gallery-item-card:hover {
+                        border-color: #e1652f;
+                        box-shadow: 0 2px 8px rgba(225,101,47,0.1);
+                    }
+                    .gallery-item-thumb {
+                        width: 80px;
+                        height: 80px;
+                        border-radius: 8px;
+                        object-fit: cover;
+                        background: #eee;
+                        flex-shrink: 0;
+                    }
+                    .gallery-item-info {
+                        flex: 1;
+                        min-width: 0;
+                    }
+                    .gallery-item-title {
+                        font-weight: 600;
+                        color: #333;
+                        font-size: 14px;
+                        margin-bottom: 4px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                    .gallery-item-desc {
+                        font-size: 12px;
+                        color: #888;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+                    .gallery-item-actions {
+                        display: flex;
+                        gap: 6px;
+                        flex-shrink: 0;
+                    }
+                    .gallery-item-actions button {
+                        padding: 5px 12px;
+                        font-size: 12px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        border: 1px solid #ddd;
+                        background: #fff;
+                        color: #666;
+                        transition: all 0.2s ease;
+                    }
+                    .gallery-item-actions button:hover { border-color: #e1652f; color: #e1652f; }
+                    .gallery-item-actions button.btn-delete:hover { background: #e1652f; color: #fff; border-color: #e1652f; }
+                    .gallery-empty-tip {
+                        text-align: center;
+                        padding: 40px 20px;
+                        color: #999;
+                        font-size: 14px;
+                    }
+                    .gallery-empty-tip::before {
+                        content: '📷';
+                        display: block;
+                        font-size: 48px;
+                        margin-bottom: 12px;
+                        opacity: 0.3;
+                    }
+                </style>
             </div>
         </div>
     </div>
@@ -1328,7 +1435,7 @@
          */
         async function loadAllData() {
             try {
-                const [work, experience, food, suosui, update, blog, game, wechat] = await Promise.all([
+                const [work, experience, food, suosui, update, blog, game, wechat, gallery] = await Promise.all([
                     apiRequest('/api/content/work').catch(() => []),
                     apiRequest('/api/content/experience').catch(() => []),
                     apiRequest('/api/content/food').catch(() => []),
@@ -1336,9 +1443,10 @@
                     apiRequest('/api/content/update').catch(() => []),
                     apiRequest('/api/content/blog').catch(() => []),
                     apiRequest('/api/content/game').catch(() => []),
-                    apiRequest('/api/content/wechat').catch(() => [])
+                    apiRequest('/api/content/wechat').catch(() => []),
+                    apiRequest('/api/content/gallery').catch(() => [])
                 ]);
-                data = { work, experience, food, suosui, update, blog, game, wechat };
+                data = { work, experience, food, suosui, update, blog, game, wechat, gallery };
                 updateStats();
                 renderList(currentTab);
             } catch (error) {
@@ -1411,6 +1519,12 @@
                     document.getElementById('wechatLikes').value = '';
                     document.getElementById('wechatComments').value = '';
                     break;
+                case 'gallery':
+                    document.getElementById('galleryTitle').value = '';
+                    document.getElementById('galleryContent').value = '';
+                    document.getElementById('galleryImages').value = '';
+                    document.getElementById('gallerySortOrder').value = '0';
+                    break;
             }
         }
 
@@ -1433,7 +1547,7 @@
             const targetTab = document.getElementById(tabName + '-tab');
             if (targetTab) targetTab.classList.add('active');
             const buttons = document.querySelectorAll('.tab-button');
-            const tabOrder = ['work', 'experience', 'food', 'suosui', 'update', 'blog', 'game', 'wechat'];
+            const tabOrder = ['work', 'experience', 'food', 'suosui', 'update', 'blog', 'game', 'wechat', 'gallery'];
             const tabIndex = tabOrder.indexOf(tabName);
             if (tabIndex !== -1 && buttons[tabIndex]) buttons[tabIndex].classList.add('active');
             currentTab = tabName;
@@ -1450,6 +1564,7 @@
             document.getElementById('blogCount').textContent = data.blog.length;
             document.getElementById('gameCount').textContent = data.game.length;
             document.getElementById('wechatCount').textContent = data.wechat.length;
+            document.getElementById('galleryCount').textContent = data.gallery.length;
         }
 
         function renderList(type) {
@@ -1508,6 +1623,11 @@
                         ? item.images.length + '张图片'
                         : '无';
                     return '<p><strong>发布者:</strong> ' + (item.title || '无') + '</p><p><strong>动态内容:</strong> ' + (item.content || '无') + '</p><p><strong>时间:</strong> ' + (item.time || '无') + '</p><p><strong>日期:</strong> ' + (item.date || '无') + '</p><p><strong>图片:</strong> ' + wechatImageInfo + '</p><p><strong>点赞:</strong> ' + likesStr + '</p><p><strong>评论:</strong> ' + commentsStr + '</p>' + statusBadge;
+                case 'gallery':
+                    var galleryImg = item.images && item.images[0]
+                        ? '<img src="' + item.images[0] + '" style="width:60px;height:60px;border-radius:8px;object-fit:cover;vertical-align:middle;" onerror="this.src=\'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23eee%22 width=%22100%22 height=%22100%22/><text x=%2250%22 y=%2255%22 text-anchor=%22middle%22 fill=%22%23999%22 font-size=%2240%22>📷</text></svg>\'">'
+                        : '';
+                    return '<div class="gallery-item-card" style="margin:0;padding:8px 12px;background:#fff;"><span class="gallery-item-thumb" style="display:inline-block;vertical-align:middle;">' + galleryImg + '</span><span style="display:inline-block;vertical-align:middle;margin-left:12px;"><strong>' + (item.title || '未命名照片') + '</strong><br><small style="color:#888;">' + (item.content ? item.content.substring(0, 50) : '无描述') + (item.content && item.content.length > 50 ? '...' : '') + '</small><br><small style="color:#aaa;">排序: ' + (item.sort_order || 0) + '</small></span>' + statusBadge + '</div>';
                 default: return '<p>未知内容</p>';
             }
         }
@@ -1938,6 +2058,31 @@
                     showNotification('朋友圈动态添加成功！');
                 }
                 renderList('wechat');
+                updateStats();
+            } catch (error) {
+                showNotification('操作失败：' + error.message, 'error');
+            }
+        });
+
+        // ========== 照片墙表单提交 ==========
+        document.getElementById('galleryForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var imagesVal = document.getElementById('galleryImages').value.trim();
+            var images = imagesVal ? imagesVal.split('\n').filter(function (u) { return u.trim(); }) : [];
+            var body = {
+                title: document.getElementById('galleryTitle').value || '照片 ' + new Date().toLocaleDateString(),
+                content: document.getElementById('galleryContent').value,
+                images: images,
+                sort_order: parseInt(document.getElementById('gallerySortOrder').value) || 0,
+                status: 'published'
+            };
+            try {
+                var created = await apiRequest('/api/content/gallery', 'POST', body);
+                data.gallery.unshift(created);
+                this.reset();
+                setFormDefaults('gallery');
+                showNotification('📷 照片添加成功！');
+                renderList('gallery');
                 updateStats();
             } catch (error) {
                 showNotification('操作失败：' + error.message, 'error');
