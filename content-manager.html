@@ -2580,13 +2580,14 @@
         ].join('');
         document.head.appendChild(css);
 
-        // 五个模块的图片字段
+        // 六个模块的图片字段
         var FIELDS = [
             { el: 'workImages', multi: true },        // 工作管理
             { el: 'experienceImages', multi: true },  // 经历管理
             { el: 'foodImages', multi: true },        // 美食管理
             { el: 'gameIcon', multi: false },         // 游戏管理（单个图标）
-            { el: 'wechatImages', multi: true }       // 朋友圈管理
+            { el: 'wechatImages', multi: true },      // 朋友圈管理
+            { el: 'galleryImages', multi: true }      // 照片墙管理
         ];
         var HINT_DEFAULT = '支持 jpg/png/gif/webp，单张 ≤10MB，上传后自动填入链接，点击缩略图可删除';
 
