@@ -1091,10 +1091,7 @@
                 <form id="galleryForm">
                     <div class="form-group"><label>照片标题 <span style="color:#999;font-weight:normal;">（可选，用于描述这张照片）</span></label><input type="text" id="galleryTitle" placeholder="例如：我们的第一次旅行"></div>
                     <div class="form-group"><label>照片描述 <span style="color:#999;font-weight:normal;">（可选）</span></label><textarea id="galleryContent" rows="2" placeholder="记录这一刻的故事..."></textarea></div>
-                    <div class="form-group">
-                        <label>上传照片</label>
-                        <input type="text" id="galleryImages" placeholder="或手动输入图片链接（每行一个）" style="margin-bottom: 8px;">
-                    </div>
+                    <div class="form-group"><label>上传照片</label><textarea id="galleryImages" rows="2" placeholder="或手动输入图片链接，每行一个"></textarea></div>
                     <div class="form-group">
                         <label>排序权重 <span style="color:#999;font-weight:normal;">（数字越大越靠前，默认0）</span></label>
                         <input type="number" id="gallerySortOrder" value="0" min="0" max="999" style="width: 120px;">
@@ -1211,12 +1208,12 @@
 <script src="js/api-config.js"></script>
 <script>
 // ========== 全局状态 ==========
-        let data = { work: [], experience: [], food: [], suosui: [], update: [], blog: [], game: [], wechat: [] };
+        let data = { work: [], experience: [], food: [], suosui: [], update: [], blog: [], game: [], wechat: [], gallery: [] };
         let currentTab = 'work';
         let authToken = localStorage.getItem('authToken') || '';
 
         // 各模块编辑状态：editingIds[type] = 正在编辑的记录 id，null 表示新建模式
-        let editingIds = { work: null, experience: null, food: null, suosui: null, update: null, blog: null, game: null, wechat: null };
+        let editingIds = { work: null, experience: null, food: null, suosui: null, update: null, blog: null, game: null, wechat: null, gallery: null };
 
         // 各模块表单字段配置（用于编辑时填充表单和提交时收集数据）
         const formFieldConfig = {
@@ -1302,6 +1299,17 @@
                     images: { el: 'wechatImages', type: 'imagelinks' },
                     subtitle: 'wechatLikes',
                     tags: { el: 'wechatComments', type: 'comments' }
+                }
+            },
+            gallery: {
+                formId: 'galleryForm',
+                submitBtnText: '📷 添加照片',
+                editBtnText: '💾 保存修改',
+                fields: {
+                    title: 'galleryTitle',
+                    content: 'galleryContent',
+                    images: { el: 'galleryImages', type: 'imagelinks' },
+                    sort_order: 'gallerySortOrder'
                 }
             }
         };
@@ -1729,7 +1737,7 @@
          * 清空数据 —— 逐条删除所有记录
          */
         async function clearData(type) {
-            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客', 'game': '游戏', 'wechat': '朋友圈' };
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客', 'game': '游戏', 'wechat': '朋友圈', 'gallery': '照片墙' };
             if (!confirm('确定要清空所有' + typeNames[type] + '数据吗？此操作不可恢复！')) return;
             try {
                 const promises = data[type].map(item =>
@@ -2000,7 +2008,7 @@
         });
 
         // ========== 阻止表单回车键自动提交（只能通过点击按钮提交） ==========
-        ['workForm', 'experienceForm', 'foodForm', 'suosuiForm', 'updateForm', 'blogForm', 'gameForm', 'wechatForm'].forEach(function(formId) {
+        ['workForm', 'experienceForm', 'foodForm', 'suosuiForm', 'updateForm', 'blogForm', 'gameForm', 'wechatForm', 'galleryForm'].forEach(function(formId) {
             var form = document.getElementById(formId);
             if (form) {
                 form.addEventListener('keydown', function(e) {
@@ -2077,11 +2085,21 @@
                 status: 'published'
             };
             try {
-                var created = await apiRequest('/api/content/gallery', 'POST', body);
-                data.gallery.unshift(created);
-                this.reset();
-                setFormDefaults('gallery');
-                showNotification('📷 照片添加成功！');
+                if (editingIds.gallery) {
+                    // 编辑模式：PUT 更新
+                    var updated = await apiRequest('/api/content/gallery/' + editingIds.gallery, 'PUT', body);
+                    var idx = data.gallery.findIndex(it => it.id === editingIds.gallery);
+                    if (idx !== -1) data.gallery[idx] = updated;
+                    cancelEdit('gallery');
+                    showNotification('📷 照片修改成功！');
+                } else {
+                    // 新建模式：POST
+                    var created = await apiRequest('/api/content/gallery', 'POST', body);
+                    data.gallery.unshift(created);
+                    this.reset();
+                    setFormDefaults('gallery');
+                    showNotification('📷 照片添加成功！');
+                }
                 renderList('gallery');
                 updateStats();
             } catch (error) {
@@ -2379,7 +2397,7 @@
         }
 
         function getTypeName(type) {
-            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客', 'game': '游戏', 'wechat': '朋友圈' };
+            const typeNames = { 'work': '工作', 'experience': '经历', 'food': '美食', 'suosui': '琐碎', 'update': '更新', 'blog': '博客', 'game': '游戏', 'wechat': '朋友圈', 'gallery': '照片墙' };
             return typeNames[type] || type;
         }
 
