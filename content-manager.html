@@ -2820,7 +2820,7 @@
                 var files = Array.prototype.slice.call(input.files || []);
                 input.value = '';
                 if (!files.length) return;
-                if (f.multi) files = files.slice(0, 10);
+                if (f.multi) files = files.slice(0, 20);
                 doUpload(f, files);
             });
             el.addEventListener('input', function () { renderPreviews(f); });
