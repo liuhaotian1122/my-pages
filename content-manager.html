@@ -2811,6 +2811,21 @@
             });
         }
 
+        // 通过后端 Worker 解析原图直链（页面 og:image，即官网"直接链接"）
+        function resolvePostimgDirect(pageUrl) {
+            return fetch(apiUrl('/api/public/postimg-resolve?url=' + encodeURIComponent(pageUrl)))
+                .then(function (res) {
+                    if (!res.ok) throw new Error('resolve http ' + res.status);
+                    return res.json();
+                })
+                .then(function (data) {
+                    if (!data || !data.url || !/^https:\/\/i\.postimg\.cc\//.test(data.url)) {
+                        throw new Error('resolve empty');
+                    }
+                    return data.url;
+                });
+        }
+
         function uploadToPostimg(file) {
             if (file.size > PI_MAX_SIZE) {
                 return Promise.reject(new Error('文件超过 32MB 限制'));
@@ -2834,10 +2849,14 @@
                     var msg = (r.data && r.data.error && r.data.error.message) || '上传失败';
                     throw new Error(msg);
                 }
-                var direct = postimgDirectLink(r.data.url, sanitizeFilename(file.name));
-                // 直链校验失败时退回 postimg 页面链接
-                return verifyImage(direct).then(function (ok) {
-                    return ok ? direct : r.data.url;
+                // 上传接口返回的是图片页地址，其页面 id 实际对应缩略图（实测 180px）；
+                // 原图直链只能从图片页 og:image 取得（跨域读不到，须走后端解析）
+                return resolvePostimgDirect(r.data.url).catch(function () {
+                    // 后端解析不可用时退回推导链接（缩略图），保证功能不中断
+                    var fallback = postimgDirectLink(r.data.url, sanitizeFilename(file.name));
+                    return verifyImage(fallback).then(function (ok) {
+                        return ok ? fallback : r.data.url;
+                    });
                 });
             });
         }
