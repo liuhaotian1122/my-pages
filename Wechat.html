@@ -956,7 +956,7 @@
                 if (entry.isIntersecting) {
                     setTimeout(function() {
                         entry.target.classList.add('show');
-                    }, Array.from(items).indexOf(entry.target) * 80);
+                    }, Math.min(Array.from(items).indexOf(entry.target) * 80, 320)); // 渐显有上限，避免后面条目等待过久
                     observer.unobserve(entry.target);
                 }
             });
