@@ -2610,7 +2610,7 @@
             { el: 'wechatImages', multi: true },      // 朋友圈管理
             { el: 'galleryImages', multi: true }      // 照片墙管理
         ];
-        var HINT_DEFAULT = '支持 jpg/png/gif/webp，单张 ≤10MB，上传后自动填入链接，点击缩略图可删除';
+        var HINT_DEFAULT = '支持 jpg/png/gif/webp，单张 ≤32MB，上传后自动填入链接，点击缩略图可删除';
 
         function getUrls(field) {
             var v = field.el.value || '';
@@ -2907,6 +2907,9 @@
                 });
             }
 
+            // R2 本地上传按钮暂时隐藏（改回 true 即可恢复）
+            var R2_UPLOAD_ENABLED = false;
+
             var input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/*';
@@ -2925,11 +2928,6 @@
             f.piBtn.className = 'cm-pi-btn';
             f.piBtn.textContent = f.multi ? '🌐 Postimages 图床直传（可多选）' : '🌐 Postimages 图床直传';
 
-            f.btn = document.createElement('button');
-            f.btn.type = 'button';
-            f.btn.className = 'cm-upload-btn';
-            f.btn.textContent = f.multi ? '📷 本地上传（可多选）' : '📷 上传图标';
-
             f.hint = document.createElement('span');
             f.hint.className = 'cm-upload-hint';
             f.hint.textContent = HINT_DEFAULT;
@@ -2938,22 +2936,30 @@
             f.previews.className = 'cm-upload-previews';
 
             var ui = document.createElement('div');
-            ui.appendChild(input);
-            ui.appendChild(f.btn);
+            if (R2_UPLOAD_ENABLED) {
+                f.btn = document.createElement('button');
+                f.btn.type = 'button';
+                f.btn.className = 'cm-upload-btn';
+                f.btn.textContent = f.multi ? '📷 本地上传（可多选）' : '📷 上传图标';
+                ui.appendChild(input);
+                ui.appendChild(f.btn);
+            }
             ui.appendChild(piInput);
             ui.appendChild(f.piBtn);
             ui.appendChild(f.hint);
             ui.appendChild(f.previews);
             el.parentNode.appendChild(ui); // 追加到同一 form-group 内
 
-            f.btn.addEventListener('click', function () { input.click(); });
-            input.addEventListener('change', function () {
-                var files = Array.prototype.slice.call(input.files || []);
-                input.value = '';
-                if (!files.length) return;
-                if (f.multi) files = files.slice(0, 20);
-                doUpload(f, files);
-            });
+            if (R2_UPLOAD_ENABLED) {
+                f.btn.addEventListener('click', function () { input.click(); });
+                input.addEventListener('change', function () {
+                    var files = Array.prototype.slice.call(input.files || []);
+                    input.value = '';
+                    if (!files.length) return;
+                    if (f.multi) files = files.slice(0, 20);
+                    doUpload(f, files);
+                });
+            }
             f.piBtn.addEventListener('click', function () { piInput.click(); });
             piInput.addEventListener('change', function () {
                 var files = Array.prototype.slice.call(piInput.files || []);
