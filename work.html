@@ -349,6 +349,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             z-index: 10;
+            transition: opacity 0.3s ease;
         }
 
         /* 导航按钮 */
@@ -458,8 +459,8 @@
             border-color: #fff;
         }
 
-        /* 加载动画 */
-        .loading {
+        /* 灯箱加载动画（使用独立类名避免与画廊骨架屏 .loading 冲突） */
+        .viewer-loading {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -467,6 +468,8 @@
             color: white;
             font-size: 18px;
             z-index: 50;
+            display: none;
+            text-align: center;
         }
 
         .spinner {
@@ -990,7 +993,7 @@
 
     <!-- 图片查看器模态框 -->
     <div class="image-viewer" id="imageViewer">
-        <div class="loading" id="imageLoading">
+        <div class="viewer-loading" id="imageLoading">
             <div class="spinner"></div>
             <div>加载中...</div>
         </div>
@@ -1493,19 +1496,25 @@
 
                 this.pagination.innerHTML = paginationHTML;
 
-                // 绑定分页点击事件
-                this.pagination.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    if (e.target.tagName === 'A' && e.target.dataset.page) {
-                        this.currentPage = parseInt(e.target.dataset.page);
-                        this.render();
+                // 使用事件委托绑定分页点击事件（只绑定一次）
+                if (!this._paginationBound) {
+                    this.pagination.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        if (e.target.tagName === 'A' && e.target.dataset.page) {
+                            this.currentPage = parseInt(e.target.dataset.page);
+                            this.render();
 
-                        // 滚动到顶部
-                        document.querySelector('header').scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    }
-                });
+                            // 滚动到顶部
+                            const header = document.querySelector('header');
+                            if (header) {
+                                header.scrollIntoView({ behavior: 'smooth' });
+                            } else {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }
+                        }
+                    });
+                    this._paginationBound = true;
+                }
             }
 
             renderPageInfo() {
@@ -1522,7 +1531,8 @@
             }
 
             reinitImageViewer() {
-                // 重新绑定图片点击事件
+                // 图片点击事件已通过事件委托在 document 上绑定，无需重复绑定
+                // 此方法保留用于将来扩展（如需在渲染后做额外处理）
                 if (window.imageViewer) {
                     window.imageViewer.bindImageEvents();
                 }
@@ -1588,9 +1598,9 @@
                 // 只初始化一次的事件监听器
                 if (!this.initialized) {
                     // 导航按钮事件
-                    this.prevBtn.addEventListener('click', () => this.showPrevious());
-                    this.nextBtn.addEventListener('click', () => this.showNext());
-                    this.closeBtn.addEventListener('click', () => this.closeViewer());
+                    this.prevBtn.addEventListener('click', (e) => { e.stopPropagation(); this.showPrevious(); });
+                    this.nextBtn.addEventListener('click', (e) => { e.stopPropagation(); this.showNext(); });
+                    this.closeBtn.addEventListener('click', (e) => { e.stopPropagation(); this.closeViewer(); });
 
                     // 键盘事件
                     document.addEventListener('keydown', (e) => {
@@ -1609,35 +1619,47 @@
                         }
                     });
 
-                    // 点击背景关闭
+                    // 点击背景或图片本身关闭灯箱
                     this.viewer.addEventListener('click', (e) => {
-                        if (e.target === this.viewer) {
+                        if (e.target === this.viewer ||
+                            e.target === this.viewer.querySelector('.viewer-container') ||
+                            e.target === this.viewerImage) {
                             this.closeViewer();
                         }
                     });
 
-                    // 触摸滑动支持
+                    // 触摸滑动支持——绑定在 viewer 容器上，而非 viewerImage
+                    // 因为 showImage 加载期间 viewerImage 会被隐藏，导致 touch 事件丢失
                     this.addTouchSupport();
 
                     this.initialized = true;
                 }
 
-                // 每次都需要重新绑定的图片点击事件
+                // 使用事件委托绑定图片点击事件（只需绑定一次）
                 this.bindImageEvents();
             }
 
             bindImageEvents() {
-                // 使用事件委托，避免重复绑定
-                document.removeEventListener('click', this.imageClickHandler);
+                // 如果已经绑定过，不再重复绑定
+                if (this.imageClickHandler) return;
+
                 this.imageClickHandler = (e) => {
-                    // 检查点击的是图片或图片容器
-                    const imgElement = e.target.classList.contains('gallery-img') ? e.target : 
-                                     e.target.closest('.gallery-img-container')?.querySelector('.gallery-img');
-                    
-                    if (imgElement && !e.target.closest('.gallery-img-container').classList.contains('error')) {
-                        const gallery = imgElement.closest('[data-gallery]');
-                        const galleryImages = gallery.querySelectorAll('.gallery-img');
-                        const imageIndex = Array.from(galleryImages).indexOf(imgElement);
+                    // 从点击目标向上查找画廊图片容器
+                    const container = e.target.closest('.gallery-img-container');
+                    if (!container) return;
+
+                    // 错误状态的图片不打开灯箱
+                    if (container.classList.contains('error')) return;
+
+                    const imgElement = container.querySelector('.gallery-img');
+                    if (!imgElement) return;
+
+                    const gallery = imgElement.closest('[data-gallery]');
+                    if (!gallery) return;
+
+                    const galleryImages = gallery.querySelectorAll('.gallery-img');
+                    const imageIndex = Array.from(galleryImages).indexOf(imgElement);
+                    if (imageIndex >= 0) {
                         this.openViewer(galleryImages, imageIndex);
                     }
                 };
@@ -1662,9 +1684,10 @@
                 this.currentIndex = index;
                 const img = this.currentImages[index];
 
-                // 显示加载动画
+                // 显示加载动画，用 opacity 隐藏旧图片而不使用 display:none
+                // 这样 viewerImage 仍可接收触摸事件
                 this.loading.style.display = 'block';
-                this.viewerImage.style.display = 'none';
+                this.viewerImage.style.opacity = '0';
 
                 // 加载图片
                 const newImg = new Image();
@@ -1678,7 +1701,7 @@
 
                     // 隐藏加载动画，显示图片
                     this.loading.style.display = 'none';
-                    this.viewerImage.style.display = 'block';
+                    this.viewerImage.style.opacity = '1';
 
                     // 更新缩略图状态
                     this.updateThumbnails();
@@ -1686,6 +1709,7 @@
 
                 newImg.onerror = () => {
                     this.loading.style.display = 'none';
+                    this.viewerImage.style.opacity = '0';
                     this.imageTitle.textContent = '图片加载失败';
                     this.imageCounter.textContent = ` (${index + 1}/${this.currentImages.length})`;
                 };
@@ -1711,6 +1735,11 @@
                 this.isOpen = false;
                 this.viewer.classList.remove('active');
                 document.body.style.overflow = '';
+                // 清空图片 src，避免下次打开时闪现旧图
+                this.viewerImage.src = '';
+                this.viewerImage.style.opacity = '0';
+                this.loading.style.display = 'none';
+                this.thumbnailNav.style.display = 'none';
             }
 
             createThumbnails() {
@@ -1724,10 +1753,15 @@
 
                 this.currentImages.forEach((img, index) => {
                     const thumbnail = document.createElement('img');
+                    // 使用 loading="lazy" 延迟加载缩略图，避免一次性请求所有大图
+                    thumbnail.loading = 'lazy';
                     thumbnail.src = img.src;
                     thumbnail.className = 'thumbnail';
                     thumbnail.alt = `缩略图 ${index + 1}`;
-                    thumbnail.addEventListener('click', () => this.showImage(index));
+                    thumbnail.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.showImage(index);
+                    });
                     this.thumbnailNav.appendChild(thumbnail);
                 });
             }
@@ -1742,13 +1776,21 @@
             addTouchSupport() {
                 let startX = 0;
                 let startY = 0;
+                let isTracking = false;
 
-                this.viewerImage.addEventListener('touchstart', (e) => {
+                // 绑定在 viewer 容器上（而非 viewerImage），
+                // 因为 showImage 加载期间 viewerImage 可能被隐藏
+                this.viewer.addEventListener('touchstart', (e) => {
+                    if (!this.isOpen) return;
                     startX = e.touches[0].clientX;
                     startY = e.touches[0].clientY;
-                });
+                    isTracking = true;
+                }, { passive: true });
 
-                this.viewerImage.addEventListener('touchend', (e) => {
+                this.viewer.addEventListener('touchend', (e) => {
+                    if (!this.isOpen || !isTracking) return;
+                    isTracking = false;
+
                     if (!startX || !startY) return;
 
                     const endX = e.changedTouches[0].clientX;
@@ -1770,7 +1812,7 @@
 
                     startX = 0;
                     startY = 0;
-                });
+                }, { passive: true });
             }
         }
 
@@ -1892,12 +1934,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.removeAttribute('data-src');
                         observer.unobserve(img);
                     } else if (img.src) {
-                        // 图片已经设置了src，直接触发加载检查
-                        if (img.complete) {
+                        // 图片已设置 src，检查是否已加载完成
+                        // 注意：HTML 中已有 onload="handleImageLoad(this)" onerror="handleImageError(this)"
+                        // 此处仅补查已 complete 但未触发 onload 的情况
+                        if (img.complete && img.naturalWidth > 0) {
                             handleImageLoad(img);
-                        } else {
-                            img.onload = () => handleImageLoad(img);
-                            img.onerror = () => handleImageError(img);
                         }
                     }
                 }
@@ -1909,18 +1950,12 @@ document.addEventListener('DOMContentLoaded', () => {
             imageObserver.observe(img);
         });
     } else {
-        // 移动端或不支持IntersectionObserver的浏览器，直接加载所有图片
+        // 移动端或不支持 IntersectionObserver 的浏览器，补查已加载完成的图片
+        // 注意：HTML 中已有 onload/onerror 内联事件，此处仅补查 complete 状态
         const images = document.querySelectorAll('.gallery-img');
         images.forEach(img => {
-            // 移动端直接加载图片
-            if (img.src) {
-                // 触发加载检查
-                if (img.complete) {
-                    handleImageLoad(img);
-                } else {
-                    img.onload = () => handleImageLoad(img);
-                    img.onerror = () => handleImageError(img);
-                }
+            if (img.src && img.complete && img.naturalWidth > 0) {
+                handleImageLoad(img);
             }
         });
     }
@@ -1960,7 +1995,7 @@ async function loadDynamicData(pagination) {
             setTimeout(() => {
                 const images = document.querySelectorAll('.gallery-img');
                 images.forEach(img => {
-                    if (img.complete && img.closest('.gallery-img-container')?.classList.contains('loading')) {
+                    if (img.complete && img.naturalWidth > 0 && img.closest('.gallery-img-container')?.classList.contains('loading')) {
                         handleImageLoad(img);
                     }
                 });
