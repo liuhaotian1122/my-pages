@@ -1409,7 +1409,8 @@
                     this.renderExperienceList();
                     this.renderPagination();
                     this.renderPageInfo();
-                    this.hideLoading();
+                    // 数据未就绪时保持加载动画（hideLoading 由数据就绪后的渲染触发）
+                    if (dataReady || this.filteredData.length > 0) this.hideLoading();
                     this.reinitImageViewer();
                 }, 300);
             }
@@ -1431,6 +1432,12 @@
                 const currentPageData = this.filteredData.slice(startIndex, endIndex);
 
                 if (currentPageData.length === 0) {
+                    if (!dataReady) {
+                        // 后端数据尚未就绪：保持加载动画，不误显示"无结果"；
+                        // 若阶段1已渲染出最新记录，则原样保留不强清
+                        if (!this.experienceContainer.children.length) this.showLoading();
+                        return;
+                    }
                     this.experienceContainer.innerHTML = '';
                     this.noResults.style.display = 'block';
                     return;
@@ -1903,6 +1910,7 @@
  * 阶段1：快速加载 - 显示后端最新 1 条经历记录（无静态兜底）
  */
 let fullListRendered = false; // 阶段2完整列表渲染完成后置 true，阶段1不再覆盖
+let dataReady = false; // 后端数据是否就绪（就绪前空列表保持加载动画，不误显示"无结果"）
 
 async function loadLatestExperience() {
     const container = document.getElementById('experienceContainer');
@@ -2012,29 +2020,23 @@ document.addEventListener('DOMContentLoaded', () => {
  * @param {ExperiencePagination} pagination - 分页实例
  */
 async function loadDynamicData(pagination) {
-    try {
-        const apiData = await loadExperienceData();
-        if (apiData && apiData.length > 0) {
-            experienceData = apiData;
+    // fetchExperienceData 内部已捕获异常，不会 reject
+    const apiData = await loadExperienceData();
+    experienceData = apiData;
+    dataReady = true; // 数据就绪（无论是否有记录），此后空列表才显示"无结果"
+    fullListRendered = true; // 完整列表已渲染，阶段1不再覆盖
 
-            // 重新渲染分页和列表（回到第一页以显示最新数据）
-            pagination.currentPage = 1;
-            pagination.updateData();
-            pagination.render();
-            pagination.reinitImageViewer();
+    // 重新渲染分页和列表（回到第一页以显示最新数据）
+    pagination.currentPage = 1;
+    pagination.updateData();
+    pagination.render();
+    pagination.reinitImageViewer();
 
-            // 恢复分页控件显示（阶段1时隐藏的）
-            const paginationContainer = document.getElementById('paginationContainer');
-            if (paginationContainer) paginationContainer.style.display = 'flex';
+    // 有数据时显示分页控件，无数据时隐藏
+    const paginationContainer = document.getElementById('paginationContainer');
+    if (paginationContainer) paginationContainer.style.display = apiData.length > 0 ? 'flex' : 'none';
 
-            fullListRendered = true; // 完整列表已渲染，阶段1不再覆盖
-
-            console.log('✅ 完整加载：共 ' + apiData.length + ' 条经历记录（含动态数据）');
-        }
-    } catch (e) {
-        console.error('加载完整经历数据失败（已显示快速加载内容）:', e);
-        // 阶段1的内容已经显示，用户无感知
-    }
+    console.log('✅ 完整加载：共 ' + apiData.length + ' 条经历记录');
 }
         
         // 页面完全加载后再次检查图片加载状态
