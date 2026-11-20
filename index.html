@@ -1259,6 +1259,79 @@
             font-weight: 400;
             margin-top: 2px;
         }
+
+        /* ========== Hero 打字机效果样式 ========== */
+        .hero-typewriter-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none;
+            padding: 20px;
+        }
+
+        .hero-typewriter {
+            font-family: 'Microsoft YaHei', 'PingFang SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 600;
+            color: #ffffff;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 0, 0, 0.3);
+            letter-spacing: 3px;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 80%;
+            min-height: 60px;
+        }
+
+        .hero-typewriter-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background-color: #ffffff;
+            margin-left: 4px;
+            vertical-align: text-bottom;
+            animation: heroCursorBlink 1s step-end infinite;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        @keyframes heroCursorBlink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        /* 打字机容器定位到轮播图上方 */
+        .am-slider-c1 {
+            position: relative;
+        }
+
+        .am-slider-c1 .hero-typewriter-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 15;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 50%, rgba(0,0,0,0.2) 100%);
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .hero-typewriter {
+                font-size: 1rem;
+                letter-spacing: 2px;
+                max-width: 90%;
+            }
+            .hero-typewriter-cursor {
+                width: 2px;
+                height: 1em;
+            }
+        }
     </style>
     <!-- 深色模式：防闪脚本 + 主题样式 -->
     <script>(function(){try{var t=localStorage.getItem('site-theme');if(t!=='dark'&&t!=='light'){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
@@ -1274,6 +1347,12 @@
         <div class="am-g am-container">
             <div class="am-u-sm-12 am-u-md-12 am-u-lg-8">
                 <div data-am-widget="slider" class="am-slider am-slider-c1" data-am-slider='{"directionNav":false}'>
+                    <!-- Hero 打字机效果 -->
+                    <div class="hero-typewriter-container">
+                        <div class="hero-typewriter">
+                            <span id="hero-typewriter-text"></span><span class="hero-typewriter-cursor"></span>
+                        </div>
+                    </div>
                     <ul class="am-slides">
 
                         <!--                    <li>-->
@@ -2509,6 +2588,85 @@
     </script>
 <script src="js/darkmode.js"></script>
 <script src="js/pwa.js"></script>
+
+<!-- Hero 打字机效果脚本 -->
+<script>
+(function() {
+    // 打字机文字数组 - 励志文案集合
+    var texts = [
+        "欢迎来到浩天的个人站 ✨",
+        "记录生活，分享美好 📸",
+        "山川异域，风月同天 🏔️",
+        "愿你眼中总有光芒 ⭐",
+        "生活不是等待暴风雨过去，而是学会在雨中起舞 💃",
+        "半山腰太挤了，我们山顶见 🏔️",
+        "星光不问赶路人，时光不负有心人 ✨",
+        "你的坚持，终将美好 🌸",
+        "梦想还是要有的，万一实现了呢 🚀",
+        "既然选择了远方，便只顾风雨兼程 🌧️",
+        "每一个不曾起舞的日子，都是对生命的辜负 💫",
+        "你若盛开，蝴蝶自来 🦋",
+        "不要因为走得太远，而忘记为什么出发 🧭",
+        "将来的你，一定会感谢现在拼命的自己 💪",
+        "人生没有白走的路，每一步都算数 👣",
+        "心之所向，素履以往 🎯",
+        "愿你走出半生，归来仍是少年 👦",
+        "世界上只有一种英雄主义，就是认清生活后依然热爱它 ❤️",
+        "与其仰望星空，不如去做那颗摘星的人 ⭐",
+        "所有的惊艳，都来自长久的准备 📖",
+        "慢慢来，比较快 🐢",
+        "保持热爱，奔赴山海 🌊",
+        "热爱可抵岁月漫长 🔥",
+        "前路浩浩荡荡，万事尽可期待 🌈",
+        "做自己的光，不需要太亮，足以照亮自己就好 💡",
+        "种一棵树最好的时间是十年前，其次是现在 🌳",
+        "生活明朗，万物可爱，人间值得，未来可期 🌻"
+    ];
+
+    var textElement = document.getElementById('hero-typewriter-text');
+    if (!textElement) return;
+
+    var textIndex = 0;      // 当前文字索引
+    var charIndex = 0;      // 当前字符索引
+    var isDeleting = false; // 是否正在删除
+    var typingSpeed = 120;  // 打字速度（毫秒）
+    var deletingSpeed = 60; // 删除速度（毫秒）
+    var pauseEnd = 2000;    // 打完后的停顿时间
+    var pauseStart = 500;   // 删除完后的停顿时间
+
+    function typeWriter() {
+        var currentText = texts[textIndex];
+
+        if (isDeleting) {
+            // 删除字符
+            textElement.textContent = currentText.substring(0, charIndex - 1);
+            charIndex--;
+
+            if (charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+                setTimeout(typeWriter, pauseStart);
+                return;
+            }
+            setTimeout(typeWriter, deletingSpeed);
+        } else {
+            // 添加字符
+            textElement.textContent = currentText.substring(0, charIndex + 1);
+            charIndex++;
+
+            if (charIndex === currentText.length) {
+                isDeleting = true;
+                setTimeout(typeWriter, pauseEnd);
+                return;
+            }
+            setTimeout(typeWriter, typingSpeed);
+        }
+    }
+
+    // 页面加载后稍作延迟开始打字效果
+    setTimeout(typeWriter, 800);
+})();
+</script>
 </body>
 
 </html>
