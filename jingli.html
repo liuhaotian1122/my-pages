@@ -1250,292 +1250,35 @@
 
 
 
-        // 默认经历数据
-        const defaultExperienceData = [
-            {
-                id: 1,
-                title: "经历经历-1",
-                time: "2021.10.4",
-                location: "银川",
-                images: ["images/jd1.jpg", "images/jd2.jpg", "images/jd3.jpg"],
-                content: "贺兰偶遇小景点，进去闲游"
-            },
-            {
-                id: 2,
-                title: "经历经历-2",
-                time: "2021.10.20",
-                location: "银川",
-                images: ["images/wyn0.jpg", "images/wyn1.jpg", "images/wyn2.jpg", "images/wyn3.jpg"],
-                content: "记录小可爱王怡宁的日常成长.part1"
-            },
-            {
-                id: 3,
-                title: "经历经历-3",
-                time: "2021.12.31",
-                location: "银川",
-                images: ["images/w4.jpg", "images/w3.jpg", "images/w2.jpg", "images/w1.jpg"],
-                content: "记录小可爱王怡宁的日常成长.part2"
-            },
-            {
-                id: 4,
-                title: "经历经历-4",
-                time: "2022.1.30",
-                location: "银川",
-                images: ["images/w7.jpg", "images/w9.jpg", "images/w8.jpg", "images/w10.jpg"],
-                content: "记录小可爱王怡宁的日常成长.part3"
-            },
-            {
-                id: 5,
-                title: "经历经历-5",
-                time: "2023.1.14",
-                location: "记录小可爱王怡宁的日常成长.part4",
-                images: ["images/w11.jpg", "images/w12.jpg", "images/w13.jpg", "images/w14.jpg"],
-                content: "记录小可爱王怡宁的日常成长.part4"
-            },
-            {
-                id: 6,
-                title: "经历经历-6",
-                time: "2025.9.28",
-                location: "银川",
-                images: [
-                    "https://i.postimg.cc/t4b9pd3C/2021-07-26-233856.jpg",
-                    "https://i.postimg.cc/W1VsTmGM/2022-02-11-211444.jpg",
-                    "https://i.postimg.cc/9QBCM412/2022-08-30-232915.jpg",
-                    "https://i.postimg.cc/LsCStrrX/20230531202331002.jpg",
-                    "https://i.postimg.cc/nzXJ03xb/20230531211117700.jpg",
-                    "https://i.postimg.cc/vT9ddDDv/20230531211147479.jpg",
-                    "https://i.postimg.cc/nVQxmST9/20230601202056112.jpg",
-                    "https://i.postimg.cc/J4VL53dT/20230601202259312.jpg"
-                ],
-                content: "记录日常"
-            },
 
-
-{
-    id: 7,
-    title: "经历记录-7",
-    time: "2025.09.29",
-    location: "宁夏-固原",
-    images: [
-        "https://i.postimg.cc/9QcGnXmc/mmexport1660555026437.jpg",
-        "https://i.postimg.cc/6QmnqdCS/mmexport1660555034863.jpg",
-        "https://i.postimg.cc/Hx85yV2Q/mmexport1660555046546.jpg",
-        "https://i.postimg.cc/prNjYRGY/mmexport1660555057618.jpg",
-        "https://i.postimg.cc/8ch6Z9xQ/mmexport1660555102549.jpg",
-        "https://i.postimg.cc/3NgvtVzx/mmexport1660555114275.jpg",
-        "https://i.postimg.cc/x8Kz6hBL/mmexport1660555138419.jpg",
-        "https://i.postimg.cc/QN51NKVx/mmexport1660984803084.jpg",
-        "https://i.postimg.cc/Hs9MXGQX/mmexport1660984810629.jpg",
-        "https://i.postimg.cc/t4RxzrkG/mmexport1660984870201.jpg",
-        "https://i.postimg.cc/Vk7bZjZN/mmexport1660984932566.jpg",
-        "https://i.postimg.cc/52PFKwKg/mmexport1660984969179.jpg",
-        "https://i.postimg.cc/rpKRBK7b/mmexport1660985034001.jpg",
-        "https://i.postimg.cc/1tFnzbmq/mmexport1660985037178.jpg"
-    ],
-    content: "你知道的，固原是我的家乡"
-},
-
-{
-    id: 8,
-    title: "经历记录-8",
-    time: "2025.09.29",
-    location: "陕西-西安",
-    images: [
-        "https://i.postimg.cc/Y0vhV90g/AGC-20240613-095302714.jpg",
-        "https://i.postimg.cc/NFZ5wcrg/AGC-20240613-100644438.jpg",
-        "https://i.postimg.cc/XNPZ5wDV/AGC-20240613-112833029.jpg",
-        "https://i.postimg.cc/vZFcqGs9/AGC-20240613-190418524.jpg",
-        "https://i.postimg.cc/Z580XXYk/AGC-20240614-131835584.jpg",
-        "https://i.postimg.cc/C111B1GM/AGC-20240614-134250519.jpg",
-        "https://i.postimg.cc/1XV3Bj7Y/AGC-20240614-134313227.jpg",
-        "https://i.postimg.cc/bdXNB9KY/AGC-20240614-134321435.jpg",
-        "https://i.postimg.cc/VLMjLGsg/AGC-20240614-134911207.jpg",
-        "https://i.postimg.cc/Hk9Xbry5/AGC-20240614-152816948.jpg",
-        "https://i.postimg.cc/HLSMPF3n/AGC-20240614-175902837.jpg",
-        "https://i.postimg.cc/664ZYjZB/AGC-20240614-182340146.jpg"
-    ],
-    content: "转悠转悠"
-},
-
-
-{
-    id: 9,
-    title: "经历记录-9",
-    time: "2025.10.10",
-    location: "内蒙古-阿拉善",
-    images: [
-        "https://i.postimg.cc/3wdDj51f/IMG-20251001-164509.jpg",
-        "https://i.postimg.cc/hG5TNPvN/IMG-20251002-104301.jpg",
-        "https://i.postimg.cc/mgdHF2Y3/IMG-20251002-130909.jpg",
-        "https://i.postimg.cc/fTnjwLCm/IMG-20251002-145225-1.jpg",
-        "https://i.postimg.cc/qMgtRp91/IMG-20251002-130928.jpg",
-        "https://i.postimg.cc/CxqzGmMn/IMG-20251002-144200.jpg",
-        "https://i.postimg.cc/ZnnqCLDF/IMG-20251002-145222-2.jpg",
-        "https://i.postimg.cc/5yyt6mk9/IMG-20251004-153703.jpg"
-    ],
-    content: "阿拉善南寺一日游"
-},
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-
-
-        ];
-
-        // 从后端API加载数据，如果API不可用则降级使用默认数据
-        async function loadExperienceData() {
-            try {
-                const res = await fetch(apiUrl('/api/public/experience'));
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.length > 0) {
-                        // 合并：后端数据在前，原有静态数据在后
-                        return [...data, ...defaultExperienceData];
-                    }
-                }
-            } catch (error) {
-                console.error('从后端加载失败，使用默认数据:', error);
-            }
-            return [...defaultExperienceData];
+        // 解析 "2025.09.29" / "2021.10.4" 等时间为时间戳（无法解析返回 0）
+        function parseExpTime(t) {
+            if (!t) return 0;
+            const p = String(t).split(/[^\d]+/).filter(Boolean).map(Number);
+            if (p.length >= 3) return new Date(p[0], p[1] - 1, p[2]).getTime();
+            if (p.length === 2) return new Date(p[0], p[1] - 1).getTime();
+            if (p.length === 1) return new Date(p[0], 0).getTime();
+            return 0;
         }
 
-        // 经历数据（先用默认数据初始化，DOMContentLoaded时再异步更新）
-        let experienceData = [...defaultExperienceData];
+        // 后端公开数据获取（阶段1快速展示 / 阶段2完整加载 共用同一请求，避免重复请求）
+        function fetchExperienceData() {
+            if (!fetchExperienceData._p) {
+                fetchExperienceData._p = fetch(apiUrl('/api/public/experience'))
+                    .then(r => r.ok ? r.json() : null)
+                    .catch(() => null);
+            }
+            return fetchExperienceData._p;
+        }
+
+        // 从后端API加载最新数据（不设静态兜底，每次展示后端实时数据）
+        async function loadExperienceData() {
+            const data = await fetchExperienceData();
+            return data || [];
+        }
+
+        // 经历数据（后端实时加载，DOMContentLoaded 后异步填充）
+        let experienceData = [];
 
 
 
@@ -1635,7 +1378,8 @@
 
                 // 应用排序
                 if (this.sortOrder === 'latest') {
-                    this.filteredData.sort((a, b) => b.id - a.id); // ID降序排列，最大的在前
+                    // 按时间降序展示最新内容；同时间保持原顺序（后端数据在前即更新的在前）
+                    this.filteredData.sort((a, b) => parseExpTime(b.time) - parseExpTime(a.time));
                 } else {
                     this.filteredData.sort((a, b) => a.id - b.id); // ID升序排列，默认顺序
                 }
@@ -2156,14 +1900,21 @@
 // 阶段2：后台加载完整数据并更新列表
 
 /**
- * 阶段1：快速加载 - 仅显示最新 1 条经历记录
+ * 阶段1：快速加载 - 显示后端最新 1 条经历记录（无静态兜底）
  */
-function loadLatestExperience() {
-    const container = document.getElementById('experienceContainer');
-    if (!container || !defaultExperienceData || defaultExperienceData.length === 0) return;
+let fullListRendered = false; // 阶段2完整列表渲染完成后置 true，阶段1不再覆盖
 
-    // 获取最新的一条（ID最大的）
-    const latest = [...defaultExperienceData].sort((a, b) => b.id - a.id)[0];
+async function loadLatestExperience() {
+    const container = document.getElementById('experienceContainer');
+    if (!container) return;
+
+    // 后端数据已按最新在前排序，直接取第一条；后端不可用时不渲染，交由阶段2处理
+    const data = await fetchExperienceData();
+    if (!data || data.length === 0) return;
+    const latest = data[0];
+
+    // 阶段2已渲染完整列表时不再覆盖
+    if (fullListRendered) return;
 
     // 仅渲染这一条
     const experienceHTML = `
@@ -2275,6 +2026,8 @@ async function loadDynamicData(pagination) {
             // 恢复分页控件显示（阶段1时隐藏的）
             const paginationContainer = document.getElementById('paginationContainer');
             if (paginationContainer) paginationContainer.style.display = 'flex';
+
+            fullListRendered = true; // 完整列表已渲染，阶段1不再覆盖
 
             console.log('✅ 完整加载：共 ' + apiData.length + ' 条经历记录（含动态数据）');
         }
