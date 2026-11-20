@@ -1184,15 +1184,15 @@ let experienceData = [];
             render() {
                 this.showLoading();
 
-                // 模拟加载延迟
-                setTimeout(() => {
+                // 立即渲染（下一帧执行，无人工延迟）
+                requestAnimationFrame(() => {
                     this.renderExperienceList();
                     this.renderPagination();
                     this.renderPageInfo();
                     // 数据未就绪时保持加载动画（hideLoading 由数据就绪后的渲染触发）
                     if (dataReady || this.filteredData.length > 0) this.hideLoading();
                     this.reinitImageViewer();
-                }, 300);
+                });
             }
 
             showLoading() {
