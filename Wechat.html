@@ -667,6 +667,15 @@
                 border-radius: 6px;
             }
         }
+    .wechat-loading {
+        text-align: center;
+        padding: 60px 0;
+        color: #999;
+        font-size: 14px;
+        letter-spacing: 1px;
+        animation: wechat-loading-pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes wechat-loading-pulse { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
     </style>
 
     <!-- 非关键CSS异步加载 -->
@@ -732,15 +741,6 @@
     // 各动态的静态点赞昵称（subtitle），点赞后刷新显示时与之合并
     var STATIC_LIKES = {};
 
-    // 后端加载失败时的备用静态数据
-    var FALLBACK_MOMENTS = [
-        { title: '许我半夏', content: '今天天气真好，和朋友们一起去爬山，心情超级棒！🏔️', time: '10分钟前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400','https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=400','https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=400'], likes: ['小春春','许我半夏'], comments: [{user:'小春春',text:'风景真美！'},{user:'许我半夏',replyTo:'小春春',text:'是啊'}] },
-        { title: '许我半夏', content: '周末的咖啡时光☕️', time: '1小时前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400'], likes: ['许我半夏','小春春'], comments: [] },
-        { title: '许我半夏', content: '人生就像一杯茶，不会苦一辈子，但总会苦一阵子。加油！💪', time: '3小时前', date: '2025.11.12', images: [], likes: ['许我半夏','刘浩天','小春春'], comments: [{user:'许我半夏',text:'说得好！'}] },
-        { title: '许我半夏', content: '今天的美食打卡 🍜🍱🍰🍕', time: '5小时前', date: '2025.11.12', images: ['https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400','https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400','https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400','https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400'], likes: [], comments: [{user:'小春春',text:'看起来好好吃！'},{user:'许我半夏',replyTo:'小春春',text:'下次一起去吃'}] },
-        { title: '许我半夏', content: '旅行的意义 🌏✈️ 探索未知的世界，遇见更好的自己', time: '昨天', date: '2025.11.11', images: ['https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400','https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400','https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400','https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=400','https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=400','https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=400'], likes: ['许我半夏'], comments: [{user:'我',text:'好羡慕啊！'}] },
-        { title: '许我半夏', content: '读书是一种享受 📚', time: '2天前', date: '2025.11.10', images: ['https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400','https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400'], likes: ['许我半夏','小春春'], comments: [] }
-    ];
 
     // ==================== 访客身份与工具 ====================
 
@@ -857,74 +857,91 @@
     // 阶段2：后台加载剩余所有内容
     // 阶段3：如果API失败，保留已显示的内容
 
-    var _latestMomentLoaded = false;  // 标记最新一条是否已加载
+    var _latestMomentLoaded = false;  // 阶段1是否已执行
+    var _allMomentsLoaded = false;    // 阶段2是否已渲染
+    var _momentsShownCount = 0;       // 当前已渲染条数（阶段2仅在条数变多时更新界面）
 
-    // 阶段1：立即加载最新一条（优先从静态数据取第一条）
-    function loadLatestMoment() {
+    // 后端朋友圈数据获取（可选 limit 只取最新前 N 条）
+    function fetchMomentsData(limit) {
+        var url = apiUrl('/api/public/wechat') + (limit ? '?limit=' + limit : '');
+        return fetch(url)
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .catch(function () { return null; });
+    }
+
+    // 互动数据（点赞/评论）获取
+    function fetchInteractions() {
+        return fetch(apiUrl('/api/public/wechat/interactions'))
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .catch(function () { return null; });
+    }
+
+    // 互动数据合并进动态列表
+    function mergeInteractions(moments, interactions) {
+        (moments || []).forEach(function (m) {
+            if (interactions && m.id != null) {
+                m._likes = interactions.likes[String(m.id)] || [];
+                m._comments = interactions.comments[String(m.id)] || [];
+            }
+        });
+    }
+
+    // 加载中占位提示（数据到达后整体替换）
+    function showMomentsLoading() {
+        var container = document.getElementById('momentsContainer');
+        if (container) container.innerHTML = '<div class="wechat-loading">正在加载朋友圈...</div>';
+    }
+
+    // 阶段1：加载最新 5 条朋友圈快速展示（无静态兜底）
+    async function loadLatestMoment() {
         if (_latestMomentLoaded) return;
         _latestMomentLoaded = true;
 
         var container = document.getElementById('momentsContainer');
-        var latest = null;
+        if (!container) return;
+        showMomentsLoading();
 
-        // 优先使用静态数据的第一条作为"最新一条"
-        if (FALLBACK_MOMENTS && FALLBACK_MOMENTS.length > 0) {
-            latest = [FALLBACK_MOMENTS[0]];
-        }
+        var data = await fetchMomentsData(5);
+        var moments = data || [];
+        var interactions = await fetchInteractions();
+        mergeInteractions(moments, interactions);
 
-        if (latest) {
-            container.innerHTML = latest.map(renderMoment).join('');
+        if (_allMomentsLoaded) return; // 阶段2已渲染完整列表，跳过
+        if (moments.length > 0) {
+            _momentsShownCount = moments.length;
+            container.innerHTML = moments.map(renderMoment).join('');
             observeItems();
-            console.log('⚡ 快速加载：已显示最新 1 条朋友圈');
+            console.log('⚡ 快速加载：最新 ' + moments.length + ' 条朋友圈已显示');
         }
     }
 
-    // 阶段2：后台加载完整数据并合并显示
+    // 阶段2：后台静默加载全部朋友圈（条数变多时才更新，不打断浏览）
     async function loadAllMoments() {
         var container = document.getElementById('momentsContainer');
-        try {
-            var res = await fetch(apiUrl('/api/public/wechat'));
-            if (!res.ok) throw new Error('API请求失败');
-            var backendMoments = await res.json();
-
-            // 拉取点赞 / 评论存储数据，按 content_id 合并进对应动态
-            var interactions = null;
-            try {
-                var iRes = await fetch(apiUrl('/api/public/wechat/interactions'));
-                if (iRes.ok) interactions = await iRes.json();
-            } catch (e) { /* 互动数据拉取失败不影响动态展示 */ }
-
-            (backendMoments || []).forEach(function(m) {
-                if (interactions && m.id != null) {
-                    m._likes = interactions.likes[String(m.id)] || [];
-                    m._comments = interactions.comments[String(m.id)] || [];
-                }
-            });
-
-            // 后端数据在前，静态数据在后（去重：如果后端第一条和静态第一条相同则不重复）
-            if (backendMoments && backendMoments.length > 0) {
-                var allMoments = backendMoments.concat(FALLBACK_MOMENTS);
-                container.innerHTML = allMoments.map(renderMoment).join('');
-                observeItems();
-                console.log('✅ 完整加载：共 ' + allMoments.length + ' 条朋友圈（含 ' + backendMoments.length + ' 条动态）');
+        var backendMoments = await fetchMomentsData();
+        if (!backendMoments || backendMoments.length === 0) {
+            if (container && !container.querySelector('.moment-item')) {
+                container.innerHTML = '<div class="wechat-loading">暂无朋友圈动态</div>';
             }
-        } catch (err) {
-            console.error('加载完整朋友圈数据失败（已显示快速加载内容）:', err);
-            // 阶段1的内容已经显示，用户无感知
+            console.log('⚠️ 后端无朋友圈数据');
+            return;
+        }
+
+        var interactions = await fetchInteractions();
+        mergeInteractions(backendMoments, interactions);
+
+        _allMomentsLoaded = true;
+        if (backendMoments.length > _momentsShownCount) {
+            _momentsShownCount = backendMoments.length;
+            container.innerHTML = backendMoments.map(renderMoment).join('');
+            observeItems();
+            console.log('✅ 全部加载完成：共 ' + backendMoments.length + ' 条朋友圈');
         }
     }
 
     // 兼容旧接口名
     function loadDynamicMoments() {
         loadAllMoments();
-    }
-
-    // 立即显示静态备用数据（避免用户看到空白）
-    function showStaticMoments() {
-        var container = document.getElementById('momentsContainer');
-        container.innerHTML = FALLBACK_MOMENTS.map(renderMoment).join('');
-        // 触发淡入动画
-        observeItems();
     }
 
     // 滚动进入视口时的淡入动画
@@ -951,7 +968,7 @@
     // 页面加载时：三阶段快速加载策略
     // 阶段1：立即显示最新一条（用户瞬间看到内容）
     // 阶段2：后台加载完整数据
-    loadLatestMoment();       // ⚡ 立即执行：显示最新 1 条
+    loadLatestMoment();       // ⚡ 立即执行：先显示最新 5 条
     loadAllMoments();         // 🔄 后台执行：加载剩余所有内容
 
     // 切换操作菜单

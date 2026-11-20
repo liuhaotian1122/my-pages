@@ -1261,21 +1261,7 @@
             return 0;
         }
 
-        // 后端公开数据获取（阶段1快速展示 / 阶段2完整加载 共用同一请求，避免重复请求）
-        function fetchExperienceData() {
-            if (!fetchExperienceData._p) {
-                fetchExperienceData._p = fetch(apiUrl('/api/public/experience'))
-                    .then(r => r.ok ? r.json() : null)
-                    .catch(() => null);
-            }
-            return fetchExperienceData._p;
-        }
-
-        // 从后端API加载最新数据（不设静态兜底，每次展示后端实时数据）
-        async function loadExperienceData() {
-            const data = await fetchExperienceData();
-            return data || [];
-        }
+        
 
         // 经历数据（后端实时加载，DOMContentLoaded 后异步填充）
         let experienceData = [];
@@ -1906,66 +1892,11 @@
 // 阶段1：立即显示最新一条经历记录
 // 阶段2：后台加载完整数据并更新列表
 
-/**
- * 阶段1：快速加载 - 显示后端最新 1 条经历记录（无静态兜底）
- */
-let fullListRendered = false; // 阶段2完整列表渲染完成后置 true，阶段1不再覆盖
 let dataReady = false; // 后端数据是否就绪（就绪前空列表保持加载动画，不误显示"无结果"）
-
-async function loadLatestExperience() {
-    const container = document.getElementById('experienceContainer');
-    if (!container) return;
-
-    // 后端数据已按最新在前排序，直接取第一条；后端不可用时不渲染，交由阶段2处理
-    const data = await fetchExperienceData();
-    if (!data || data.length === 0) return;
-    const latest = data[0];
-
-    // 阶段2已渲染完整列表时不再覆盖
-    if (fullListRendered) return;
-
-    // 仅渲染这一条
-    const experienceHTML = `
-        <div class="work-section show">
-            <div class="work-title">
-                <h2>${latest.title}</h2>
-            </div>
-            <div class="work-info">
-                <h2>时间：${latest.time}</h2>
-                <h2>地点：${latest.location}</h2>
-                ${latest.content ? `<h2>内容：${latest.content}</h2>` : ''}
-            </div>
-            <div class="image-gallery" data-gallery="work${latest.id}">
-                ${latest.images.map((img, index) => `
-                    <div class="gallery-img-container loading" data-index="${index + 1}">
-                        <img src="${img}" class="gallery-img" alt="照片${index + 1}" loading="lazy" decoding="async"
-                             data-title="${latest.title} - 照片${index + 1}" data-date="${latest.time}"
-                             onload="handleImageLoad(this)" onerror="handleImageError(this)">
-                        <div class="image-index">${index + 1}</div>
-                        <div class="zoom-icon">🔍</div>
-                        <div class="image-tooltip">${latest.title} - 照片${index + 1}</div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
-
-    container.innerHTML = experienceHTML;
-    console.log('⚡ 快速加载：已显示最新 1 条经历记录');
-
-    // 隐藏加载动画和分页（阶段1暂时隐藏，阶段2再显示）
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const paginationContainer = document.getElementById('paginationContainer');
-    if (loadingSpinner) loadingSpinner.style.display = 'none';
-    if (paginationContainer) paginationContainer.style.display = 'none';
-}
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    // ⚡ 阶段1：立即显示最新一条经历记录（用户瞬间看到内容）
-    loadLatestExperience();
-
-    // 初始化图片查看器
+        // 初始化图片查看器
     window.imageViewer = new ImageViewer();
 
     // 使用静态数据初始化分页（后台准备）
@@ -2019,25 +1950,42 @@ document.addEventListener('DOMContentLoaded', () => {
  * 异步加载动态数据并更新列表（阶段2：完整加载）
  * @param {ExperiencePagination} pagination - 分页实例
  */
-async function loadDynamicData(pagination) {
-    // fetchExperienceData 内部已捕获异常，不会 reject
-    const apiData = await loadExperienceData();
-    experienceData = apiData;
-    dataReady = true; // 数据就绪（无论是否有记录），此后空列表才显示"无结果"
-    fullListRendered = true; // 完整列表已渲染，阶段1不再覆盖
+        function fetchExperienceData(limit) {
+            const url = apiUrl('/api/public/experience') + (limit ? '?limit=' + limit : '');
+            return fetch(url)
+                .then(r => r.ok ? r.json() : null)
+                .catch(() => null);
+        }
 
-    // 重新渲染分页和列表（回到第一页以显示最新数据）
-    pagination.currentPage = 1;
-    pagination.updateData();
-    pagination.render();
-    pagination.reinitImageViewer();
+/**
+ * 🔄 两阶段加载：先拉最新一页快速展示首屏，后台静默补全剩余数据
+ * @param {ExperiencePagination} pagination - 分页实例
+ */
+        async function loadDynamicData(pagination) {
+            // 阶段1：只拉最新一页（前 N 条），最快让用户看到内容
+            const firstPage = await fetchExperienceData(pagination.pageSize);
+            experienceData = firstPage || [];
+            dataReady = true; // 数据就绪（无论是否有记录），此后空列表才显示"无结果"
 
-    // 有数据时显示分页控件，无数据时隐藏
-    const paginationContainer = document.getElementById('paginationContainer');
-    if (paginationContainer) paginationContainer.style.display = apiData.length > 0 ? 'flex' : 'none';
+            pagination.currentPage = 1;
+            pagination.updateData();
+            pagination.render();
+            pagination.reinitImageViewer();
 
-    console.log('✅ 完整加载：共 ' + apiData.length + ' 条经历记录');
-}
+            const paginationContainer = document.getElementById('paginationContainer');
+            if (paginationContainer) paginationContainer.style.display = experienceData.length > 0 ? 'flex' : 'none';
+            console.log('⚡ 快速加载：最新 ' + experienceData.length + ' 条经历记录已显示');
+
+            // 阶段2：后台静默加载全部，条数有变化时才更新界面（不打断用户浏览）
+            const all = await fetchExperienceData();
+            if (all && all.length > experienceData.length) {
+                experienceData = all;
+                pagination.updateData();
+                pagination.render();
+                pagination.reinitImageViewer();
+                console.log('✅ 全部加载完成：共 ' + experienceData.length + ' 条经历记录');
+            }
+        }
         
         // 页面完全加载后再次检查图片加载状态
         window.addEventListener('load', () => {

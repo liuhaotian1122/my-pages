@@ -1119,100 +1119,20 @@ loadScript('assets/js/jquery.min.js', () => {
     }, 2000);
 });
 
-// 博客数据
-const blogData = [
-    {
-        id: 1,
-        title: "真实的高贵",
-        description: "风平浪静的大海，每个人都是领航员。",
-        location: "宁夏",
-        date: "2021-10-11",
-        url: "true-nobility.html",
-        tags: ["哲学", "人生"]
-    },
-    {
-        id: 2,
-        title: "PS操作快捷键",
-        description: "工具箱移动工具 【V】 矩形、椭圆选框工具",
-        location: "银川",
-        date: "2021-10-21",
-        url: "ps-shortcuts.html",
-        tags: ["技术", "设计"]
-    },
-    {
-        id: 3,
-        title: "找到自己的命运，而不是他人的命运",
-        description: "今天我知道，在世上，最让人畏惧的恰恰是通向自己的道路。",
-        location: "宁夏",
-        date: "2021-11-05",
-        url: "find-your-destiny.html",
-        tags: ["哲学", "成长"]
-    },
-    {
-        id: 4,
-        title: "h5阻止左右滑动",
-        description: "阻止移动端H5开发浏览器默认左右滑动行为.",
-        location: "宁夏",
-        date: "2021-11-11",
-        url: "h5-prevent-swipe.html",
-        tags: ["技术", "前端"]
-    },
-    {
-        id: 5,
-        title: "一些工具",
-        description: "搜集一些好用的工具，帮助你们快速生产。",
-        location: "宁夏",
-        date: "2021-11-21",
-        url: "useful-tools.html",
-        tags: ["工具", "效率"]
-    },
-    // 可以继续添加更多博客数据
-    {
-        id: 6,
-        title: "JavaScript进阶技巧",
-        description: "分享一些JavaScript的高级用法和技巧。",
-        location: "银川",
-        date: "2021-12-01",
-        url: "#",
-        tags: ["技术", "JavaScript"]
-    },
-    {
-        id: 7,
-        title: "CSS布局最佳实践",
-        description: "现代CSS布局技术的深入探讨。",
-        location: "宁夏",
-        date: "2021-12-15",
-        url: "#",
-        tags: ["技术", "CSS"]
-    },
-    {
-        id: 8,
-        title: "人生感悟随笔",
-        description: "记录生活中的点点滴滴和思考。",
-        location: "银川",
-        date: "2022-01-10",
-        url: "#",
-        tags: ["生活", "感悟"]
-    },
-    {
-        id: 9,
-        title: "前端性能优化指南",
-        description: "全面的前端性能优化策略和实践。",
-        location: "宁夏",
-        date: "2022-02-20",
-        url: "#",
-        tags: ["技术", "性能"]
-    },
-    {
-        id: 10,
-        title: "设计思维与用户体验",
-        description: "探讨设计思维在产品开发中的应用。",
-        location: "银川",
-        date: "2022-03-15",
-        url: "#",
-        tags: ["设计", "UX"]
-    }
-];
+// 博客数据（后端实时加载，DOMContentLoaded 后异步填充，不设静态兜底）
+let blogData = [];
+
+// 解析 "2021-10-11" / "2021.10.4" 等时间为时间戳（无法解析返回 0）
+function parseBlogTime(t) {
+    if (!t) return 0;
+    const p = String(t).split(/[^\d]+/).filter(Boolean).map(Number);
+    if (p.length >= 3) return new Date(p[0], p[1] - 1, p[2]).getTime();
+    if (p.length === 2) return new Date(p[0], p[1] - 1).getTime();
+    if (p.length === 1) return new Date(p[0], 0).getTime();
+    return 0;
+}
+
+let blogDataReady = false; // 后端数据是否就绪（就绪前空列表保持加载动画，不误显示"无结果"）
 
 // 分页管理类
 class BlogPagination {
@@ -1286,9 +1206,12 @@ class BlogPagination {
             this.filteredData = [...blogData];
         }
         
+        // 按日期降序展示最新内容
+        this.filteredData.sort((a, b) => parseBlogTime(b.date) - parseBlogTime(a.date));
+
         this.totalItems = this.filteredData.length;
     }
-    
+
     render() {
         this.showLoading();
         
@@ -1297,7 +1220,8 @@ class BlogPagination {
             this.renderBlogList();
             this.renderPagination();
             this.renderPageInfo();
-            this.hideLoading();
+            // 数据未就绪时保持加载动画（hideLoading 由数据就绪后的渲染触发）
+            if (blogDataReady || this.filteredData.length > 0) this.hideLoading();
         });
     }
     
@@ -1318,6 +1242,11 @@ class BlogPagination {
         const currentPageData = this.filteredData.slice(startIndex, endIndex);
         
         if (currentPageData.length === 0) {
+            if (!blogDataReady) {
+                // 后端数据尚未就绪：保持加载动画，不误显示"无结果"
+                this.showLoading();
+                return;
+            }
             this.blogList.innerHTML = '';
             this.noResults.style.display = 'block';
             return;
@@ -1527,159 +1456,67 @@ function fetchBlogStats() {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    // 立即使用静态数据初始化分页（避免用户看到空白）
+    // 初始化分页（数据就绪前保持加载动画，不误显示"无结果"）
     const blogPagination = new BlogPagination();
 
     // 初始化高级效果
     initAdvancedEffects();
 
-    // 🚀 优化：先只加载第一条最新内容，让用户最快看到最新动态
-    loadLatestFirst(blogPagination);
+    // 🔄 从后端加载全部博客数据（最新在前）
+    loadAllBlogs(blogPagination);
 });
 
-/**
- * 🚀 快速加载策略：先加载一条最新内容显示，再加载剩余内容
- * @param {BlogPagination} blogPagination - 分页实例
- */
-async function loadLatestFirst(blogPagination) {
-    try {
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'block';
-            loadingSpinner.querySelector('p').textContent = '正在获取最新动态...';
-        }
+// 后端博客数据获取（可选 limit 只取最新前 N 条）
+function fetchBlogData(limit) {
+    const url = apiUrl('/api/public/blog') + (limit ? '?limit=' + limit : '');
+    return fetch(url)
+        .then(r => r.ok ? r.json() : null)
+        .catch(() => null);
+}
 
-        // 请求后端数据（添加 ?limit=1 参数只获取最新一条）
-        const res = await fetch(apiUrl('/api/public/blog?limit=1'));
-        if (res.ok) {
-            const latestBlogs = await res.json();
-            
-            if (latestBlogs && latestBlogs.length > 0) {
-                // 只取第一条最新数据
-                const latest = latestBlogs[0];
-                const formatted = {
-                    id: latest.id,
-                    title: latest.title || '无标题',
-                    description: (latest.images && latest.images[0]) || latest.location || '',
-                    location: latest.location || '宁夏',
-                    date: latest.date || '',
-                    url: 'blog-detail.html?id=' + latest.id,
-                    tags: latest.tags || []
-                };
-
-                // ✨ 立即将最新内容插入到列表最前面
-                blogData.unshift(formatted);
-                
-                // 立即渲染（只显示这一条）
-                blogPagination.currentPage = 1;
-                blogPagination.updateData();
-                blogPagination.render();
-                
-                console.log('✅ 快速加载最新 1 条内容完成！');
-                
-                // 🚀 然后继续加载剩余内容（不阻塞用户浏览）
-                loadRemainingBlogs(blogPagination, latestBlogs.slice(1));
-                return;
-            }
-        }
-        
-        // 如果 API 没有返回或失败，加载全部数据作为降级
-        console.log('⚠️ 快速加载失败，切换到完整加载模式');
-        loadDynamicBlogs(blogPagination);
-        
-    } catch (err) {
-        console.error('快速加载失败:', err);
-        // 降级到原来的完整加载方式
-        loadDynamicBlogs(blogPagination);
-    } finally {
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'none';
-        }
-    }
+// 后端记录 → 页面展示格式
+function formatBlogItem(item) {
+    return {
+        id: item.id,
+        title: item.title || '无标题',
+        description: (item.images && item.images[0]) || item.location || '',
+        location: item.location || '宁夏',
+        date: item.date || '',
+        url: 'blog-detail.html?id=' + item.id,
+        tags: item.tags || []
+    };
 }
 
 /**
- * 加载剩余的动态博客数据（后台静默进行）
+ * 🔄 两阶段加载：先拉最新前 6 条（一页）快速展示首屏，后台静默补全剩余数据
  * @param {BlogPagination} blogPagination - 分页实例
- * @param {Array} remainingBlogs - 剩余的数据
  */
-async function loadRemainingBlogs(blogPagination, remainingBlogs) {
-    if (!remainingBlogs || remainingBlogs.length === 0) return;
-    
-    try {
-        console.log(`🔄 后台继续加载剩余 ${remainingBlogs.length} 条内容...`);
-        
-        // 将剩余数据转换为格式并插入
-        const formatted = remainingBlogs.map(item => ({
-            id: item.id,
-            title: item.title || '无标题',
-            description: (item.images && item.images[0]) || item.location || '',
-            location: item.location || '宁夏',
-            date: item.date || '',
-            url: 'blog-detail.html?id=' + item.id,
-            tags: item.tags || []
-        }));
+async function loadAllBlogs(blogPagination) {
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    if (loadingSpinner) {
+        loadingSpinner.style.display = 'block';
+        loadingSpinner.querySelector('p').textContent = '正在加载最新内容...';
+    }
 
-        // 合并到数据列表（不重复插入已加载的第一条）
-        blogData.splice(1, 0, ...formatted);
+    // 阶段1：只拉最新一页（前 6 条），最快让用户看到内容
+    const firstPage = await fetchBlogData(blogPagination.pageSize);
+    blogData = (firstPage || []).map(formatBlogItem);
+    blogDataReady = true; // 数据就绪（无论是否有记录），此后空列表才显示"无结果"
 
-        // 静默更新列表（不重置到第一页，避免打断用户浏览）
+    blogPagination.currentPage = 1;
+    blogPagination.updateData();
+    blogPagination.render();
+
+    if (loadingSpinner) loadingSpinner.style.display = 'none';
+    console.log('⚡ 快速加载：最新 ' + blogData.length + ' 篇博客已显示');
+
+    // 阶段2：后台静默加载全部，条数有变化时才更新界面（不打断用户浏览）
+    const all = await fetchBlogData();
+    if (all && all.length > blogData.length) {
+        blogData = all.map(formatBlogItem);
         blogPagination.updateData();
         blogPagination.render();
-        
-        console.log(`✅ 全部动态内容加载完成！共 ${formatted.length + 1} 条`);
-        
-    } catch (err) {
-        console.error('加载剩余内容失败:', err);
-        // 不影响用户体验，已显示的内容保持不变
-    }
-}
-
-/**
- * 原来的完整加载方式（保留作为降级方案）
- * @param {BlogPagination} blogPagination - 分页实例
- */
-async function loadDynamicBlogs(blogPagination) {
-    try {
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'block';
-            loadingSpinner.querySelector('p').textContent = '正在加载全部内容...';
-        }
-
-        const res = await fetch(apiUrl('/api/public/blog'));
-        if (res.ok) {
-            const dynamicBlogs = await res.json();
-            if (dynamicBlogs && dynamicBlogs.length > 0) {
-                const formatted = dynamicBlogs.map(item => ({
-                    id: item.id,
-                    title: item.title || '无标题',
-                    description: (item.images && item.images[0]) || item.location || '',
-                    location: item.location || '宁夏',
-                    date: item.date || '',
-                    url: 'blog-detail.html?id=' + item.id,
-                    tags: item.tags || []
-                }));
-
-                // 合并：后端数据在前，原有静态数据在后
-                blogData.unshift(...formatted);
-
-                // 重新渲染分页和列表（回到第一页以显示最新数据）
-                blogPagination.currentPage = 1;
-                blogPagination.updateData();
-                blogPagination.render();
-
-                console.log(`✅ 成功加载 ${formatted.length} 条动态博客`);
-            }
-        }
-    } catch (err) {
-        console.error('加载动态博客失败:', err);
-    } finally {
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        if (loadingSpinner) {
-            loadingSpinner.style.display = 'none';
-        }
+        console.log('✅ 全部加载完成：共 ' + blogData.length + ' 篇博客');
     }
 }
 

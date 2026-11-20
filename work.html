@@ -1044,204 +1044,21 @@
 
 
 
-        // 默认经历数据
-        const defaultExperienceData = [
-            {
-                id: 1,
-                title: "记录工作-1",
-                time: "2021.8.17",
-                location: "银川",
-                images: ["images/sq0.jpg", "images/sq1.jpg", "images/sq2.jpg"],
-                content: "帮助社区做一些辅导作业、课程讲解一类的工作"
-            },
-            {
-                id: 2,
-                title: "记录工作-2",
-                time: "2022.2.2",
-                location: "银川",
-                images: ["images/n1.jpg", "images/n2.jpg", "images/n3.jpg", "images/n4.jpg"],
-                content: "记录新年，喜上眉梢"
-            },
 
-
-            {
-                id: 3,
-                title: "经历工作-3",
-                time: "2025.9.28",
-                location: "银川",
-                images: [
-                    "https://i.postimg.cc/hvkRH2hL/664102092533196752.jpg",
-                    "https://i.postimg.cc/7Pd4GZXM/image.jpg",
-                    "https://i.postimg.cc/15FQp1jh/hong.jpg",
-                    "https://i.postimg.cc/y8zzjpMk/image.jpg",
-                    "https://i.postimg.cc/GmJn5JRM/202004.jpg",
-                    "https://i.postimg.cc/4xbRSbZT/20200420235444.jpg",
-                    "https://i.postimg.cc/3w8Q54Jy/20200421000820.jpg"
-                ],
-                content: "记录简历照片，随取随用"
-            },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-
-
-        ];
-
-        // 从后端API加载数据，如果API不可用则降级使用默认数据
-        async function loadExperienceData() {
-            try {
-                const res = await fetch(apiUrl('/api/public/work'));
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.length > 0) {
-                        // 合并：后端数据在前，原有静态数据在后
-                        return [...data, ...defaultExperienceData];
-                    }
-                }
-            } catch (error) {
-                console.error('从后端加载失败，使用默认数据:', error);
-            }
-            return [...defaultExperienceData];
+        // 解析 "2025.09.29" / "2021.10.4" 等时间为时间戳（无法解析返回 0）
+        function parseExpTime(t) {
+            if (!t) return 0;
+            const p = String(t).split(/[^\d]+/).filter(Boolean).map(Number);
+            if (p.length >= 3) return new Date(p[0], p[1] - 1, p[2]).getTime();
+            if (p.length === 2) return new Date(p[0], p[1] - 1).getTime();
+            if (p.length === 1) return new Date(p[0], 0).getTime();
+            return 0;
         }
 
-        // 经历数据（先用默认数据初始化，DOMContentLoaded时再异步更新）
-        let experienceData = [...defaultExperienceData];
+        
+
+        // 数据（后端实时加载，DOMContentLoaded 后异步填充）
+        let experienceData = [];
 
 
 
@@ -1341,7 +1158,8 @@
 
                 // 应用排序
                 if (this.sortOrder === 'latest') {
-                    this.filteredData.sort((a, b) => b.id - a.id); // ID降序排列，最大的在前
+                    // 按时间降序展示最新内容；同时间保持原顺序（后端数据在前即更新的在前）
+                    this.filteredData.sort((a, b) => parseExpTime(b.time) - parseExpTime(a.time));
                 } else {
                     this.filteredData.sort((a, b) => a.id - b.id); // ID升序排列，默认顺序
                 }
@@ -1371,7 +1189,8 @@
                     this.renderExperienceList();
                     this.renderPagination();
                     this.renderPageInfo();
-                    this.hideLoading();
+                    // 数据未就绪时保持加载动画（hideLoading 由数据就绪后的渲染触发）
+                    if (dataReady || this.filteredData.length > 0) this.hideLoading();
                     this.reinitImageViewer();
                 }, 300);
             }
@@ -1393,6 +1212,12 @@
                 const currentPageData = this.filteredData.slice(startIndex, endIndex);
 
                 if (currentPageData.length === 0) {
+                    if (!dataReady) {
+                        // 后端数据尚未就绪：保持加载动画，不误显示"无结果"；
+                        // 若阶段1已渲染出最新记录，则原样保留不强清
+                        if (!this.experienceContainer.children.length) this.showLoading();
+                        return;
+                    }
                     this.experienceContainer.innerHTML = '';
                     this.noResults.style.display = 'block';
                     return;
@@ -1860,58 +1685,11 @@
 // 阶段1：立即显示最新一条工作记录
 // 阶段2：后台加载完整数据并更新列表
 
-/**
- * 阶段1：快速加载 - 仅显示最新 1 条工作记录
- */
-function loadLatestWork() {
-    const container = document.getElementById('experienceContainer');
-    if (!container || !defaultExperienceData || defaultExperienceData.length === 0) return;
-
-    // 获取最新的一条（ID最大的）
-    const latest = [...defaultExperienceData].sort((a, b) => b.id - a.id)[0];
-
-    // 仅渲染这一条
-    const experienceHTML = `
-        <div class="work-section show">
-            <div class="work-title">
-                <h2>${latest.title}</h2>
-            </div>
-            <div class="work-info">
-                <h2>时间：${latest.time}</h2>
-                <h2>地点：${latest.location}</h2>
-                ${latest.content ? `<h2>内容：${latest.content}</h2>` : ''}
-            </div>
-            <div class="image-gallery" data-gallery="work${latest.id}">
-                ${latest.images.map((img, index) => `
-                    <div class="gallery-img-container loading" data-index="${index + 1}">
-                        <img src="${img}" class="gallery-img" alt="照片${index + 1}" loading="lazy" decoding="async"
-                             data-title="${latest.title} - 照片${index + 1}" data-date="${latest.time}"
-                             onload="handleImageLoad(this)" onerror="handleImageError(this)">
-                        <div class="image-index">${index + 1}</div>
-                        <div class="zoom-icon">🔍</div>
-                        <div class="image-tooltip">${latest.title} - 照片${index + 1}</div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>
-    `;
-
-    container.innerHTML = experienceHTML;
-    console.log('⚡ 快速加载：已显示最新 1 条工作记录');
-
-    // 隐藏加载动画和分页（阶段1暂时隐藏，阶段2再显示）
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const paginationContainer = document.getElementById('paginationContainer');
-    if (loadingSpinner) loadingSpinner.style.display = 'none';
-    if (paginationContainer) paginationContainer.style.display = 'none';
-}
+let dataReady = false; // 后端数据是否就绪（就绪前空列表保持加载动画，不误显示"无结果"）
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    // ⚡ 阶段1：立即显示最新一条工作记录（用户瞬间看到内容）
-    loadLatestWork();
-
-    // 初始化图片查看器
+        // 初始化图片查看器
     window.imageViewer = new ImageViewer();
 
     // 使用静态数据初始化分页（后台准备）
@@ -1965,29 +1743,42 @@ document.addEventListener('DOMContentLoaded', () => {
  * 异步加载动态数据并更新列表（阶段2：完整加载）
  * @param {ExperiencePagination} pagination - 分页实例
  */
-async function loadDynamicData(pagination) {
-    try {
-        const apiData = await loadExperienceData();
-        if (apiData && apiData.length > 0) {
-            experienceData = apiData;
+        function fetchExperienceData(limit) {
+            const url = apiUrl('/api/public/work') + (limit ? '?limit=' + limit : '');
+            return fetch(url)
+                .then(r => r.ok ? r.json() : null)
+                .catch(() => null);
+        }
 
-            // 重新渲染分页和列表（回到第一页以显示最新数据）
+/**
+ * 🔄 两阶段加载：先拉最新一页快速展示首屏，后台静默补全剩余数据
+ * @param {ExperiencePagination} pagination - 分页实例
+ */
+        async function loadDynamicData(pagination) {
+            // 阶段1：只拉最新一页（前 N 条），最快让用户看到内容
+            const firstPage = await fetchExperienceData(pagination.pageSize);
+            experienceData = firstPage || [];
+            dataReady = true; // 数据就绪（无论是否有记录），此后空列表才显示"无结果"
+
             pagination.currentPage = 1;
             pagination.updateData();
             pagination.render();
             pagination.reinitImageViewer();
 
-            // 恢复分页控件显示（阶段1时隐藏的）
             const paginationContainer = document.getElementById('paginationContainer');
-            if (paginationContainer) paginationContainer.style.display = 'flex';
+            if (paginationContainer) paginationContainer.style.display = experienceData.length > 0 ? 'flex' : 'none';
+            console.log('⚡ 快速加载：最新 ' + experienceData.length + ' 条工作记录已显示');
 
-            console.log('✅ 完整加载：共 ' + apiData.length + ' 条工作记录（含动态数据）');
+            // 阶段2：后台静默加载全部，条数有变化时才更新界面（不打断用户浏览）
+            const all = await fetchExperienceData();
+            if (all && all.length > experienceData.length) {
+                experienceData = all;
+                pagination.updateData();
+                pagination.render();
+                pagination.reinitImageViewer();
+                console.log('✅ 全部加载完成：共 ' + experienceData.length + ' 条工作记录');
+            }
         }
-    } catch (e) {
-        console.error('加载完整工作数据失败（已显示快速加载内容）:', e);
-        // 阶段1的内容已经显示，用户无感知
-    }
-}
         
         // 页面完全加载后再次检查图片加载状态
         window.addEventListener('load', () => {
