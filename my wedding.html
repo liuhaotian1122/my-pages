@@ -28,6 +28,9 @@
     <!-- 预加载关键资源 -->
     <link rel="preload" href="assets/css/amazeui.min.css" as="style">
     <link rel="preload" href="css/public.css" as="style">
+    <!-- 预加载关键JS：提前发现 jQuery→amazeui 串行加载链 -->
+    <link rel="preload" href="assets/js/jquery.min.js" as="script">
+    <link rel="preload" href="assets/js/amazeui.min.js" as="script">
     
     <!-- 关键CSS内联 -->
     <style>

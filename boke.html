@@ -31,7 +31,11 @@
     <!-- 关键CSS同步加载（header依赖amazeui样式，异步加载会导致header闪烁/FOUC） -->
     <link rel="stylesheet" href="assets/css/amazeui.min.css">
     <link rel="stylesheet" href="css/public.css">
-    
+
+    <!-- 预加载关键JS：提前发现 jQuery→amazeui 串行加载链，缩短导航栏淡入等待 -->
+    <link rel="preload" href="assets/js/jquery.min.js" as="script">
+    <link rel="preload" href="assets/js/amazeui.min.js" as="script">
+
     <style>
         html,body{margin:0 auto;width:100%;overflow-x:hidden;}
 

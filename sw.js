@@ -2,7 +2,8 @@
  * 浩天的个人站 Service Worker
  *
  * 缓存策略：
- *   - 页面导航：网络优先，断网回退已缓存页面，再回退首页（离线也能浏览看过的博客）
+ *   - 页面导航：stale-while-revalidate——缓存立即上屏（回访秒开），同时后台拉取最新版本更新缓存；
+ *     首次访问无缓存时等待网络，断网回退首页（离线也能浏览看过的博客）
  *   - 公开 API（api.liuhaotian.cc.cd/api/public/*）：网络优先 + 缓存兜底
  *   - 本站静态资源 / CDN 样式字体 / R2 图片（/uploads/）：缓存优先
  *   - 管理接口（/api/content 等）与 POST 请求（点赞、浏览、弹幕）一律不拦截
@@ -10,7 +11,7 @@
  * 更新缓存：修改本文件后把 VERSION 号 +1，旧缓存会在 activate 阶段自动清理。
  */
 
-const VERSION = 'v4';
+const VERSION = 'v6';
 const PRECACHE = `my-pages-precache-${VERSION}`;
 const RUNTIME = `my-pages-runtime-${VERSION}`;
 
@@ -24,6 +25,7 @@ const PRECACHE_URLS = [
   './update.html', './annual-report.html', './food.html', './work.html',
   './jingli.html', './game.html', './Wechat.html',
   './assets/css/amazeui.min.css', './css/public.css', './css/darkmode.css', './css/xiaocheng.css',
+  './css/gallery-viewer.css',
   './js/api-config.js', './js/header.js', './js/footer.js', './js/darkmode.js', './js/xiaocheng.js', './js/pwa.js',
   './assets/js/jquery.min.js', './assets/js/amazeui.min.js',
   './images/i/app.svg', './images/i/favicon.png', './images/star.png',
@@ -74,10 +76,10 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 本站：页面导航网络优先，静态资源缓存优先
+  // 本站：页面导航 SWR（缓存立即上屏 + 后台更新），静态资源缓存优先
   if (url.origin === self.location.origin) {
     if (request.mode === 'navigate') {
-      event.respondWith(networkFirst(request, './index.html'));
+      event.respondWith(staleWhileRevalidate(request, './index.html'));
     } else {
       event.respondWith(cacheFirst(request));
     }
@@ -127,4 +129,32 @@ async function cacheFirst(request) {
   } catch (err) {
     return new Response(OFFLINE_TEXT, { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
   }
+}
+
+/** SWR：有缓存立即返回（回访秒开），同时后台拉取最新并更新缓存；
+ *  无缓存时等待网络，失败则回退 fallbackUrl，再失败返回离线提示 */
+async function staleWhileRevalidate(request, fallbackUrl) {
+  const cached = await caches.match(request);
+  const networkPromise = (async () => {
+    try {
+      const fresh = await fetch(request);
+      if (fresh && fresh.ok) {
+        const cache = await caches.open(RUNTIME);
+        cache.put(request, fresh.clone());
+      }
+      return fresh;
+    } catch (err) {
+      return null;
+    }
+  })();
+
+  if (cached) return cached;
+
+  const fresh = await networkPromise;
+  if (fresh) return fresh;
+  if (fallbackUrl) {
+    const fallback = await caches.match(fallbackUrl);
+    if (fallback) return fallback;
+  }
+  return new Response(OFFLINE_TEXT, { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 }
