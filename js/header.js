@@ -43,6 +43,22 @@ document.write(`
 </header>
 `);
 
+// Dynamically offset body content by the real fixed-header height
+// (AmazeUI only reserves 51px, but the topbar grows taller when nav wraps)
+(function() {
+    function adjustBodyPadding() {
+        var header = document.querySelector('.am-topbar-fixed-top');
+        if (!header) return;
+        document.body.style.paddingTop = header.offsetHeight + 'px';
+    }
+    adjustBodyPadding();
+    window.addEventListener('load', adjustBodyPadding);
+    window.addEventListener('resize', adjustBodyPadding);
+    if (window.ResizeObserver) {
+        new ResizeObserver(adjustBodyPadding).observe(document.querySelector('.am-topbar-fixed-top'));
+    }
+})();
+
 // Highlight active menu item
 (function() {
     var currentPage = window.location.pathname.split('/').pop();

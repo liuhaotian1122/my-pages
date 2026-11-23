@@ -315,8 +315,9 @@
 
         .action-menu {
             position: absolute;
-            right: 0;
-            top: 100%;
+            right: calc(100% + 10px);
+            top: 50%;
+            transform: translateY(-50%);
             background: white;
             border-radius: 10px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
@@ -327,18 +328,20 @@
         }
 
         .action-menu.show {
-            display: block;
-            animation: fadeInDown 0.3s ease-out;
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            animation: fadeInLeft 0.3s ease-out;
         }
 
-        @keyframes fadeInDown {
+        @keyframes fadeInLeft {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateX(-10px) translateY(-50%);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateX(0) translateY(-50%);
             }
         }
 
@@ -354,10 +357,13 @@
             color: #555;
         }
 
+        .action-menu-item + .action-menu-item {
+            border-left: 1px solid #ececec;
+        }
+
         .action-menu-item:hover {
             background-color: rgba(225, 101, 47, 0.06);
             color: #e1652f;
-            padding-left: 22px;
         }
 
         /* 点赞和评论区域 */
