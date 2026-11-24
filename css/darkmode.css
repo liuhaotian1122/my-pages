@@ -16,10 +16,10 @@
     --dm-brand: #e1652f;
 }
 
-/* ---------- 切换按钮（浮动，左下角，所有页面通用） ---------- */
+/* ---------- 切换按钮（浮动，右下角，所有页面通用） ---------- */
 #dm-toggle {
     position: fixed;
-    left: 16px;
+    right: 16px;
     bottom: 16px;
     z-index: 9999;
     width: 42px;
@@ -27,7 +27,7 @@
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 19px;
+    font-size: 16px;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -44,6 +44,53 @@
     transform: scale(0.95);
 }
 html[data-theme="light"] #dm-toggle {
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--dm-brand);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+}
+
+/* ---------- 回到顶部按钮（与夜间模式按钮同列，右下角竖排，全站通用） ---------- */
+.am-gotop-fixed {
+    right: 16px !important;
+    bottom: 68px !important; /* 16 + 42 + 10，叠在夜间模式按钮正上方 */
+    left: auto !important;
+    width: 42px !important;
+    min-height: 42px !important;
+    height: 42px !important;
+    overflow: visible !important;
+    background: transparent;
+    box-shadow: none;
+    transition: opacity 0.3s ease;
+}
+.am-gotop-fixed a {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(28, 36, 48, 0.92);
+    color: #ffd28f;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+.am-gotop-fixed .am-gotop-icon {
+    width: auto;
+    line-height: 1;
+    font-size: 16px;
+    background: transparent;
+    color: inherit;
+}
+.am-gotop-fixed .am-gotop-icon:hover {
+    color: inherit;
+}
+.am-gotop-fixed a:hover {
+    transform: scale(1.12);
+}
+.am-gotop-fixed a:active {
+    transform: scale(0.95);
+}
+html[data-theme="light"] .am-gotop-fixed a {
     background: rgba(255, 255, 255, 0.94);
     color: var(--dm-brand);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
@@ -181,10 +228,6 @@ html[data-theme="dark"] .am-btn-secondary {
     background: var(--dm-surface-2) !important;
     color: var(--dm-text) !important;
     border-color: var(--dm-border) !important;
-}
-html[data-theme="dark"] .am-gotop-icon {
-    background: var(--dm-surface) !important;
-    color: var(--dm-text) !important;
 }
 /* 表单控件（下拉框、输入框、文本域全站统一） */
 html[data-theme="dark"] input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]),
