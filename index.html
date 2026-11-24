@@ -119,6 +119,41 @@
             background: linear-gradient(135deg, #1f2a44 0%, #2d3e5e 100%);
         }
 
+        /* 轮播图加载占位动画（替代黑屏） */
+        .am-slider-c1::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
+            background-size: 200% 100%;
+            animation: sliderShimmer 1.8s ease-in-out infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .am-slider-c1.slider-ready::before {
+            display: none;
+        }
+        @keyframes sliderShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        /* 加载提示文字 */
+        .am-slider-c1::after {
+            content: '正在加载精彩内容…';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255,255,255,0.6);
+            font-size: 14px;
+            letter-spacing: 2px;
+            z-index: 2;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .am-slider-c1.slider-ready::after {
+            opacity: 0;
+        }
+
         /* 响应式轮播图高度设置 */
         .am-slider-c1 .am-viewport,
         .am-slider-c1 .am-slides > li {
@@ -1892,25 +1927,50 @@
             if (tile) tile.classList.add('pw-tile--empty');
         }
 
+        // 提前预取四个 API 数据（不等 window load，脚本执行到此处立即并行发起）
+        var _photoWallSources = [
+            { label: '记录工作', href: 'work.html',   url: '/api/public/work' },
+            { label: '记录经历', href: 'jingli.html', url: '/api/public/experience' },
+            { label: '记录美食', href: 'food.html',   url: '/api/public/food' },
+            { label: '朋友圈',   href: 'Wechat.html', url: '/api/public/wechat' }
+        ];
+        var _photoWallDataPromise = Promise.all(_photoWallSources.map(function (s) {
+            return fetch(apiUrl(s.url))
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .catch(function () { return null; });
+        }));
+
+        // 预加载一组图片，全部加载完成（或超时）后 resolve
+        function preloadImages(srcs, timeout) {
+            timeout = timeout || 4000;
+            return Promise.all(srcs.map(function (src) {
+                return new Promise(function (resolve) {
+                    var img = new Image();
+                    var done = false;
+                    var timer = setTimeout(function () {
+                        if (!done) { done = true; resolve(); }
+                    }, timeout);
+                    img.onload = function () {
+                        if (!done) { done = true; clearTimeout(timer); resolve(); }
+                    };
+                    img.onerror = function () {
+                        if (!done) { done = true; clearTimeout(timer); resolve(); }
+                    };
+                    img.src = src;
+                });
+            }));
+        }
+
         async function buildDailyPhotoWall() {
             var slider = document.getElementById('daily-slider');
             var slidesUl = slider && slider.querySelector('.am-slides');
             if (!slidesUl) return;
 
-            // 1. 并行拉取四个页面的图片数据（任一接口失败按空数组处理）
-            var sources = [
-                { label: '记录工作', href: 'work.html',   url: '/api/public/work' },
-                { label: '记录经历', href: 'jingli.html', url: '/api/public/experience' },
-                { label: '记录美食', href: 'food.html',   url: '/api/public/food' },
-                { label: '朋友圈',   href: 'Wechat.html', url: '/api/public/wechat' }
-            ];
+            // 1. 使用提前发起的预取 Promise（此时可能已完成，直接拿到数据）
+            var sources = _photoWallSources;
 
             var groups = [];
-            var results = await Promise.all(sources.map(function (s) {
-                return fetch(apiUrl(s.url))
-                    .then(function (r) { return r.ok ? r.json() : null; })
-                    .catch(function () { return null; });
-            }));
+            var results = await _photoWallDataPromise;
             results.forEach(function (json) {
                 var items = Array.isArray(json) ? json : (json && Array.isArray(json.data) ? json.data : []);
                 var seen = {}, imgs = [];
@@ -1950,6 +2010,8 @@
             // 4. 逐面生成照片墙：剩余 ≥ 3 张时只在三/四图布局里选，不足 3 张时才降级为双图/单图
             var captionOffset = Math.floor(rand() * WALL_CAPTIONS.length);
             var walls = [];
+            // 记录第一面照片墙的图片 URL，用于预加载
+            var firstWallSrcs = [];
             while (pool.length && walls.length < WALL_MAX) {
                 var minTiles = pool.length >= 3 ? 3 : pool.length;
                 var candidates = WALL_LAYOUTS.filter(function (l) { return l.tiles >= minTiles && l.tiles <= pool.length; });
@@ -1957,6 +2019,7 @@
                 var html = '<div class="photo-wall ' + layout.cls + '">';
                 for (var t = 0; t < layout.tiles; t++) {
                     var im = pool.shift();
+                    if (walls.length === 0) firstWallSrcs.push(im.src);
                     html += '<a class="pw-tile" href="' + escAttr(im.href) + '" title="来自 ' + escAttr(im.label) + '">' +
                             '<img src="' + escAttr(im.src) + '" loading="lazy" alt="">' +
                             '</a>';
@@ -1970,10 +2033,14 @@
             slidesUl.innerHTML = walls.join('');
             slidesUl.querySelectorAll('.pw-tile img').forEach(function (img) { img.onerror = onTileError; });
 
-            // 5. 数据就位后再初始化 FlexSlider（容器带 am-slider-manual，Amaze UI 不会自动初始化）
+            // 5. 预加载第一面照片墙的图片，加载完成后再初始化 FlexSlider（消除黑屏闪烁）
+            await preloadImages(firstWallSrcs);
+
+            // 6. 图片就绪后初始化 FlexSlider，并移除加载占位动画
             if (window.jQuery && window.jQuery.fn.flexslider) {
                 window.jQuery(slider).flexslider({ directionNav: false });
             }
+            slider.classList.add('slider-ready');
 
             // 若今日诗词 SDK 已先加载完成，在这里补填一次
             if (window.jinrishici && typeof window.jinrishici.load === 'function') {
@@ -1984,10 +2051,11 @@
 
         // 延迟加载第三方API，避免阻塞页面渲染
         window.addEventListener('load', function () {
-            // 生成每日照片墙轮播（异步拉取四个页面的图片）
-            setTimeout(function () {
+            // 生成每日照片墙轮播（API 数据已在脚本解析时并行预取，此处直接 await 即可）
+            // 用 requestAnimationFrame 确保浏览器先渲染骨架占位，再构建轮播
+            requestAnimationFrame(function () {
                 buildDailyPhotoWall();
-            }, 500);
+            });
             
             // 加载今日诗词
             setTimeout(function () {
