@@ -38,7 +38,30 @@
     <link rel="preconnect" href="https://busuanzi.ibruce.info">
     <link rel="preconnect" href="https://api.xygeng.cn">
     <link rel="preconnect" href="https://i.postimg.cc">
-    
+
+    <!-- 轮播图 API 数据预取：在 <head> 解析阶段就立即并行发起四个请求，
+         不等 jQuery / Amaze UI / 底部大脚本加载完，最大限度提前拿到图片数据 -->
+    <script>
+    (function () {
+        // 与 api-config.js 保持一致的 API 基地址逻辑
+        var CUSTOM = localStorage.getItem('API_BASE_URL') || '';
+        var CF = 'https://api.liuhaotian.cc.cd';
+        var host = location.hostname;
+        var IS_CF = host === 'localhost' || host.endsWith('.pages.dev') || host.endsWith('.workers.dev');
+        var BASE = CUSTOM || (IS_CF ? '' : CF);
+        var URLS = [
+            BASE + '/api/public/work',
+            BASE + '/api/public/experience',
+            BASE + '/api/public/food',
+            BASE + '/api/public/wechat'
+        ];
+        // 挂到 window 上，底部脚本直接 await 这个 Promise
+        window.__photoWallDataPromise = Promise.all(URLS.map(function (u) {
+            return fetch(u).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+        }));
+    })();
+    </script>
+
     <!-- 轮播图样式（幻灯片由 JS 根据接口数据动态生成） -->
     <style>
         /* 每日照片墙轮播样式 */
@@ -116,17 +139,18 @@
             min-height: var(--slider-h);
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            background: linear-gradient(135deg, #1f2a44 0%, #2d3e5e 100%);
+            /* 跟随项目整体背景色：浅色模式白色，深色模式由下方 dark 覆盖 */
+            background: #f5f5f5;
         }
 
-        /* 轮播图加载占位动画（替代黑屏） */
+        /* 轮播图加载占位动画（柔和流光，与页面背景融为一体） */
         .am-slider-c1::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
+            background: linear-gradient(110deg, transparent 30%, rgba(0,0,0,0.06) 50%, transparent 70%);
             background-size: 200% 100%;
-            animation: sliderShimmer 1.8s ease-in-out infinite;
+            animation: sliderShimmer 1.5s ease-in-out infinite;
             z-index: 1;
             pointer-events: none;
         }
@@ -139,12 +163,12 @@
         }
         /* 加载提示文字 */
         .am-slider-c1::after {
-            content: '正在加载精彩内容…';
+            content: '📸 正在加载精彩照片…';
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            color: rgba(255,255,255,0.6);
-            font-size: 14px;
+            color: rgba(0,0,0,0.35);
+            font-size: 15px;
             letter-spacing: 2px;
             z-index: 2;
             pointer-events: none;
@@ -152,6 +176,17 @@
         }
         .am-slider-c1.slider-ready::after {
             opacity: 0;
+        }
+
+        /* 深色模式：轮播占位背景跟随全站深色背景 */
+        html[data-theme="dark"] .am-slider-c1 {
+            background: var(--dm-bg, #12161d);
+        }
+        html[data-theme="dark"] .am-slider-c1::before {
+            background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%);
+        }
+        html[data-theme="dark"] .am-slider-c1::after {
+            color: rgba(255,255,255,0.35);
         }
 
         /* 响应式轮播图高度设置 */
@@ -1934,7 +1969,8 @@
             { label: '记录美食', href: 'food.html',   url: '/api/public/food' },
             { label: '朋友圈',   href: 'Wechat.html', url: '/api/public/wechat' }
         ];
-        var _photoWallDataPromise = Promise.all(_photoWallSources.map(function (s) {
+        // 使用 <head> 中已提前发起的预取 Promise（DOM 解析阶段就开始请求了）
+        var _photoWallDataPromise = window.__photoWallDataPromise || Promise.all(_photoWallSources.map(function (s) {
             return fetch(apiUrl(s.url))
                 .then(function (r) { return r.ok ? r.json() : null; })
                 .catch(function () { return null; });
@@ -2050,12 +2086,17 @@
         }
 
         // 延迟加载第三方API，避免阻塞页面渲染
-        window.addEventListener('load', function () {
-            // 生成每日照片墙轮播（API 数据已在脚本解析时并行预取，此处直接 await 即可）
-            // 用 requestAnimationFrame 确保浏览器先渲染骨架占位，再构建轮播
-            requestAnimationFrame(function () {
-                buildDailyPhotoWall();
+        // 用 DOMContentLoaded 而非 window load：不等所有图片/iframe 加载完，
+        // DOM 一就绪就立即构建轮播（API 数据已在 <head> 阶段预取，此时大概率已到手）
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () {
+                requestAnimationFrame(function () { buildDailyPhotoWall(); });
             });
+        } else {
+            requestAnimationFrame(function () { buildDailyPhotoWall(); });
+        }
+
+        window.addEventListener('load', function () {
             
             // 加载今日诗词
             setTimeout(function () {
