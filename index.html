@@ -2074,7 +2074,7 @@
 
             // 6. 图片就绪后初始化 FlexSlider，并移除加载占位动画
             if (window.jQuery && window.jQuery.fn.flexslider) {
-                window.jQuery(slider).flexslider({ directionNav: false });
+                window.jQuery(slider).flexslider({ directionNav: false, slideshowSpeed: 4000 });
             }
             slider.classList.add('slider-ready');
 
