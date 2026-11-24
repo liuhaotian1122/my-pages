@@ -41,6 +41,14 @@
         apply(next);
     }
 
+    // 与 AmazeUI gotop 的显示阈值保持一致（滚动超过 50px 显示）
+    function syncScrollState() {
+        var btn = document.getElementById('dm-toggle');
+        if (!btn) return;
+        var top = window.scrollY || document.documentElement.scrollTop || 0;
+        btn.classList.toggle('dm-hidden', top <= 50);
+    }
+
     function ensureBtn() {
         if (document.getElementById('dm-toggle')) return;
         var btn = document.createElement('button');
@@ -50,6 +58,9 @@
         document.body.appendChild(btn);
         updateBtn();
     }
+
+    // 与回到顶部按钮联动：未滚动时一起隐藏，滚过阈值后一起出现
+    window.addEventListener('scroll', syncScrollState, { passive: true });
 
     // 无手动偏好时，跟随系统实时变化
     if (window.matchMedia) {
@@ -65,8 +76,12 @@
     apply(stored() || (systemDark() ? 'dark' : 'light'));
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', ensureBtn);
+        document.addEventListener('DOMContentLoaded', function () {
+            ensureBtn();
+            syncScrollState();
+        });
     } else {
         ensureBtn();
+        syncScrollState();
     }
 })();

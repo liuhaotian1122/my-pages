@@ -22,8 +22,8 @@
     right: 16px;
     bottom: 16px;
     z-index: 9999;
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -35,7 +35,14 @@
     background: rgba(28, 36, 48, 0.92);
     color: #ffd28f;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
-    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+    transition: opacity 0.3s ease, transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* 与回到顶部按钮联动：未滚动时隐藏，滚过阈值后一起出现 */
+#dm-toggle.dm-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8);
 }
 #dm-toggle:hover {
     transform: scale(1.12);
@@ -52,19 +59,19 @@ html[data-theme="light"] #dm-toggle {
 /* ---------- 回到顶部按钮（与夜间模式按钮同列，右下角竖排，全站通用） ---------- */
 .am-gotop-fixed {
     right: 16px !important;
-    bottom: 68px !important; /* 16 + 42 + 10，叠在夜间模式按钮正上方 */
+    bottom: 64px !important; /* 16 + 38 + 10，叠在夜间模式按钮正上方 */
     left: auto !important;
-    width: 42px !important;
-    min-height: 42px !important;
-    height: 42px !important;
+    width: 38px !important;
+    min-height: 38px !important;
+    height: 38px !important;
     overflow: visible !important;
     background: transparent;
     box-shadow: none;
     transition: opacity 0.3s ease;
 }
 .am-gotop-fixed a {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     display: flex;
     align-items: center;
